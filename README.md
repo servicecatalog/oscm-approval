@@ -22,7 +22,7 @@ cd $WORKSPACE/docker
 ## Init DB
 Run following commands to create and init the approval db 
 ```
-docker run -it --name seconddb --rm --network docker_default -v $WORKSPACE/docker/init:/initapproval artifactory.intern.est.fujitsu.com:5003/oscmdocker/oscm-db bash
+docker run -it --name seconddb --rm --network docker_default -v $WORKSPACE/docker/init:/initapproval servicecatalog/oscm-db bash
 export PGPASSWORD=secret
 psql -h oscm-db -p 5432 -U postgres -f /initapproval/approval_init.sql
 psql -h oscm-db -p 5432 -U approvaluser -W -d approvaldb -f /initapproval/upd_postgresql_01_01_01.sql
