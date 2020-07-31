@@ -92,6 +92,7 @@ NOTE: Due to a current bug https://github.com/servicecatalog/oscm/issues/1041 tr
 4. Check task list appears and select the newly created
 5. Edit, give a comment and relejet or accept
 6. Go back to the subscription in the OSCM marketplace and see the result status
+7. Check the email inbox at `http://<yourhost>:8082/`
 
 # Trouble Shooting Hints
 1. Use docker logs -f oscm-app
