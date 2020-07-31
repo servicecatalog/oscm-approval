@@ -14,7 +14,7 @@ Specify where OSCM installation folder /docker is contained
 ```
 export WORKSPACE=<YOUR OSCM HOME>
 ```
-Copy the extracted content into /docker
+Download the [binary package](https://github.com/servicecatalog/oscm-approval/files/5008996/ApprovalTool.zip) and extract it into $WORKSPACE/docker (where you have installed OSCM)
 ```
 cp -R . $WORKSPACE/docker
 cd $WORKSPACE/docker
