@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans 
+       spring-beans-4.1.xsd
+       http://www.springframework.org/schema/context
+       spring-context-4.1.xsd"
+       >        
+ 
+	<context:property-placeholder location="classpath:beans.properties"/>
+
+    <bean id="Process" class="org.oscm.app.connector.framework.Process">
+        <property name="activity" ref="NotifyApprover"/>
+    </bean>
+ 
+    <!-- bean id="RetrieveApprover" class="org.oscm.app.connector.activity.LDAPReader">
+       <property name="configuration">
+            <props>
+                <prop key="url">${ldap.url}</prop>
+                <prop key="referral">${ldap.referral}</prop>
+                <prop key="username">${ldap.username}</prop>
+                <prop key="password">${ldap.password}</prop>
+                <prop key="authentication">${ldap.authentication}</prop>
+            </props>
+        </property>
+        <property name="searchFilter" value="givenName=fg1"/>
+        <property name="searchScope" value="subtree"/>
+        <property name="searchBaseDN">
+            <list>
+              <value>OU=Administratoren,OU=Nutzer,DC=university,DC=example</value>
+            </list>
+        </property>
+       <property name="attributes">
+            <list>
+              <value>sAMAccountName</value>
+              <value>mail</value>
+            </list>
+        </property>
+        <property name="namespace" value="ldap"/>
+       <property name="nextActivity" ref="NotifyApprover"/>
+     </bean -->
+ 
+    <bean id="NotifyApprover" class="org.oscm.app.connector.activity.EmailWriter">
+        <property name="configuration">
+            <props>
+                <prop key="mailsession">${mail.session}</prop>
+            </props>
+        </property>
+        <property name="subject" value="$(mail.subject)"/>
+        <property name="body" value="&lt;html&gt;&lt;head&gt;&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8&quot;/&gt;   &lt;style&gt;     td, th, caption  { font: 15px arial;  }       caption  { font: bold 15px arial; background-color: #F2F2F2; margin:5px;}        .tcol       { width: 200px; }     .vcol       { width: 400px; }      .ckey        {  font: 15px arial; }      .cval        {  font: 15px arial; background-color: #F2F2F2; }   &lt;/style&gt;&lt;/head&gt; &lt;body&gt; &lt;p&gt; $(mail.body) &lt;/p&gt; &lt;hr/&gt;  &lt;table &gt;   &lt;caption&gt;SUBSCRIPTION TECHNICAL DATA&lt;/caption&gt;    &lt;colgroup&gt; &lt;col class=&quot;tcol&quot;/&gt;      &lt;col class=&quot;vcol&quot; /&gt;   &lt;/colgroup&gt;      &lt;tbody&gt;       &lt;tr &gt;      &lt;td class=&quot;ckey&quot;&gt;Service Name&lt;/td&gt;      &lt;td class=&quot;cval&quot;&gt;$(service.name)&lt;/td&gt;    &lt;/tr&gt;    &lt;tr &gt;      &lt;td class=&quot;ckey&quot;&gt;Technical Service ID&lt;/td&gt;      &lt;td class=&quot;cval&quot;&gt;$(service.technicalId)&lt;/td&gt;    &lt;/tr&gt;    &lt;tr &gt;      &lt;td class=&quot;ckey&quot;&gt;Organisation ID&lt;/td&gt;      &lt;td class=&quot;cval&quot;&gt;$(user.orgId)&lt;/td&gt;    &lt;/tr&gt;    &lt;tr &gt;      &lt;td class=&quot;ckey&quot;&gt;User Key&lt;/td&gt;      &lt;td class=&quot;cval&quot;&gt;$(user.key)&lt;/td&gt;    &lt;/tr&gt;       &lt;/tbody&gt;  &lt;/table &gt;     &lt;hr/&gt;      &lt;table &gt;    &lt;caption&gt;USER DATA&lt;/caption&gt;    &lt;colgroup &gt;       &lt;col class=&quot;tcol&quot;/&gt;    &lt;col class=&quot;vcol&quot;/&gt;     &lt;/colgroup&gt;      &lt;tbody&gt;      &lt;tr &gt;        &lt;td class=&quot;ckey&quot;&gt;First Name&lt;/td&gt;   &lt;td class=&quot;cval&quot;&gt;$(user.firstname)&lt;/td&gt;      &lt;/tr&gt;      &lt;tr &gt;        &lt;td class=&quot;ckey&quot;&gt;Name&lt;/td&gt;        &lt;td class=&quot;cval&quot;&gt;$(user.lastname)&lt;/td&gt;      &lt;/tr &gt;      &lt;tr &gt;        &lt;td class=&quot;ckey&quot;&gt;Email&lt;/td&gt;        &lt;td class=&quot;cval&quot;&gt;$(user.email)&lt;/td&gt;      &lt;/tr &gt;    &lt;/tbody&gt;   &lt;/table &gt;      &lt;hr/&gt;   &lt;br/&gt;&lt;br/&gt;&lt;p&gt;Best regards,&lt;/p&gt;&lt;p&gt;OSCM Approval Master&lt;br/&gt;&lt;/p&gt;  &lt;/body&gt; &lt;/html&gt;"/>
+				<property name="recipients" value="security@edeka.de"/>
+        <property name="sender" value="oscm@edeka.de"/>
+        <property name="format" value="text/html; charset=utf-8"/>
+        <property name="nextActivity" ref="GetApproverTKey"/>
+    </bean>
+
+   <bean id="GetApproverTKey" class="org.oscm.app.connector.activity.DatabaseReader">
+        <property name="configuration">
+            <props>
+                <prop key="url">${database.url}</prop>
+                <prop key="driver">${database.driver}</prop>
+                <prop key="username">${database.username}</prop>
+                <prop key="password">${database.password}</prop>
+            </props>
+        </property>
+        <property name="statement" value="select tkey from approver where userid = 'approver'"/>
+        <property name="namespace" value="approver"/>
+       <property name="nextActivity" ref="Gateway"/>
+    </bean>
+
+   <bean id="Gateway" class="org.oscm.app.connector.activity.Gateway">
+   
+         <property name="activity1" ref="CreateApprovalTask"/>
+         <property name="condition1" value="Integer.parseInt(approver.tkey) >= 0"/>
+
+         <property name="activity2" ref="CreateApprover"/>
+         <property name="condition2" value="true"/>
+
+     </bean>
+
+
+   <bean id="CreateApprover" class="org.oscm.app.connector.activity.DatabaseWriter">
+        <property name="configuration">
+            <props>
+                <prop key="url">${database.url}</prop>
+                <prop key="driver">${database.driver}</prop>
+                <prop key="username">${database.username}</prop>
+                <prop key="password">${database.password}</prop>
+            </props>
+        </property>
+        <property name="statement" value="insert into approver (tkey,userid) values (DEFAULT,'approver') returning tkey"/>
+        <property name="namespace" value="approver"/>
+       <property name="nextActivity" ref="CreateApprovalTask"/>
+    </bean>
+	
+    <bean id="CreateApprovalTask" class="org.oscm.app.connector.activity.DatabaseWriter">
+        <property name="configuration">
+            <props>
+                <prop key="url">${database.url}</prop>
+                <prop key="driver">${database.driver}</prop>
+                <prop key="username">${database.username}</prop>
+                <prop key="password">${database.password}</prop>
+            </props>
+        </property>
+        <property name="statement" value="insert into task (tkey,triggerkey,triggername,orgid,orgname,requestinguser,description,comment,created,status_tkey,approver_tkey) values (DEFAULT,$(ctmg_trigger_key),'$(ctmg_trigger_name)','$(organization.id)','$(organization.name)','$(user.userid)','$(task.description)','',current_timestamp,1,$(approver.tkey))"/>
+   </bean>
+	
+</beans>

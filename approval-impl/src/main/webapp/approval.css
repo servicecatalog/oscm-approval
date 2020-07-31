@@ -1,0 +1,328 @@
+/* TABLE */
+
+
+table {
+   border-spacing: 0px;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.hover {
+    background-color: #E5EBF1;
+    color: blue;
+}
+
+.selected {
+    background-color: #475FBF;
+    color: white;
+}
+
+
+/* DIALOG START */
+
+.ui-dialog {
+	overflow: hidden;
+	position: absolute;
+	top: 0;
+	left: 0;
+	padding: .2em;
+	outline: 0;
+}
+.ui-dialog .ui-dialog-titlebar {
+	padding: .4em 1em;
+	position: relative;
+	height: 20px!important;
+}
+.ui-dialog .ui-dialog-title {
+	float: left;
+	margin: .1em 0;
+	white-space: nowrap;
+	width: 90%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.ui-dialog .ui-dialog-titlebar-close {
+	position: absolute;
+	right: .3em;
+	top: 50%;
+	width: 20px;
+	margin: -10px 0 0 0;
+	padding: 1px;
+	height: 20px;
+}
+.ui-dialog .ui-dialog-content {
+	position: relative;
+	border: 0;
+	padding: .5em 1em;
+	background: #ffffff;
+	overflow: hidden;
+}
+.ui-dialog .ui-dialog-buttonpane {
+	text-align: left;
+	border-width: 1px 0 0 0;
+	background-image: none;
+	margin-top: .5em;
+	padding: .3em 1em .5em .4em;
+	height: 30px!important;
+}
+.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset {
+	float: right;
+}
+.ui-dialog .ui-dialog-buttonpane button {
+	margin: .5em .4em .5em 0;
+	cursor: pointer;
+}
+.ui-dialog .ui-resizable-se {
+	width: 12px;
+	height: 12px;
+	right: -5px;
+	bottom: -5px;
+	background-position: 16px 16px;
+}
+.ui-draggable .ui-dialog-titlebar {
+	cursor: move;
+}
+.no-close .ui-dialog-titlebar-close {
+display: none;
+}
+
+.ui-widget-overlay {
+	background: #aaaaaa url(img/transparentPixel.png) 50% 50% repeat-x;
+	opacity: .3;
+	filter: Alpha(Opacity=30);
+	position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+}
+
+
+.ui-widget-content
+{
+    background: #ffffff;
+	border:none;
+    color: #222222;
+}
+
+.ui-widget-header {
+    background: #919191;
+    border: 0;
+    color: #f1f0ef;
+    font-weight: normal;
+}
+
+/* DIALOG END */
+
+html, body
+{
+  height: 100%;
+  font-family: "Segoe UI",helvetica,roboto,sans-serif;
+}
+
+
+html{
+  height: 100%; 
+  width: 100%; 
+  margin: 0; 
+  padding: 0; 
+  overflow: hidden;
+} 
+ 
+body {color: #232323;background-color: #f1f0ef;}
+
+.wrapper{
+  -webkit-animation: fadeIn 0.3s;
+  animation: fadeIn 0.3s;
+}
+
+body, textarea, input, select, a, span {
+font-family: "Segoe UI",helvetica,roboto,sans-serif;
+font-size: 14px;
+font-weight:normal;
+} 
+menu, ol, ul {padding: 0 0 0 40px;}
+dl, menu, ol, ul {margin: 1em 0;}
+select option {background: #EEE!important;}
+
+
+h4{
+font-size:18px;
+border-bottom: 1px solid #ddada9;
+margin-bottom:10px;
+}
+.block2{
+position: absolute; 
+display: inline-block; 
+visibility: visible;
+margin-right:20px;
+box-sizing: border-box;
+}
+.block{
+position: relative; 
+z-index:0;
+padding-left:10px; 
+background-color: #ddd; 
+display: inline-block; 
+visibility: visible;
+min-height:300px;
+
+box-shadow: 0 0 5px 2px #ddd;
+-webkit-box-shadow: 0 0 5px 2px #ddd;
+-moz-box-shadow: 0 0 5px 2px #ddd;
+-o-box-shadow: 0 0 5px 2px #ddd;
+background: #fff;
+border: 1px solid #d8d8d8;
+padding: 0;
+margin: 20px 20px 20px 19px;
+padding:0 20px;
+box-sizing: border-box;
+-moz-box-sizing: border-box;
+}
+.footer{
+position: absolute; 
+background-color:#ffffff; 
+margin: 0px; 
+top: auto; 
+bottom: 0px; 
+left: 0px; 
+right: 0px; 
+width:210px;
+min-width: 210px;
+height: 25px; 
+display: block; 
+visibility: visible;
+}
+
+.footer a:link {color:#232323;}
+.footer a:visited {color:#232323;}
+.footer a:hover {color:#232323;}
+.footer a:active {color:#232323;}
+
+input[readonly] {
+    border: none;
+    pointer-events: none;
+}
+
+
+.buttonPanel a {
+background-image: none;
+border: medium none;
+border-radius: 5px 5px 5px 5px;
+color: white;
+text-decoration: none;
+height: 34px;
+line-height: 34px;
+max-height: 34px;
+overflow: hidden;
+text-overflow: ellipsis;
+white-space: nowrap;
+font-family: "Segoe UI", Roboto, "Droid Sans", "Meiryo UI", Helvetica, sans-serif;
+font-size: 14px;
+font-weight: 700;
+background: #707070;
+background: linear-gradient(to bottom, #707070 0%,#444444 100%);
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#707070', endColorstr='#444444',GradientType=0 );
+}
+.buttonPanel a:hover {
+background: linear-gradient(to bottom, #707070 0%,#232323 100%);
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#707070', endColorstr='#232323',GradientType=0 );
+
+}
+.button{padding: 5px 10px;}
+
+.buttonImg {
+width: 16px;
+height: 15px;
+line-height: 14px;
+vertical-align: inherit;
+border: 0!important;
+display: none;
+margin: 0 0px -2px 0px;
+background: url(img/glyphicons-halflings-white.png) 0 0 no-repeat;
+display: inline-block;
+zoom: 1;
+}
+#task_table .buttonImg {
+background: url(img/glyphicons-halflings.png) 0 0 no-repeat;
+}
+#task_table .selected .buttonImg {
+background: url(img/glyphicons-halflings-white.png) 0 0 no-repeat;
+}
+
+.buttonImg.waiting {
+background-position: -46px -25px!important;
+}
+.buttonImg.timout {
+background-position: -285px 0!important;
+}
+.buttonImg.failed {
+background-position: -285px 0!important;
+}
+.buttonImg.save {
+background-position: -285px 0!important;
+}
+.buttonImg.delete {
+background-position: -454px 0!important;
+}
+.buttonImg.approve {
+background-position: -93px -145px!important;
+}
+.buttonImg.reject {
+background-position: -116px -144px!important;
+}
+.buttonImg.refresh {
+background-position: -236px -24px!important;
+}
+.buttonImg.details {
+background-position: -118px -97px!important;
+}
+.buttonImg.grant_clearance {
+background-position: -91px -144px!important;
+}
+.buttonImg.filter {
+background-position: -402px -144px!important;
+}
+
+.button img {
+padding: 0px 3px 0px;
+margin: -2px 0px -2px 5px;
+height: 14px;
+
+}
+.button span {
+padding: 0px 12px 0px 4px;
+text-align: center;
+}
+
+.buttonDisabled span {
+padding: 5px 10px;
+text-align: center;
+}
+.buttonDisabled span {
+box-shadow: 1px 1px 2px 1px transparent inset;
+-webkit-box-shadow: 1px 1px 2px 1px transparent inset;
+-moz-box-shadow: 1px 1px 2px 1px transparent inset;
+-o-box-shadow: 1px 1px 2px 1px transparent inset;
+background: #e5e5e5;
+cursor: default;
+text-decoration: none;
+height: 30px;
+line-height: 30px;
+max-height: 30px;
+overflow: hidden;
+text-overflow: ellipsis;
+white-space: nowrap;
+font-family: "Segoe UI", Roboto, "Droid Sans", "Meiryo UI", Helvetica, sans-serif;
+font-size: 15px;
+-moz-border-radius: 5px;
+-webkit-border-radius: 5px;
+border-radius: 5px;
+border: none;
+color: #f3f3f3;
+font-weight: 700;
+}
+
+.scrollingtable {
+  overflow: auto !important;
+  line-height: 20px;
+  padding: 5px 5px 5px 5px;
+}

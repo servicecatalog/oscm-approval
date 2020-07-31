@@ -1,0 +1,23 @@
+# IntelliJ
+*.iml
+*.iws
+*.ipr
+.idea
+out/
+
+# Eclipse
+.settings
+.classpath
+.project
+build/
+bin/
+
+# Vim
+*~
+*.swp
+
+# Windows
+desktop.ini
+
+# Maven
+target/

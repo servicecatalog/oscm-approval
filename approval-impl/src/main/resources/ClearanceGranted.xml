@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation="
+       http://www.springframework.org/schema/beans 
+       spring-beans-4.1.xsd
+       http://www.springframework.org/schema/context
+       spring-context-4.1.xsd">
+
+  <context:property-placeholder location="classpath:beans.properties" />
+
+  <bean id="Process" class="org.oscm.app.connector.framework.Process">
+    <property name="activity" ref="ContinueManualStep" />
+  </bean>
+
+   <bean id="ContinueManualStep" class="org.oscm.app.connector.activity.HTTPClient">
+       <property name="url" value="${ctmg.app.url}/notify?sid=$(instanceid)&amp;cid=ess.vmware&amp;command=finish"/>
+       <property name="username" value="$(admin.userid)"/>
+       <property name="password" value="$(admin.password)"/>
+       <property name="nextActivity" ref="UpdateTaskStatus"/>
+   </bean>
+  
+  <bean id="UpdateTaskStatus" class="org.oscm.app.connector.activity.DatabaseWriter">
+     <property name="configuration">
+        <props>
+          <prop key="url">${database.url}</prop>
+          <prop key="driver">${database.driver}</prop>
+          <prop key="username">${database.username}</prop>
+          <prop key="password">${database.password}</prop>
+        </props>
+     </property>
+     <property name="statement" value="update task set status_tkey = 8, comment = '$(task.comment)' where tkey = $(task.tkey)"/>
+  </bean>
+  
+</beans>
