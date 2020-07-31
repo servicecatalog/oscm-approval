@@ -4,9 +4,10 @@ OSCM Approval Tool (WIP)
 
 ## Build ##
 Run maven on the parent pom
-mvn clean package
 
-Results in <projectroot>/target/approval-impl-0.0.2-SNAPSHOT.war 
+```mvn clean package```
+
+See result <projectroot>/target/approval-impl-0.0.2-SNAPSHOT.war 
 
 ## Prepare ##
 Specify where OSCM installation folder /docker is contained 
@@ -28,7 +29,7 @@ psql -h oscm-db -p 5432 -U postgres -f /initapproval/approval_init.sql
 psql -h oscm-db -p 5432 -U approvaluser -W -d approvaldb -f /initapproval/upd_postgresql_01_01_01.sql
 ```
 
-## 
+## Copy Artifacts 
 Copy the war file and following resources into the app container
 ```
 docker cp tomee.xml oscm-app:/opt/apache-tomee/conf/
@@ -48,14 +49,14 @@ See logs, e.g. ApprovalNotificationService is well deployed, e.g.
 
 ## Test it
 Login to `https://<yourhost>:8881/approval/`
-	user: approval
-	password: approval
+	user: approver
+	password: approver
 OK
 ```
 https://<yourhost>:8881/approval/ApprovalNotificationService?wsdl
 ```
 
-### Now insert DB configsettings ### 
+### APP Configuration Settings ### 
 In order to configure the Sample Supplier 'supplier' of '959c9bf7' as user supplier the service to be triggered
 ```
 docker run -it --name seconddb --rm --network docker_default -v $WORKSPACE/docker/init:/initapproval artifactory.intern.est.fujitsu.com:5003/oscmdocker/oscm-db bash
@@ -64,7 +65,7 @@ psql -h oscm-db -p 5432 -U postgres -d bssapp -c "INSERT INTO bssappuser.configu
 psql -h oscm-db -p 5432 -U postgres -d bssapp -c "INSERT INTO bssappuser.configurationsetting (controllerid, settingkey, settingvalue) VALUES ('ess.vmware', 'USERPWD_959c9bf7', '_crypt:supplier');"
 ```
 
-### Now insert your APPROVAL_URL with your FQDN ### 
+### Your APPROVAL_URL ### 
 (!!! edit at the end of following command !!!) 
 ```
 psql -h oscm-db -p 5432 -U postgres -d bssapp -c "INSERT INTO bssappuser.configurationsetting (controllerid, settingkey, settingvalue) VALUES ('ess.vmware', 'APPROVAL_URL', 'https://<yourhost>:8881/approval/');"
@@ -79,13 +80,21 @@ Display as: Approval Trigger
 
 NOTE: Due to a current bug https://github.com/servicecatalog/oscm/issues/1041 trigger definitions can be changed, so take care (workaround is to change it directly in the database, eg. pgAdmin)
 
-
 	Type: Subscribe to Service
 	Target type: Web Service
 	Target URL: http://oscm-app:8880/approval/ApprovalNotificationService?wsdl
 	Suspend: Yes (check the checkbox!)
 
-### Subscribe a service
+### Subscribe a Service
 1. If not done, deploy the Sample Controller in the oscm-app container and create a respective service.
 2. Subscribe the service -> Subscription is suspended with trigger message 
-3. Login again as manager "approval" to `https://<yourhost>:8881/approval/` 
+3. Login again as manager "approver" to `https://<yourhost>:8881/approval/`
+4. Check task list appears and select the newly created
+5. Edit, give a comment and relejet or accept
+6. Go back to the subscription in the OSCM marketplace and see the result status
+
+# Trouble Shooting Hints
+1. Use docker logs -f oscm-app
+2. Connect approval DB with PGAdmin and check the created data, esp. User Ids.
+
+Have fun!
