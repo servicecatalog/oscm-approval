@@ -16,8 +16,9 @@ export WORKSPACE=<YOUR OSCM HOME>
 ```
 Download the [binary package](https://github.com/servicecatalog/oscm-approval/files/5008996/ApprovalTool.zip) and extract it into $WORKSPACE/docker (where you have installed OSCM)
 ```
-cp -R . $WORKSPACE/docker
 cd $WORKSPACE/docker
+wget https://github.com/servicecatalog/oscm-approval/files/5008996/ApprovalTool.zip
+unzip -o ApprovalTool.zip 
 ```
 
 ## Init DB
