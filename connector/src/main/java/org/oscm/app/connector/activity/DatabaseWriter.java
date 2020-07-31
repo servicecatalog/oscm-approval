@@ -179,7 +179,7 @@ public class DatabaseWriter extends Activity {
             throw new ProcessException(
                     "beanName: " + getBeanName()
                             + " Failed to execute statement " + statement,
-                    ProcessException.ERROR);
+                    ProcessException.ERROR, e);
         } finally {
             try {
                 if (stmt != null) {
