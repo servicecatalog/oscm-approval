@@ -1,5 +1,9 @@
-package org.oscm.app.connector.activity;
 
+/********************************************************************************
+ *
+ * Copyright FUJITSU LIMITED 2020
+ *
+ *******************************************************************************/package org.oscm.app.connector.activity;
 import java.util.Date;
 import java.util.Map;
 import java.util.StringTokenizer;
