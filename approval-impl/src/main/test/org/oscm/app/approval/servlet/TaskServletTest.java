@@ -42,9 +42,11 @@ public class TaskServletTest {
   @Mock AppDataService ads;
   @Mock Task task;
   @Spy TaskServlet taskServlet;
+  private String[] PATHS;
 
   @Before
   public void setUp() throws Exception {
+    PATHS = new String[] {"https://www.fujitsu.com/de/products/software/enterprise-catalogmgr/"};
     MockitoAnnotations.initMocks(this);
     doReturn(ads).when(taskServlet).createAppDataService();
     doReturn(task).when(taskServlet).createTask();
@@ -59,15 +61,14 @@ public class TaskServletTest {
   }
 
   @Test
-  public void TestDoService_Get_TaskList() throws Exception {
+  public void TestDoService_get_taskList() throws Exception {
 
     // given
     String expected =
         "[{\"tkey\":null,\"triggername\":null,\"orgid\":\"orgid\",\"orgname\":null,\"requestinguser\":\"requestinguser\",\"status\":\"status\",\"status_tkey\":\"status_tkey\"}]";
-    String[] paths = {"https://www.fujitsu.com/de/products/software/enterprise-catalogmgr/"};
     Map<String, String[]> paramMap = new HashMap<String, String[]>();
     paramMap.put("cmd", new String[] {"tasklist"});
-    ServiceParams params = new ServiceParams(ServiceParams.MODE.GET, paths, paramMap);
+    ServiceParams params = new ServiceParams(ServiceParams.MODE.GET, PATHS, paramMap);
     List<Task> tasks = new ArrayList<Task>();
     tasks.add(createTask());
     doReturn(tasks)
@@ -81,15 +82,14 @@ public class TaskServletTest {
   }
 
   @Test
-  public void TestDoService_Get_Open() throws Exception {
+  public void TestDoService_get_open() throws Exception {
 
     // given
     String expected =
         "{\"comment\":\"commend\",\"created\":\"created\",\"orgid\":\"orgid\",\"orgname\":null,\"requestinguser\":\"requestinguser\",\"description\":\"description\",\"status\":\"status\"}";
-    String[] paths = {"https://www.fujitsu.com/de/products/software/enterprise-catalogmgr/"};
     Map<String, String[]> paramMap = new HashMap<String, String[]>();
     paramMap.put("cmd", new String[] {"open"});
-    ServiceParams params = new ServiceParams(ServiceParams.MODE.GET, paths, paramMap);
+    ServiceParams params = new ServiceParams(ServiceParams.MODE.GET, PATHS, paramMap);
     doReturn(createTask()).when(das).getTask(anyString());
     // when
     ServiceResult result = taskServlet.doService(params, getTestReader(), "id");
@@ -98,15 +98,14 @@ public class TaskServletTest {
   }
 
   @Test
-  public void TestDoService_Get_Details() throws Exception {
+  public void TestDoService_get_details() throws Exception {
 
     // given
     String expected =
         "{\"comment\":\"commend\",\"created\":\"created\",\"orgid\":\"orgid\",\"orgname\":null,\"requestinguser\":\"requestinguser\",\"description\":\"description\",\"status\":\"status\"}";
-    String[] paths = {"https://www.fujitsu.com/de/products/software/enterprise-catalogmgr/"};
     Map<String, String[]> paramMap = new HashMap<String, String[]>();
     paramMap.put("cmd", new String[] {"details"});
-    ServiceParams params = new ServiceParams(ServiceParams.MODE.GET, paths, paramMap);
+    ServiceParams params = new ServiceParams(ServiceParams.MODE.GET, PATHS, paramMap);
     doReturn(createTask()).when(das).getTask(anyString());
     // when
     ServiceResult result = taskServlet.doService(params, getTestReader(), "id");
@@ -118,10 +117,9 @@ public class TaskServletTest {
   public void TestDoService_get_delete() throws Exception {
 
     // given
-    String[] paths = {"https://www.fujitsu.com/de/products/software/enterprise-catalogmgr/"};
     Map<String, String[]> paramMap = new HashMap<String, String[]>();
     paramMap.put("cmd", new String[] {"delete"});
-    ServiceParams params = new ServiceParams(ServiceParams.MODE.GET, paths, paramMap);
+    ServiceParams params = new ServiceParams(ServiceParams.MODE.GET, PATHS, paramMap);
     doReturn(createTask()).when(das).getTask(anyString());
     // when
     taskServlet.doService(params, getTestReader(), "id");
@@ -134,10 +132,9 @@ public class TaskServletTest {
   public void TestDoService_post_save() throws Exception {
 
     // given
-    String[] paths = {"https://www.fujitsu.com/de/products/software/enterprise-catalogmgr/"};
     Map<String, String[]> paramMap = new HashMap<String, String[]>();
     paramMap.put("cmd", new String[] {"save"});
-    ServiceParams params = new ServiceParams(ServiceParams.MODE.POST, paths, paramMap);
+    ServiceParams params = new ServiceParams(ServiceParams.MODE.POST, PATHS, paramMap);
     doReturn(createTask()).when(das).getTask(anyString());
     doReturn(createResultData()).when(taskServlet).createResultData(anyString(), any());
 
@@ -151,10 +148,9 @@ public class TaskServletTest {
   public void TestDoService_post_approve() throws Exception {
 
     // given
-    String[] paths = {"https://www.fujitsu.com/de/products/software/enterprise-catalogmgr/"};
     Map<String, String[]> paramMap = new HashMap<String, String[]>();
     paramMap.put("cmd", new String[] {"approve"});
-    ServiceParams params = new ServiceParams(ServiceParams.MODE.POST, paths, paramMap);
+    ServiceParams params = new ServiceParams(ServiceParams.MODE.POST, PATHS, paramMap);
     doReturn(createTask()).when(das).getTask(anyString());
     doReturn(createResultData()).when(taskServlet).createResultData(anyString(), any());
     doNothing().when(taskServlet).notifyCTMGTrigger(anyString(), anyBoolean());
@@ -169,10 +165,9 @@ public class TaskServletTest {
   public void TestDoService_post_reject() throws Exception {
 
     // given
-    String[] paths = {"https://www.fujitsu.com/de/products/software/enterprise-catalogmgr/"};
     Map<String, String[]> paramMap = new HashMap<String, String[]>();
     paramMap.put("cmd", new String[] {"reject"});
-    ServiceParams params = new ServiceParams(ServiceParams.MODE.POST, paths, paramMap);
+    ServiceParams params = new ServiceParams(ServiceParams.MODE.POST, PATHS, paramMap);
     doReturn(createTask()).when(das).getTask(anyString());
     doReturn(createResultData()).when(taskServlet).createResultData(anyString(), any());
     doNothing().when(taskServlet).notifyCTMGTrigger(anyString(), anyBoolean());
@@ -187,10 +182,9 @@ public class TaskServletTest {
   public void TestDoService_post_start_process() throws Exception {
 
     // given
-    String[] paths = {"https://www.fujitsu.com/de/products/software/enterprise-catalogmgr/"};
     Map<String, String[]> paramMap = new HashMap<String, String[]>();
     paramMap.put("cmd", new String[] {"start_process"});
-    ServiceParams params = new ServiceParams(ServiceParams.MODE.POST, paths, paramMap);
+    ServiceParams params = new ServiceParams(ServiceParams.MODE.POST, PATHS, paramMap);
     doReturn(createTask()).when(das).getTask(anyString());
     doReturn(createResultData()).when(taskServlet).createResultData(anyString(), any());
     doReturn(createControllerSettings()).when(ads).loadControllerSettings();
@@ -207,10 +201,9 @@ public class TaskServletTest {
   public void TestDoService_post_grant_clearance() throws Exception {
 
     // given
-    String[] paths = {"https://www.fujitsu.com/de/products/software/enterprise-catalogmgr/"};
     Map<String, String[]> paramMap = new HashMap<String, String[]>();
     paramMap.put("cmd", new String[] {"grant_clearance"});
-    ServiceParams params = new ServiceParams(ServiceParams.MODE.POST, paths, paramMap);
+    ServiceParams params = new ServiceParams(ServiceParams.MODE.POST, PATHS, paramMap);
     doReturn(createResultData()).when(taskServlet).createResultData(anyString(), any());
     doReturn(createControllerSettings()).when(ads).loadControllerSettings();
     doReturn(createControllerSettings()).when(task).getTriggerProcessData();
