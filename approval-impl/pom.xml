@@ -27,6 +27,11 @@
 
   <dependencies>
     <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>3.1.0</version>
+    </dependency>
+    <dependency>
       <groupId>org.oscm.app</groupId>
       <artifactId>connector</artifactId>
       <version>0.0.2-SNAPSHOT</version>
