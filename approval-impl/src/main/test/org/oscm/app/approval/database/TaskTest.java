@@ -97,7 +97,6 @@ public class TaskTest {
     ctmg_service.price = initPriceModel();
   }
 
-  /** @return */
   private PriceModel initPriceModel() {
     PriceModel pr = new PriceModel();
     pr.freePeriod = "period";
@@ -108,7 +107,6 @@ public class TaskTest {
     return pr;
   }
 
-  /** @return */
   private Seller initSeller() {
     Seller seller = new Seller();
     seller.id = "1";
