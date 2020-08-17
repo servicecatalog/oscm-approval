@@ -133,7 +133,6 @@ public class DataAccessServiceTest {
   @Test
   public void testGetTaskList() throws Exception {
     // given
-    doReturn(Long.valueOf(1)).when(process).getKey();
     doReturn(1).when(rs).getInt("status_tkey");
     doReturn("trigger").when(rs).getString("triggername");
     doReturn("orgid").when(rs).getString("orgid");
@@ -162,8 +161,6 @@ public class DataAccessServiceTest {
     Map<String, String> data = new HashMap<String, String>();
     data.put("user.locale", "en");
 
-    doReturn(1L).when(process).getKey();
-    doReturn(1).when(rs).getInt("status_tkey");
     doReturn("trigger").when(rs).getString("triggername");
     doReturn("orgid").when(rs).getString("orgid");
     doReturn("orgname").when(rs).getString("orgname");
