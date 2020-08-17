@@ -17,9 +17,10 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.oscm.app.approval.json.Organization;
 import org.oscm.app.approval.json.PriceModel;
 import org.oscm.app.approval.json.Seller;
@@ -29,18 +30,18 @@ import org.oscm.app.approval.json.TriggerProcessData;
 import org.oscm.app.approval.json.User;
 
 /** @author worf */
+@RunWith(MockitoJUnitRunner.class)
 public class TaskTest {
   @Mock TriggerProcessData processData;
-  User ctmg_user;
-  Service ctmg_service;
-  Organization ctmg_organization;
-  Subscription ctmg_subscription;
+  User user;
+  Service service;
+  Organization organization;
+  Subscription subscription;
 
   @Spy Task task;
 
   @Before
-  public void setUp() throws Exception {
-    MockitoAnnotations.initMocks(this);
+  public void setUp() {
 
     initSpy();
     initUser();
@@ -49,21 +50,21 @@ public class TaskTest {
     initSubscription();
 
     doReturn(processData).when(task).mapDescriptionToTriggerProcessData();
-    processData.ctmg_user = ctmg_user;
-    processData.ctmg_organization = ctmg_organization;
-    processData.ctmg_subscription = ctmg_subscription;
+    processData.ctmg_user = user;
+    processData.ctmg_organization = organization;
+    processData.ctmg_subscription = subscription;
   }
 
   private void initSubscription() {
-    ctmg_subscription = new Subscription();
-    ctmg_subscription.id = "1";
+    subscription = new Subscription();
+    subscription.id = "1";
   }
 
   private void initOrg() {
-    ctmg_organization = new Organization();
-    ctmg_organization.address = "home";
-    ctmg_organization.id = "1";
-    ctmg_organization.name = "org";
+    organization = new Organization();
+    organization.address = "home";
+    organization.id = "1";
+    organization.name = "org";
   }
 
   private void initSpy() {
@@ -75,26 +76,26 @@ public class TaskTest {
   }
 
   private void initUser() {
-    ctmg_user = new User();
-    ctmg_user.additional_name = "second name";
-    ctmg_user.address = "home";
-    ctmg_user.email = "test@fujitsu.com";
-    ctmg_user.key = "1";
-    ctmg_user.lastname = "lastname";
-    ctmg_user.locale = "en";
-    ctmg_user.orgId = "orgId";
-    ctmg_user.phone = "123456";
-    ctmg_user.salutation = "Mr";
-    ctmg_user.userid = "userId";
+    user = new User();
+    user.additional_name = "second name";
+    user.address = "home";
+    user.email = "test@fujitsu.com";
+    user.key = "1";
+    user.lastname = "lastname";
+    user.locale = "en";
+    user.orgId = "orgId";
+    user.phone = "123456";
+    user.salutation = "Mr";
+    user.userid = "userId";
   }
 
   private void initService() {
-    ctmg_service = new Service();
-    ctmg_service.id = "1";
-    ctmg_service.name = "service";
-    ctmg_service.technicalId = "id";
-    ctmg_service.seller = initSeller();
-    ctmg_service.price = initPriceModel();
+    service = new Service();
+    service.id = "1";
+    service.name = "service";
+    service.technicalId = "id";
+    service.seller = initSeller();
+    service.price = initPriceModel();
   }
 
   private PriceModel initPriceModel() {
@@ -128,7 +129,7 @@ public class TaskTest {
   @Test
   public void testGetTriggerProcessData_ctmg_serviceNotNull() {
     // given
-    processData.ctmg_service = ctmg_service;
+    processData.ctmg_service = service;
 
     // when
     Map<String, String> result = task.getTriggerProcessData();

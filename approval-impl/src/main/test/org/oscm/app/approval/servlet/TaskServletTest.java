@@ -28,26 +28,27 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.oscm.app.approval.database.DataAccessService;
 import org.oscm.app.approval.database.Task;
 import org.oscm.app.dataaccess.AppDataService;
 
 /** @author worf */
+@RunWith(MockitoJUnitRunner.class)
 public class TaskServletTest {
 
   @Mock DataAccessService das;
   @Mock AppDataService ads;
   @Mock Task task;
   @Spy TaskServlet taskServlet;
-  private String[] PATHS;
+  private final String[] PATHS =
+      new String[] {"https://www.fujitsu.com/de/products/software/enterprise-catalogmgr/"};
 
   @Before
   public void setUp() throws Exception {
-    PATHS = new String[] {"https://www.fujitsu.com/de/products/software/enterprise-catalogmgr/"};
-    MockitoAnnotations.initMocks(this);
     doReturn(ads).when(taskServlet).createAppDataService();
     doReturn(task).when(taskServlet).createTask();
     doReturn(task).when(das).getTask(anyString());
@@ -120,7 +121,6 @@ public class TaskServletTest {
     Map<String, String[]> paramMap = new HashMap<String, String[]>();
     paramMap.put("cmd", new String[] {"delete"});
     ServiceParams params = new ServiceParams(ServiceParams.MODE.GET, PATHS, paramMap);
-    doReturn(createTask()).when(das).getTask(anyString());
     // when
     taskServlet.doService(params, getTestReader(), "id");
     // then
@@ -135,7 +135,6 @@ public class TaskServletTest {
     Map<String, String[]> paramMap = new HashMap<String, String[]>();
     paramMap.put("cmd", new String[] {"save"});
     ServiceParams params = new ServiceParams(ServiceParams.MODE.POST, PATHS, paramMap);
-    doReturn(createTask()).when(das).getTask(anyString());
     doReturn(createResultData()).when(taskServlet).createResultData(anyString(), any());
 
     // when
@@ -151,7 +150,6 @@ public class TaskServletTest {
     Map<String, String[]> paramMap = new HashMap<String, String[]>();
     paramMap.put("cmd", new String[] {"approve"});
     ServiceParams params = new ServiceParams(ServiceParams.MODE.POST, PATHS, paramMap);
-    doReturn(createTask()).when(das).getTask(anyString());
     doReturn(createResultData()).when(taskServlet).createResultData(anyString(), any());
     doNothing().when(taskServlet).notifyCTMGTrigger(anyString(), anyBoolean());
 
@@ -168,7 +166,6 @@ public class TaskServletTest {
     Map<String, String[]> paramMap = new HashMap<String, String[]>();
     paramMap.put("cmd", new String[] {"reject"});
     ServiceParams params = new ServiceParams(ServiceParams.MODE.POST, PATHS, paramMap);
-    doReturn(createTask()).when(das).getTask(anyString());
     doReturn(createResultData()).when(taskServlet).createResultData(anyString(), any());
     doNothing().when(taskServlet).notifyCTMGTrigger(anyString(), anyBoolean());
 
@@ -185,8 +182,6 @@ public class TaskServletTest {
     Map<String, String[]> paramMap = new HashMap<String, String[]>();
     paramMap.put("cmd", new String[] {"start_process"});
     ServiceParams params = new ServiceParams(ServiceParams.MODE.POST, PATHS, paramMap);
-    doReturn(createTask()).when(das).getTask(anyString());
-    doReturn(createResultData()).when(taskServlet).createResultData(anyString(), any());
     doReturn(createControllerSettings()).when(ads).loadControllerSettings();
     doReturn(createControllerSettings()).when(task).getTriggerProcessData();
     doNothing().when(taskServlet).excecuteProcess(anyString(), any());
@@ -205,7 +200,6 @@ public class TaskServletTest {
     paramMap.put("cmd", new String[] {"grant_clearance"});
     ServiceParams params = new ServiceParams(ServiceParams.MODE.POST, PATHS, paramMap);
     doReturn(createResultData()).when(taskServlet).createResultData(anyString(), any());
-    doReturn(createControllerSettings()).when(ads).loadControllerSettings();
     doReturn(createControllerSettings()).when(task).getTriggerProcessData();
     doNothing().when(taskServlet).excecuteProcess(anyString(), any());
 

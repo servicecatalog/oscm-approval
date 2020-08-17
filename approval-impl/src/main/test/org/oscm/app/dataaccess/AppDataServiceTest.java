@@ -23,11 +23,13 @@ import javax.sql.DataSource;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
+import org.mockito.junit.MockitoJUnitRunner;
 
 /** @author worf */
+@RunWith(MockitoJUnitRunner.class)
 public class AppDataServiceTest {
 
   @Mock DataSource ds;
@@ -39,7 +41,6 @@ public class AppDataServiceTest {
 
   @Before
   public void setUp() throws Exception {
-    MockitoAnnotations.initMocks(this);
 
     doReturn(ds).when(dataService).findDatasource();
     doReturn(con).when(ds).getConnection();
@@ -88,7 +89,6 @@ public class AppDataServiceTest {
   public void testLoadBesWebServiceWsdl_Exception() throws Exception {
     // given
     when(rs.next()).thenReturn(false);
-    doReturn(null).when(rs).getString("instancename");
 
     // when
     dataService.loadBesWebServiceWsdl();
@@ -111,7 +111,6 @@ public class AppDataServiceTest {
   public void testLoadBesWebServiceUrl_Exception() throws Exception {
     // given
     when(rs.next()).thenReturn(false);
-    doReturn(null).when(rs).getString("instancename");
 
     // when
     dataService.loadBesWebServiceUrl();
@@ -189,7 +188,7 @@ public class AppDataServiceTest {
     long result = dataService.loadUserKey("orgId");
 
     // then
-    assertEquals((long) Long.valueOf(expected), result);
+    assertEquals(Long.parseLong(expected), result);
   }
 
   @Test(expected = RuntimeException.class)
@@ -280,7 +279,7 @@ public class AppDataServiceTest {
     when(rs.next()).thenReturn(false);
 
     // when
-    dataService.loadUserKey("orgId");
+    dataService.loadControllerOwnerUserKey();
   }
 
   @Test

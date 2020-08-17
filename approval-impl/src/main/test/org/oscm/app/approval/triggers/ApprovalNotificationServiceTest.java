@@ -22,11 +22,12 @@ import java.util.Properties;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
-import org.oscm.app.dataaccess.AppDataService;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.oscm.notification.vo.VONotification;
+import org.oscm.types.enumtypes.UserRoleType;
 import org.oscm.vo.VOOrganization;
 import org.oscm.vo.VOOrganizationPaymentConfiguration;
 import org.oscm.vo.VOParameter;
@@ -43,16 +44,15 @@ import org.oscm.vo.VOUser;
 import org.oscm.vo.VOUserDetails;
 
 /** @author worf */
+@RunWith(MockitoJUnitRunner.class)
 public class ApprovalNotificationServiceTest {
 
   @Spy ApprovalNotificationService service;
-  @Mock AppDataService ads;
   @Mock ApprovalTask task;
   VOTriggerProcess process;
 
   @Before
   public void setUp() throws Exception {
-    MockitoAnnotations.initMocks(this);
 
     VOUser user = new VOUser();
     user.setOrganizationId("id");
@@ -164,7 +164,9 @@ public class ApprovalNotificationServiceTest {
     org.setOrganizationId("id");
     doReturn(org).when(service).getOrganization(anyString());
     // when
-    service.onRegisterCustomer(process, org, new VOUserDetails(), new Properties());
+    service.onRegisterUserInOwnOrganization(
+        process, new VOUserDetails(), new ArrayList<UserRoleType>(), "");
+
     // then
     verify(task, times(1)).startApprovalProcess();
   }
@@ -240,7 +242,6 @@ public class ApprovalNotificationServiceTest {
     VOSubscriptionDetails details = new VOSubscriptionDetails();
     VOService se = new VOService();
     details.setSubscribedService(se);
-    doReturn(details).when(service).getSubscription(anyString(), anyString());
     // when
     service.onSubscribeToProduct(
         process, details, new VOService(), new ArrayList<VOUsageLicense>());
@@ -255,7 +256,6 @@ public class ApprovalNotificationServiceTest {
     VOSubscriptionDetails details = new VOSubscriptionDetails();
     VOService se = new VOService();
     details.setSubscribedService(se);
-    doReturn(details).when(service).getSubscription(anyString(), anyString());
     // when
     service.onSubscriptionCreation(
         process, new VOServiceDetails(), new ArrayList<VOUsageLicense>(), new VONotification());
@@ -316,7 +316,7 @@ public class ApprovalNotificationServiceTest {
   public void testOnCancelAction() throws Exception {
     // given
     // when
-    service.onCancelAction(Long.valueOf(1));
+    service.onCancelAction(1L);
 
     // then
     verify(task, times(1)).startApprovalProcess();

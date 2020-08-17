@@ -11,42 +11,35 @@ package org.oscm.app.approval.servlet;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletOutputStream;
+import java.util.HashMap;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
+import org.mockito.junit.MockitoJUnitRunner;
 
 /** @author worf */
+@RunWith(MockitoJUnitRunner.class)
 public class ServiceBaseTest {
 
   @Mock HttpServletRequest req;
   @Mock HttpServletResponse res;
-  @Mock ServletConfig servletConfig;
-  @Mock ServletOutputStream outputStream;
   @Mock ServiceResult service;
   @Spy ServiceBase base;
 
-  @Before
-  public void setUp() throws Exception {
-    MockitoAnnotations.initMocks(this);
-  }
-
   @SuppressWarnings("deprecation")
   @Test
-  public void TestSplitPath() {
+  public void testSplitPath() {
     // given
     String[] expected = {
       "https:", "www.fujitsu.com", "de", "products", "software", "enterprise-catalogmgr"
@@ -59,7 +52,7 @@ public class ServiceBaseTest {
   }
 
   @Test
-  public void TestGetRequestString_WIthoutPathAndQuery() {
+  public void testGetRequestString_WIthoutPathAndQuery() {
     // give
     when(req.getMethod()).thenReturn("method");
 
@@ -70,7 +63,7 @@ public class ServiceBaseTest {
   }
 
   @Test
-  public void TestGetRequestString_WithoutQuery() {
+  public void testGetRequestString_WithoutQuery() {
     // give
     when(req.getMethod()).thenReturn("method");
     when(req.getPathInfo()).thenReturn("path");
@@ -82,7 +75,7 @@ public class ServiceBaseTest {
   }
 
   @Test
-  public void TestGetRequestString() {
+  public void testGetRequestString() {
     // give
     when(req.getMethod()).thenReturn("method");
     when(req.getPathInfo()).thenReturn("path");
@@ -95,11 +88,12 @@ public class ServiceBaseTest {
   }
 
   @Test
-  public void TestHandleServiceCall() throws Exception {
+  public void testHandleServiceCall() throws Exception {
     // given
-    doReturn(service).when(base).doService(any(), any(), anyString());
+    doReturn(service).when(base).createServiceResult();
     doNothing().when(service).sendResult(any());
     when(req.getMethod()).thenReturn("method");
+    when(req.getParameterMap()).thenReturn(new HashMap<String, String[]>());
     when(req.getPathInfo()).thenReturn("path");
     when(req.getQueryString()).thenReturn("string");
     // when

@@ -34,15 +34,17 @@ import javax.sql.DataSource;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.oscm.vo.VOOrganization;
 import org.oscm.vo.VOTriggerDefinition;
 import org.oscm.vo.VOTriggerProcess;
 import org.oscm.vo.VOUser;
 
 /** @author worf */
+@RunWith(MockitoJUnitRunner.class)
 public class DataAccessServiceTest {
 
   @Mock DataSource ds;
@@ -58,8 +60,6 @@ public class DataAccessServiceTest {
 
   @Before
   public void setUp() throws Exception {
-    MockitoAnnotations.initMocks(this);
-
     doReturn(ds).when(dataService).getDatasource();
     doReturn(con).when(ds).getConnection();
     doReturn(ps).when(con).prepareStatement(anyString());
@@ -162,7 +162,7 @@ public class DataAccessServiceTest {
     Map<String, String> data = new HashMap<String, String>();
     data.put("user.locale", "en");
 
-    doReturn(Long.valueOf(1)).when(process).getKey();
+    doReturn(1L).when(process).getKey();
     doReturn(1).when(rs).getInt("status_tkey");
     doReturn("trigger").when(rs).getString("triggername");
     doReturn("orgid").when(rs).getString("orgid");

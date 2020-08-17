@@ -10,8 +10,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <ctmg.version>1.4.3</ctmg.version>
-     <mockito.version>2.26.0</mockito.version>
-     <mockito.junit.version>2.26.0</mockito.junit.version>
+     <mockito.version>3.5.0</mockito.version>
   </properties>
 
   <modules>

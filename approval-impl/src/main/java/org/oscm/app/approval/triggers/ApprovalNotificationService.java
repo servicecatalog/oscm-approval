@@ -46,7 +46,7 @@ import org.slf4j.LoggerFactory;
     endpointInterface = "org.oscm.notification.intf.NotificationService")
 public class ApprovalNotificationService implements NotificationService {
 
-  private static final Logger log = LoggerFactory.getLogger(ApprovalNotificationServiceTest.class);
+  private static final Logger log = LoggerFactory.getLogger(ApprovalNotificationService.class);
 
   @Override
   public void billingPerformed(String xmlBillingData) {

@@ -63,17 +63,21 @@ public abstract class ServiceBase extends HttpServlet {
       ServiceParams params = new ServiceParams(mode, path, req.getParameterMap());
       result = doService(params, req.getReader(), req.getUserPrincipal().getName());
       if (result == null) {
-        result = new ServiceResult();
+        result = createServiceResult();
         result.setStatus(HttpServletResponse.SC_BAD_REQUEST);
       }
 
     } catch (Throwable t) {
-      result = new ServiceResult();
+      result = createServiceResult();
       result.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, t.getMessage());
     }
 
     // And return result back to client
     result.sendResult(resp);
+  }
+
+  protected ServiceResult createServiceResult() {
+    return new ServiceResult();
   }
 
   /** Main method */

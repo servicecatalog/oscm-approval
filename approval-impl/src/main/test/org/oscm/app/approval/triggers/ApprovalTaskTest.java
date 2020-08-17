@@ -10,17 +10,15 @@
 package org.oscm.app.approval.triggers;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.oscm.app.dataaccess.AppDataService;
 import org.oscm.vo.VOPriceModel;
 import org.oscm.vo.VOService;
@@ -29,6 +27,7 @@ import org.oscm.vo.VOTriggerProcess;
 import org.oscm.vo.VOUser;
 
 /** @author worf */
+@RunWith(MockitoJUnitRunner.class)
 public class ApprovalTaskTest {
 
   @Mock AppDataService das;
@@ -37,18 +36,15 @@ public class ApprovalTaskTest {
 
   @Before
   public void setUp() {
-    MockitoAnnotations.initMocks(this);
     initProcess();
     initService();
   }
 
-  /** */
   private void initService() {
     service = new VOService();
     service.setPriceModel(initPriceModel());
   }
 
-  /** @return */
   private VOUser initUser() {
     VOUser user = new VOUser();
     user.setOrganizationId("id");
@@ -68,9 +64,7 @@ public class ApprovalTaskTest {
   }
 
   private VOPriceModel initPriceModel() {
-    VOPriceModel pm = new VOPriceModel();
-
-    return pm;
+    return new VOPriceModel();
   }
 
   @Test
@@ -98,8 +92,6 @@ public class ApprovalTaskTest {
     task.process = process;
     task.service = service;
     task.triggerId = trigger;
-    doReturn(das).when(task).createAppDataService();
-    doNothing().when(task).excecuteProcess(anyString(), anyString(), anyString());
     // when
     task.startApprovalProcess();
     // then
@@ -116,8 +108,6 @@ public class ApprovalTaskTest {
     task.service = service;
     task.triggerId = trigger;
     task.isSuspendProcess = true;
-    doReturn(das).when(task).createAppDataService();
-    doNothing().when(task).excecuteProcess(anyString(), anyString(), anyString());
     // when
     task.startApprovalProcess();
     // then
@@ -134,8 +124,6 @@ public class ApprovalTaskTest {
     task.service = service;
     task.triggerId = trigger;
     task.isSuspendProcess = false;
-    doReturn(das).when(task).createAppDataService();
-    doNothing().when(task).excecuteProcess(anyString(), anyString(), anyString());
     // when
     task.startApprovalProcess();
     // then
