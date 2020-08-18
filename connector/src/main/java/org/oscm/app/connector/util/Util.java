@@ -5,20 +5,15 @@
  *******************************************************************************/
 package org.oscm.app.connector.util;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import org.apache.log4j.Logger;
+import java.io.*;
+
 
 public class Util {
 
-    private static Logger logger = Logger.getLogger(Util.getClassStatic());
+    private static Logger logger = LogManager.getLogger(Util.getClassStatic());
 
     private Util() {
     }
@@ -26,12 +21,10 @@ public class Util {
     /**
      * Prints formatted representations of objects to system.out. Can be used to
      * dump objects recursively to log target.
-     * 
-     * @param o
-     *            - Object to print
-     * @param ps
-     *            - printstream used to print the object (System.out for
-     *            example).
+     *
+     * @param o  - Object to print
+     * @param ps - printstream used to print the object (System.out for
+     *           example).
      */
     public static void print(Object o, PrintStream ps) {
         ps.println(toString(o).replaceAll(", ", ",\n "));
@@ -39,9 +32,8 @@ public class Util {
 
     /**
      * Returns formatted representations of objects.
-     * 
-     * @param o
-     *            - Object to print
+     *
+     * @param o - Object to print
      * @return - String holding formatted representation of the object.
      */
     public static String toString(Object o) {
@@ -54,7 +46,7 @@ public class Util {
 
     /**
      * Get the class of the caller in a static method.
-     * 
+     *
      * @return class
      */
     public static Class getClassStatic() {
@@ -77,8 +69,7 @@ public class Util {
      * exceptions to the caller.
      *
      * @param fileName
-     * @param content
-     *            string to save
+     * @param content  string to save
      */
     public static void saveToFile(String fileName, String content)
             throws IOException {
@@ -100,7 +91,7 @@ public class Util {
     /**
      * Read content of a text file. This style of implementation throws all
      * exceptions to the caller.
-     * 
+     *
      * @param fileName
      * @return
      * @throws IOException
@@ -135,7 +126,6 @@ public class Util {
             } catch (IOException e) {
                 logger.warn("Could not close reader", e);
             }
-
         }
     }
 }

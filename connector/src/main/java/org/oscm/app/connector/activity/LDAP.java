@@ -5,7 +5,8 @@
  *******************************************************************************/
 package org.oscm.app.connector.activity;
 
-import java.util.Hashtable;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
@@ -13,12 +14,11 @@ import javax.naming.NamingException;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
-
-import org.apache.log4j.Logger;
+import java.util.Hashtable;
 
 public class LDAP {
 
-    static Logger log = Logger.getLogger(LDAP.class);
+    static Logger log = LogManager.getLogger(LDAP.class);
 
     // URL of the directory to connect to
     protected String _directoryURL;
@@ -39,7 +39,7 @@ public class LDAP {
     private boolean _isConnected = false;
 
     public LDAP(String directoryURL, String referral, String username,
-            String password) {
+                String password) {
         if (directoryURL == null) {
             throw new IllegalArgumentException(
                     "directoryURL is not allowed to be null");
@@ -60,8 +60,7 @@ public class LDAP {
     /**
      * Connect to the Directory using the directoryURL, principal and password.
      *
-     * @throws NamingException
-     *             if a there is a problem.
+     * @throws NamingException if a there is a problem.
      */
     public void connect() throws Exception {
         if (!_isConnected) {
@@ -71,7 +70,7 @@ public class LDAP {
                     "com.sun.jndi.ldap.LdapCtxFactory");
             ldapEnv.put(Context.PROVIDER_URL, _directoryURL);
             ldapEnv.put(Context.SECURITY_AUTHENTICATION, "simple"); // simple
-                                                                    // none
+            // none
             ldapEnv.put(Context.REFERRAL, _referral);
 
             if (_username != null) {
@@ -99,7 +98,7 @@ public class LDAP {
     }
 
     public NamingEnumeration search(String baseDN, String filter,
-            SearchControls constraints) throws NamingException {
+                                    SearchControls constraints) throws NamingException {
         log.debug("baseDN: " + baseDN + " filter: " + filter);
         return _dirCtx.search(baseDN, filter, constraints);
     }

@@ -5,32 +5,32 @@
  *******************************************************************************/
 package org.oscm.app.connector.activity;
 
-import java.util.Map;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.oscm.app.connector.framework.Activity;
+import org.oscm.app.connector.framework.ProcessException;
+import org.oscm.app.connector.util.SpringBeanSupport;
 
 import javax.naming.NamingEnumeration;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
-
-import org.apache.log4j.Logger;
-import org.oscm.app.connector.framework.Activity;
-import org.oscm.app.connector.framework.ProcessException;
-import org.oscm.app.connector.util.SpringBeanSupport;
+import java.util.Map;
 
 public class LDAPReader extends Activity {
-    private static Logger logger = Logger.getLogger(LDAPReader.class);
+    private static Logger logger = LogManager.getLogger(LDAPReader.class);
 
     enum Scope {
         OBJECT_SCOPE(SearchControls.OBJECT_SCOPE), ONELEVEL_SCOPE(
                 SearchControls.ONELEVEL_SCOPE), SUBTREE_SCOPE(
-                        SearchControls.SUBTREE_SCOPE);
+                SearchControls.SUBTREE_SCOPE);
         int code;
 
         Scope(int code) {
             this.code = code;
         }
-    };
+    }
 
     private LDAP ldap;
     private SearchControls constraints;

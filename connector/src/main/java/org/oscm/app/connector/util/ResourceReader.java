@@ -5,12 +5,13 @@
  *******************************************************************************/
 package org.oscm.app.connector.util;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
-
-import org.apache.log4j.Logger;
 
 /**
  * Class to locate resource files by ClassLoader features. The resource file has
@@ -22,7 +23,7 @@ import org.apache.log4j.Logger;
  * @author opetrovski
  */
 public class ResourceReader {
-    private static Logger logger = Logger.getLogger(ResourceReader.class);
+    private static Logger logger = LogManager.getLogger(ResourceReader.class);
 
     // prefix used for all lookup methods
     private String resourcePrefix;
@@ -41,12 +42,11 @@ public class ResourceReader {
 
     /**
      * Try to locate the resource within the current classpath.
-     * 
-     * @param resource
-     *            the relative path from the prefix spec to the requested
-     *            resource.
+     *
+     * @param resource the relative path from the prefix spec to the requested
+     *                 resource.
      * @return the URL of the requested resource file or null if it does not
-     *         exist
+     * exist
      */
     public URL getResource(String resource) {
         if (resource == null) {
@@ -65,13 +65,12 @@ public class ResourceReader {
 
     /**
      * Try to locate the resource within the current classpath.
-     * 
-     * @param resource
-     *            the relative path from the prefix spec to the requested
-     *            resource.
+     *
+     * @param resource the relative path from the prefix spec to the requested
+     *                 resource.
      * @return an array containing all URL of resource files matching the
-     *         requested resource name or an empty array if no resource exists
-     *         with this name.
+     * requested resource name or an empty array if no resource exists
+     * with this name.
      */
     public URL[] getResources(String resource) {
         if (resource == null) {
@@ -84,12 +83,11 @@ public class ResourceReader {
 
     /**
      * Try to locate the resource within the current classpath.
-     * 
-     * @param resource
-     *            the relative path from the prefix spec to the requested
-     *            resource.
+     *
+     * @param resource the relative path from the prefix spec to the requested
+     *                 resource.
      * @return the InputStream of the requested resource file or null if it does
-     *         not exist
+     * not exist
      */
     public InputStream getResourceAsStream(String resource) {
         if (resource == null) {
@@ -111,14 +109,11 @@ public class ResourceReader {
      * takes care of existing separators at the end of the first or at the
      * beginning of the second part. Only one separator will be between the
      * parts in the resulting String. The separator is a slash.
-     * 
-     * @param prefix
-     *            - the first part of the String
-     * @param resource
-     *            - the second part that is appended to the first part.
-     * @return the concatenation of the two parts with exactly one separator
-     *         between them.
      *
+     * @param prefix   - the first part of the String
+     * @param resource - the second part that is appended to the first part.
+     * @return the concatenation of the two parts with exactly one separator
+     * between them.
      */
     public static String concat(String prefix, String resource) {
         StringBuffer buf = new StringBuffer(prefix);
@@ -164,13 +159,12 @@ public class ResourceReader {
 
     /**
      * Try to locate the resource within the classpath by name as is.
-     * 
-     * @param resource
-     *            the full qualified resource name - must not be null the path
-     *            has to start with a slash. Example:
-     *            reader.loadResource("/lib/ini/system/fwk/enums.xml");
+     *
+     * @param resource the full qualified resource name - must not be null the path
+     *                 has to start with a slash. Example:
+     *                 reader.loadResource("/lib/ini/system/fwk/enums.xml");
      * @return the URL of the requested resource file or null if it does not
-     *         exist
+     * exist
      */
     public static URL loadResource(String resource) {
         if (resource == null) {
@@ -194,13 +188,12 @@ public class ResourceReader {
     /**
      * Try to locate all resource within the classpath by name. All files with
      * identical names and path are enumerated.
-     * 
-     * @param resource
-     *            the full qualified resource name - must not be null the path
-     *            must not start with a slash. Example:
-     *            reader.loadResources("lib/ini/system/fwk/enums.xml");
+     *
+     * @param resource the full qualified resource name - must not be null the path
+     *                 must not start with a slash. Example:
+     *                 reader.loadResources("lib/ini/system/fwk/enums.xml");
      * @return the URL of the requested resource file or null if it does not
-     *         exist
+     * exist
      */
     public static final URL[] loadResources(String resource) {
         if (resource == null) {
@@ -226,11 +219,10 @@ public class ResourceReader {
 
     /**
      * Try to locate the resource within the classpath by name as is.
-     * 
-     * @param resource
-     *            the full qualified resource name
+     *
+     * @param resource the full qualified resource name
      * @return the InputStream of the requested resource file or null if it does
-     *         not exist
+     * not exist
      */
     public static InputStream loadResourceAsStream(String resource) {
         if (resource == null) {
