@@ -5,9 +5,6 @@
  *******************************************************************************/
 package org.oscm.app.connector.activity;
 
-import java.io.IOException;
-import java.util.Map;
-
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
@@ -17,12 +14,16 @@ import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.oscm.app.connector.framework.Activity;
 import org.oscm.app.connector.framework.ProcessException;
 
+import java.io.IOException;
+import java.util.Map;
+
 public class HTTPClient extends Activity {
-    private static Logger logger = Logger.getLogger(HTTPClient.class);
+    private static Logger logger = LogManager.getLogger(HTTPClient.class);
     private String username = null, password = null, url = null;
 
     public HTTPClient() {
@@ -36,8 +37,7 @@ public class HTTPClient extends Activity {
      * configuration parameter is described in the javadoc of the class that
      * uses the configuration parameter.
      *
-     * @param props
-     *            the configuration paramters
+     * @param props the configuration paramters
      * @see Activity
      */
     @Override

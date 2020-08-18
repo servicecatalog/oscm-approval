@@ -7,8 +7,8 @@ package org.oscm.app.connector.framework;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.oscm.app.connector.util.SpringBeanSupport;
 import org.springframework.beans.factory.BeanNameAware;
 
@@ -22,7 +22,7 @@ import org.springframework.beans.factory.BeanNameAware;
  * the device or controller.
  */
 abstract public class Activity implements BeanNameAware, IActivity {
-    private static Logger logger = Logger.getLogger(Activity.class);
+    private static Logger logger = LogManager.getLogger(Activity.class);
 
     // the reference to the next activity in the chain of activities
     // for the last activity in the chain this value is null;

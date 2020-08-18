@@ -5,16 +5,17 @@
  *******************************************************************************/
 package org.oscm.app.connector.activity;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.oscm.app.connector.framework.Activity;
+import org.oscm.app.connector.framework.ProcessException;
+
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
-import org.oscm.app.connector.framework.Activity;
-import org.oscm.app.connector.framework.ProcessException;
-
 public class LogWriter extends Activity {
-    private static Logger logger = Logger.getLogger(LogWriter.class);
+    private static Logger logger = LogManager.getLogger(LogWriter.class);
 
     Properties parameter = new Properties();
 

@@ -5,14 +5,16 @@
  *******************************************************************************/
 package org.oscm.app.connector.util;
 
-import org.apache.log4j.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * This class is used to define all available configuration properties and to
  * provide a few methods for convenience.
  */
 public class SpringBeanSupport {
-    private static Logger logger = Logger.getLogger(SpringBeanSupport.class);
+    private static Logger logger = LogManager.getLogger(SpringBeanSupport.class);
 
     // global settings
     public static final String TIMEOUT = "timeout";
@@ -38,17 +40,14 @@ public class SpringBeanSupport {
      * value is returned. A valid key is registered as existing key in this
      * class and is part of the properties.
      *
-     * @param props
-     *            the value is extracted from these properties
-     * @param key
-     *            the value for this key is returned from the properties
-     * @param defaultValue
-     *            this value is returned if the key is not valid
+     * @param props        the value is extracted from these properties
+     * @param key          the value for this key is returned from the properties
+     * @param defaultValue this value is returned if the key is not valid
      * @return the property value if the key is valid otherwise the default
-     *         value
+     * value
      */
     synchronized public static String getProperty(java.util.Properties props,
-            String key, String defaultValue) {
+                                                  String key, String defaultValue) {
         if (props.containsKey(key)) {
             return props.getProperty(key);
         } else {
@@ -62,17 +61,14 @@ public class SpringBeanSupport {
      * value is returned. A valid key is registered as existing key in this
      * class and is part of the properties.
      *
-     * @param props
-     *            the value is extracted from these properties
-     * @param key
-     *            the value for this key is returned from the properties
-     * @param defaultValue
-     *            this value is returned if the key is not valid
+     * @param props        the value is extracted from these properties
+     * @param key          the value for this key is returned from the properties
+     * @param defaultValue this value is returned if the key is not valid
      * @return the property value if the key is valid otherwise the default
-     *         value
+     * value
      */
     synchronized public static boolean getProperty(java.util.Properties props,
-            String key, boolean defaultValue) {
+                                                   String key, boolean defaultValue) {
         if (props.containsKey(key)) {
             return props.getProperty(key).equals("true");
         } else {
@@ -86,17 +82,14 @@ public class SpringBeanSupport {
      * value is returned. A valid key is registered as existing key in this
      * class and is part of the properties.
      *
-     * @param props
-     *            the value is extracted from these properties
-     * @param key
-     *            the value for this key is returned from the properties
-     * @param defaultValue
-     *            this value is returned if the key is not valid
+     * @param props        the value is extracted from these properties
+     * @param key          the value for this key is returned from the properties
+     * @param defaultValue this value is returned if the key is not valid
      * @return the property value if the key is valid otherwise the default
-     *         value
+     * value
      */
     synchronized public static int getProperty(java.util.Properties props,
-            String key, int defaultValue) {
+                                               String key, int defaultValue) {
         if (props == null) {
             throw new IllegalArgumentException(
                     "SpringBeanSupport.getProperty() No properties set.");
@@ -134,5 +127,4 @@ public class SpringBeanSupport {
             logger.debug(key + ": " + props.getProperty((String) key));
         }
     }
-
 }

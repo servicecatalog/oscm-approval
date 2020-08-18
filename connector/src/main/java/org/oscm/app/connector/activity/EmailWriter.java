@@ -1,14 +1,15 @@
-
 /********************************************************************************
  *
  * Copyright FUJITSU LIMITED 2020
  *
  *******************************************************************************/
 package org.oscm.app.connector.activity;
-import java.util.Date;
-import java.util.Map;
-import java.util.StringTokenizer;
-import java.util.Vector;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.oscm.app.connector.framework.Activity;
+import org.oscm.app.connector.framework.ProcessException;
+import org.oscm.app.connector.util.SpringBeanSupport;
 
 import javax.mail.Message;
 import javax.mail.Session;
@@ -17,15 +18,14 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.naming.Context;
 import javax.naming.InitialContext;
-
-import org.apache.log4j.Logger;
-import org.oscm.app.connector.framework.Activity;
-import org.oscm.app.connector.framework.ProcessException;
-import org.oscm.app.connector.util.SpringBeanSupport;
+import java.util.Date;
+import java.util.Map;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 public class EmailWriter extends Activity {
 
-    private static final Logger logger = Logger.getLogger(EmailWriter.class);
+    private static final Logger logger = LogManager.getLogger(EmailWriter.class);
     private static final String ENCODING_UTF8 = "UTF-8";
     private String mailSession;
 
@@ -44,8 +44,7 @@ public class EmailWriter extends Activity {
      * configuration parameter is described in the javadoc of the class that
      * uses the configuration parameter.
      *
-     * @param props
-     *            the configuration paramters
+     * @param props the configuration paramters
      * @see Activity
      */
     @Override
@@ -110,8 +109,8 @@ public class EmailWriter extends Activity {
             sender = replacePlaceholder(sender, transmitData);
 
             boolean isHTML = isHtmlContent(body);
-            
-           
+
+
             Session mailSession = getMailSession();
             MimeMessage message = new MimeMessage(mailSession);
             message.setFrom(new InternetAddress(sender));
@@ -125,8 +124,8 @@ public class EmailWriter extends Activity {
             message.setSentDate(new Date());
             if (isHTML) {
                 logger.debug(String.format("HTML content found:\n%s", body));
-                format =  "text/html; charset=utf-8";
-            } 
+                format = "text/html; charset=utf-8";
+            }
             message.setContent(body, format);
 
             Transport.send(message);
@@ -154,7 +153,5 @@ public class EmailWriter extends Activity {
                     "Session ressource %s not found. Check resource configuration in tomee.xml. Details: %s",
                     "APPMail", e.getMessage()));
         }
-
     }
-
 }

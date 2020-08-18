@@ -5,15 +5,15 @@
  *******************************************************************************/
 package org.oscm.app.connector.activity;
 
-import java.util.Map;
-
-import org.apache.log4j.Logger;
-import org.oscm.app.connector.framework.Activity;
-import org.oscm.app.connector.framework.ProcessException;
-
 import bsh.EvalError;
 import bsh.Interpreter;
 import bsh.TargetError;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.oscm.app.connector.framework.Activity;
+import org.oscm.app.connector.framework.ProcessException;
+
+import java.util.Map;
 
 /**
  * This class is the last chain item in a chain. It retrieves diagnose-, config-
@@ -32,10 +32,10 @@ import bsh.TargetError;
  * </table>
  */
 public class ScriptExecutor extends Activity {
-    private static Logger logger = Logger.getLogger(ScriptExecutor.class);
+    private static Logger logger = LogManager.getLogger(ScriptExecutor.class);
 
     String script;
-    String[] attributes = new String[] {};
+    String[] attributes = new String[]{};
 
     /**
      * Just calls the base class constructor.
@@ -51,8 +51,7 @@ public class ScriptExecutor extends Activity {
      * configuration parameter is described in the javadoc of the class that
      * uses the configuration parameter.
      *
-     * @param props
-     *            the configuration paramters
+     * @param props the configuration paramters
      * @see Activity
      */
     @Override
@@ -87,7 +86,7 @@ public class ScriptExecutor extends Activity {
 
     /**
      * Overwrites the base class method.
-     * 
+     *
      * @see Activity
      */
     @Override
@@ -128,5 +127,4 @@ public class ScriptExecutor extends Activity {
             return getNextActivity().transmitReceiveData(transmitData);
         }
     }
-
 }

@@ -5,21 +5,21 @@
  *******************************************************************************/
 package org.oscm.app.connector.framework;
 
-import java.util.Map;
-import java.util.Properties;
-
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
+
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * Every real world connector needs to be derived from this class. An instance
  * of this class keeps references to the CommandManager in order to route
  * incoming request from the FCML-Proxy to the appropriate component.
- *
  */
 public class Process implements IProcess, BeanNameAware, InitializingBean {
-    private static Logger logger = Logger.getLogger(Process.class);
+    private static Logger logger = LogManager.getLogger(Process.class);
 
     // This activity is used to issue command requests to the chain of
     // activities.
@@ -36,9 +36,8 @@ public class Process implements IProcess, BeanNameAware, InitializingBean {
      * name will be used for logging purposes and to extract configuration
      * parameters.
      *
-     * @param beanName
-     *            The name or id of the bean as defined in the spring bean
-     *            definition file
+     * @param beanName The name or id of the bean as defined in the spring bean
+     *                 definition file
      */
     @Override
     public void setBeanName(String beanName) {
@@ -53,10 +52,9 @@ public class Process implements IProcess, BeanNameAware, InitializingBean {
      * in the event of misconfiguration.
      * <p>
      * Configures all chains and the command manager.
-     * 
-     * @throws Exception
-     *             in the event of misconfiguration (such as failure to set an
-     *             essential property) or if initialization fails.
+     *
+     * @throws Exception in the event of misconfiguration (such as failure to set an
+     *                   essential property) or if initialization fails.
      */
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -91,7 +89,7 @@ public class Process implements IProcess, BeanNameAware, InitializingBean {
 
     /**
      * Implements the IProcess Interface.
-     * 
+     *
      * @see IProcess
      */
     @Override
@@ -99,5 +97,4 @@ public class Process implements IProcess, BeanNameAware, InitializingBean {
             throws ProcessException {
         return activity.transmitReceiveData(transmitData);
     }
-
 }
