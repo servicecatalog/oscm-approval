@@ -1,32 +1,12 @@
 /*******************************************************************************
- *                                                                              
+ *
  *  Copyright FUJITSU LIMITED 2019                                           
- *                                                                                                                                 
+ *
  *  Creation Date: 28.11.2019                                                      
- *                                                                              
+ *
  *******************************************************************************/
 
 package org.oscm.app.connector;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.util.Map;
-import java.util.Properties;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerFactoryConfigurationError;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 import org.junit.Test;
 import org.oscm.app.connector.framework.Activity;
@@ -36,9 +16,23 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.*;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.Map;
+import java.util.Properties;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 /**
  * @author goebel
- *
  */
 public class ActivityTest {
 
@@ -48,17 +42,17 @@ public class ActivityTest {
     public void replacePlaceholderTest() throws Exception {
 
         // given setting
-        final Map<String, String> settings = Stream.of(new String[][] { //
-                { "UserKey", "1000" }, // UserKey
-                { "Organization", "ACME Supplier" }, // Organization
-                { "service.name", "Test Service" }, // service.name
-                { "service.technicalId", "TEC Service" }, // service.technicalId
-                { "user.orgId", "ACME Supplier" }, // user.orgId
-                { "user.email", "lorenz.goebel@est.fujitsu.com" }, // user.email
-                { "user.firstname", "Lorenz" }, // user.firstname
-                { "user.lastname", "Goebel" }, // user.lastname
-                { "user.key", "1000" }, // user.key 
-                { "mail.body", loadMailBody() } //mail.body
+        final Map<String, String> settings = Stream.of(new String[][]{ //
+                {"UserKey", "1000"}, // UserKey
+                {"Organization", "ACME Supplier"}, // Organization
+                {"service.name", "Test Service"}, // service.name
+                {"service.technicalId", "TEC Service"}, // service.technicalId
+                {"user.orgId", "ACME Supplier"}, // user.orgId
+                {"user.email", "lorenz.goebel@est.fujitsu.com"}, // user.email
+                {"user.firstname", "Lorenz"}, // user.firstname
+                {"user.lastname", "Goebel"}, // user.lastname
+                {"user.key", "1000"}, // user.key
+                {"mail.body", loadMailBody()} //mail.body
 
         }).collect(Collectors.toMap(data -> data[0], data -> data[1]));
 
@@ -70,7 +64,7 @@ public class ActivityTest {
         System.out.println(indent(output));
     }
 
-   
+
     private String replacePlaceholders(final Map<String, String> settings) throws ProcessException {
         return new Activity() {
 
