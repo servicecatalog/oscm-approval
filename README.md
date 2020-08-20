@@ -23,6 +23,7 @@ unzip -o ApprovalTool.zip
 
 ## Init DB
 Run following commands to create and init the approval db 
+The password for the user approvaluser is approvaluser
 ```
 docker run -it --name seconddb --rm --network docker_default -v $WORKSPACE/docker/init:/initapproval servicecatalog/oscm-db bash
 export PGPASSWORD=secret
@@ -31,7 +32,7 @@ psql -h oscm-db -p 5432 -U approvaluser -W -d approvaldb -f /initapproval/upd_po
 ```
 
 ## Copy Artifacts 
-Copy the war file and following resources into the app container
+Copy the war file and following resources into the app container - use the second console
 ```
 docker cp tomee.xml oscm-app:/opt/apache-tomee/conf/
 docker cp tomee_template.xml oscm-app:/opt/apache-tomee/conf/
@@ -60,9 +61,8 @@ https://<yourhost>:8881/approval/ApprovalNotificationService?wsdl
 ### APP Configuration Settings ### 
 In order to configure the Sample Supplier 'supplier' of '959c9bf7' as user supplier the service to be triggered
 ```
-docker run -it --name seconddb --rm --network docker_default -v $WORKSPACE/docker/init:/initapproval artifactory.intern.est.fujitsu.com:5003/oscmdocker/oscm-db bash
-export PGPASSWORD=secret
 psql -h oscm-db -p 5432 -U postgres -d bssapp -c "INSERT INTO bssappuser.configurationsetting (controllerid, settingkey, settingvalue) VALUES ('ess.vmware', 'USERID_959c9bf7', 'supplier');"
+psql -h oscm-db -p 5432 -U postgres -d bssapp -c "INSERT INTO bssappuser.configurationsetting (controllerid, settingkey, settingvalue) VALUES ('ess.vmware', 'USERKEY_959c9bf7', '10000');"
 psql -h oscm-db -p 5432 -U postgres -d bssapp -c "INSERT INTO bssappuser.configurationsetting (controllerid, settingkey, settingvalue) VALUES ('ess.vmware', 'USERPWD_959c9bf7', '_crypt:supplier');"
 ```
 
@@ -70,6 +70,9 @@ psql -h oscm-db -p 5432 -U postgres -d bssapp -c "INSERT INTO bssappuser.configu
 (!!! edit at the end of following command !!!) 
 ```
 psql -h oscm-db -p 5432 -U postgres -d bssapp -c "INSERT INTO bssappuser.configurationsetting (controllerid, settingkey, settingvalue) VALUES ('ess.vmware', 'APPROVAL_URL', 'https://<yourhost>:8881/approval/');"
+```
+And in the second console
+```
 docker restart oscm-app
 ```
 
