@@ -6,7 +6,7 @@
  *
  *******************************************************************************/
 
-package org.oscm.app.connector;
+package org.oscm.app.connector.framework;
 
 import org.junit.Test;
 import org.oscm.app.connector.framework.Activity;

@@ -27,7 +27,7 @@ public class EmailWriter extends Activity {
 
     private static final Logger logger = LogManager.getLogger(EmailWriter.class);
     private static final String ENCODING_UTF8 = "UTF-8";
-    private String mailSession;
+    protected String mailSession;
 
     private String subject, body, sender;
     private String format = "text/plain; charset=" + ENCODING_UTF8;
