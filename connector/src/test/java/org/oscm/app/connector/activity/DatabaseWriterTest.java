@@ -31,13 +31,13 @@ import static org.mockito.Mockito.*;
 @RunWith(PowerMockRunner.class)
 @PowerMockIgnore({"javax.management.*", "javax.script.*"})
 @PrepareForTest({
-  DatabaseReader.class,
+  DatabaseWriter.class,
   Properties.class,
   LogManager.class,
   DriverManager.class,
   ResultSet.class
 })
-public class DatabaseReaderTest {
+public class DatabaseWriterTest {
 
   private static final Random RANDOM = new Random();
 
@@ -45,7 +45,7 @@ public class DatabaseReaderTest {
   private Connection connection;
   private Statement statement;
   private Properties props;
-  private DatabaseReader databaseReader;
+  private DatabaseWriter databaseWriter;
   private Activity activity;
   private ResultSetMetaData metadata;
 
@@ -60,7 +60,7 @@ public class DatabaseReaderTest {
 
   @Before
   public void setUp() {
-    this.databaseReader = PowerMockito.spy(new DatabaseReader());
+    this.databaseWriter = PowerMockito.spy(new DatabaseWriter());
 
     this.statement = mock(Statement.class);
     this.connection = mock(Connection.class);
@@ -71,7 +71,7 @@ public class DatabaseReaderTest {
 
     this.transmitData = new HashMap<>();
 
-    Whitebox.setInternalState(DatabaseReader.class, "logger", logger);
+    Whitebox.setInternalState(DatabaseWriter.class, "logger", logger);
   }
 
   @Test
@@ -87,12 +87,12 @@ public class DatabaseReaderTest {
     when(SpringBeanSupport.getProperty(this.props, SpringBeanSupport.PASSWORD, null))
         .thenReturn("password");
 
-    this.databaseReader.doConfigure(this.props);
+    this.databaseWriter.doConfigure(this.props);
 
-    assertEquals("url", this.databaseReader.url);
-    assertEquals("driver", this.databaseReader.driver);
-    assertEquals("user", this.databaseReader.username);
-    assertEquals("password", this.databaseReader.password);
+    assertEquals("url", this.databaseWriter.url);
+    assertEquals("driver", this.databaseWriter.driver);
+    assertEquals("user", this.databaseWriter.username);
+    assertEquals("password", this.databaseWriter.password);
     verify(this.logger, times(1)).debug(contains("beanName: "));
   }
 
@@ -103,29 +103,29 @@ public class DatabaseReaderTest {
     when(this.props.getProperty(anyString())).thenReturn(null);
     when(SpringBeanSupport.getProperty(this.props, anyString(), null)).thenReturn(null);
 
-    this.databaseReader.doConfigure(this.props);
+    this.databaseWriter.doConfigure(this.props);
   }
 
   @Test
   public void testSetStatement() {
 
-    this.databaseReader.setStatement("statement");
+    this.databaseWriter.setStatement("statement");
 
-    assertEquals("statement", this.databaseReader.statement);
+    assertEquals("statement", this.databaseWriter.statement);
   }
 
   @Test
   public void testSetNamespace() {
 
-    this.databaseReader.setNamespace("namespace");
+    this.databaseWriter.setNamespace("namespace");
 
-    assertEquals("namespace.", this.databaseReader.namespace);
+    assertEquals("namespace.", this.databaseWriter.namespace);
   }
 
   @Test(expected = ProcessException.class)
   public void testTransmitReceiveDataStatementNull() throws Exception {
 
-    this.databaseReader.transmitReceiveData(this.transmitData);
+    this.databaseWriter.transmitReceiveData(this.transmitData);
   }
 
   @Test
@@ -134,13 +134,13 @@ public class DatabaseReaderTest {
     PowerMockito.mockStatic(DriverManager.class);
     PowerMockito.mockStatic(ResultSet.class);
 
-    this.transmitData.put("statement", "subjectValue");
-    this.databaseReader.statement = "_$(statement)";
-    this.databaseReader.driver = "org.junit.Test";
-    this.databaseReader.username = "user";
-    this.databaseReader.password = "password";
-    this.databaseReader.url = "url";
-    this.databaseReader.namespace = "namespace";
+    this.transmitData.put("statement", "returning");
+    this.databaseWriter.statement = "insert_$(statement)";
+    this.databaseWriter.driver = "org.junit.Test";
+    this.databaseWriter.username = "user";
+    this.databaseWriter.password = "password";
+    this.databaseWriter.url = "url";
+    this.databaseWriter.namespace = "namespace";
 
     when(DriverManager.getConnection(anyString(), any())).thenReturn(this.connection);
     when(this.connection.createStatement()).thenReturn(this.statement);
@@ -152,7 +152,7 @@ public class DatabaseReaderTest {
     when(this.resultSet.getString(anyInt())).thenReturn("value" + RANDOM.nextInt(1000));
 
     final Map<String, String> receivedData =
-        this.databaseReader.transmitReceiveData(this.transmitData);
+        this.databaseWriter.transmitReceiveData(this.transmitData);
 
     verify(this.metadata, times(noColumns)).getColumnName(anyInt());
     verify(this.logger, times(3 * noColumns)).debug(startsWith("column"));
@@ -165,13 +165,13 @@ public class DatabaseReaderTest {
     PowerMockito.mockStatic(ResultSet.class);
 
     this.transmitData.put("statement", "subjectValue");
-    this.databaseReader.statement = "_$(statement)";
-    this.databaseReader.driver = "org.junit.Test";
-    this.databaseReader.username = "user";
-    this.databaseReader.password = "password";
-    this.databaseReader.url = "url";
-    this.databaseReader.namespace = "namespace";
-    this.databaseReader.setNextActivity(this.activity);
+    this.databaseWriter.statement = "_$(statement)";
+    this.databaseWriter.driver = "org.junit.Test";
+    this.databaseWriter.username = "user";
+    this.databaseWriter.password = "password";
+    this.databaseWriter.url = "url";
+    this.databaseWriter.namespace = "namespace";
+    this.databaseWriter.setNextActivity(this.activity);
 
     when(DriverManager.getConnection(anyString(), any())).thenReturn(this.connection);
     when(this.connection.createStatement()).thenReturn(this.statement);
@@ -180,7 +180,7 @@ public class DatabaseReaderTest {
     when(this.resultSet.next()).thenReturn(false);
 
     final Map<String, String> receivedData =
-        this.databaseReader.transmitReceiveData(this.transmitData);
+        this.databaseWriter.transmitReceiveData(this.transmitData);
 
     assertNotEquals(this.transmitData, receivedData);
   }
@@ -189,31 +189,31 @@ public class DatabaseReaderTest {
   public void testTransmitReceiveDataReturnClassNotFoundException() throws Exception {
 
     this.transmitData.put("statement", "subjectValue");
-    this.databaseReader.statement = "_$(statement)";
-    this.databaseReader.driver = "Test";
+    this.databaseWriter.statement = "_$(statement)";
+    this.databaseWriter.driver = "Test";
 
-    this.databaseReader.transmitReceiveData(this.transmitData);
+    this.databaseWriter.transmitReceiveData(this.transmitData);
   }
 
   @Test(expected = ProcessException.class)
   public void testTransmitReceiveDataReturnSQLException() throws Exception {
 
     this.transmitData.put("statement", "subjectValue");
-    this.databaseReader.statement = "_$(statement)";
-    this.databaseReader.driver = "org.junit.Test";
-    this.databaseReader.username = "user";
-    this.databaseReader.password = "password";
-    this.databaseReader.url = "url";
+    this.databaseWriter.statement = "_$(statement)";
+    this.databaseWriter.driver = "org.junit.Test";
+    this.databaseWriter.username = "user";
+    this.databaseWriter.password = "password";
+    this.databaseWriter.url = "url";
 
-    this.databaseReader.transmitReceiveData(this.transmitData);
+    this.databaseWriter.transmitReceiveData(this.transmitData);
   }
 
   @Test(expected = ProcessException.class)
   public void testTransmitReceiveDataNotContainsKey() throws Exception {
 
     this.transmitData.put("wrongKey", "subjectValue");
-    this.databaseReader.statement = "_$(statement)";
+    this.databaseWriter.statement = "_$(statement)";
 
-    this.databaseReader.transmitReceiveData(this.transmitData);
+    this.databaseWriter.transmitReceiveData(this.transmitData);
   }
 }
