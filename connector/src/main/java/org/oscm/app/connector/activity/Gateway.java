@@ -80,7 +80,7 @@ public class Gateway extends Activity {
     @Override
     public Map<String, String> transmitReceiveData(
             Map<String, String> transmitData) throws ProcessException {
-        logger.debug("beanName: " + getBeanName());
+        logger.debug(String.format("beanName: %s", getBeanName()));
 
         condition1 = (condition1 == null ? "false" : condition1);
         condition2 = (condition2 == null ? "false" : condition2);
@@ -96,7 +96,7 @@ public class Gateway extends Activity {
             for (Object key : transmitData.keySet()) {
                 bsh.set((String) key, transmitData.get(key));
             }
-            execActivity1 = ((Boolean) bsh.eval(condition1)).booleanValue();
+            execActivity1 = (Boolean) bsh.eval(condition1);
             logger.debug("condition1: " + condition1 + " evaluates to: "
                     + execActivity1);
         } catch (EvalError e) {
@@ -106,7 +106,7 @@ public class Gateway extends Activity {
         }
 
         try {
-            execActivity2 = ((Boolean) bsh.eval(condition2)).booleanValue();
+            execActivity2 = (Boolean) bsh.eval(condition2);
             logger.debug("condition2: " + condition2 + " evaluates to: "
                     + execActivity2);
         } catch (EvalError e) {
@@ -116,7 +116,7 @@ public class Gateway extends Activity {
         }
 
         try {
-            execActivity3 = ((Boolean) bsh.eval(condition3)).booleanValue();
+            execActivity3 = (Boolean) bsh.eval(condition3);
             logger.debug("condition3: " + condition3 + " evaluates to: "
                     + execActivity3);
 
