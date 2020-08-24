@@ -52,39 +52,19 @@ public class DatabaseReader extends Activity {
                 SpringBeanSupport.PASSWORD, null);
 
         if (url == null) {
-            logger.error("beanName: " + getBeanName() + " The property \""
-                    + SpringBeanSupport.URL + "\" is not set.");
-            throw new ProcessException(
-                    "beanName: " + getBeanName() + " The property \""
-                            + SpringBeanSupport.URL + "\" is not set.",
-                    ProcessException.CONFIG_ERROR);
+            throwsProcessException(SpringBeanSupport.URL);
         }
 
         if (driver == null) {
-            logger.error("beanName: " + getBeanName() + " The property \""
-                    + SpringBeanSupport.DRIVER + "\" is not set.");
-            throw new ProcessException(
-                    "beanName: " + getBeanName() + " The property \""
-                            + SpringBeanSupport.DRIVER + "\" is not set.",
-                    ProcessException.CONFIG_ERROR);
+            throwsProcessException(SpringBeanSupport.DRIVER);
         }
 
         if (username == null) {
-            logger.error("beanName: " + getBeanName() + " The property \""
-                    + SpringBeanSupport.USER + "\" is not set.");
-            throw new ProcessException(
-                    "beanName: " + getBeanName() + " The property \""
-                            + SpringBeanSupport.USER + "\" is not set.",
-                    ProcessException.CONFIG_ERROR);
+            throwsProcessException(SpringBeanSupport.USER);
         }
 
         if (password == null) {
-            logger.error("beanName: " + getBeanName() + " The property \""
-                    + SpringBeanSupport.PASSWORD + "\" is not set.");
-            throw new ProcessException(
-                    "beanName: " + getBeanName() + " The property \""
-                            + SpringBeanSupport.PASSWORD + "\" is not set.",
-                    ProcessException.CONFIG_ERROR);
+            throwsProcessException(SpringBeanSupport.PASSWORD);
         }
 
     }
@@ -163,8 +143,7 @@ public class DatabaseReader extends Activity {
             }
         } catch (ClassNotFoundException e) {
             logger.error(
-                    "beanName: " + getBeanName()
-                            + " Failed to load database driver class " + driver,
+                    String.format("beanName: %s Failed to load database driver class %s", getBeanName(), driver),
                     e);
             throw new ProcessException(
                     "beanName: " + getBeanName()
@@ -199,4 +178,11 @@ public class DatabaseReader extends Activity {
         }
     }
 
+    private void throwsProcessException(String configurableProperty) throws ProcessException {
+        logger.error(String.format("beanName: %s The property \"%s\" is not set.", getBeanName(), configurableProperty));
+        throw new ProcessException(
+                "beanName: " + getBeanName() + " The property \""
+                        + configurableProperty + "\" is not set.",
+                ProcessException.CONFIG_ERROR);
+    }
 }
