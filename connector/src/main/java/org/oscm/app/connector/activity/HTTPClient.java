@@ -94,8 +94,7 @@ public class HTTPClient extends Activity {
             CredentialsProvider credsProvider = new BasicCredentialsProvider();
             credsProvider.setCredentials(AuthScope.ANY,
                     new UsernamePasswordCredentials(username, password));
-            client = HttpClients.custom()
-                    .setDefaultCredentialsProvider(credsProvider).build();
+            client = getClient(credsProvider);
         } else {
             client = HttpClients.createDefault();
         }
@@ -136,5 +135,10 @@ public class HTTPClient extends Activity {
         } else {
             return getNextActivity().transmitReceiveData(transmitData);
         }
+    }
+
+    private CloseableHttpClient getClient(CredentialsProvider credsProvider) {
+        return HttpClients.custom()
+                .setDefaultCredentialsProvider(credsProvider).build();
     }
 }
