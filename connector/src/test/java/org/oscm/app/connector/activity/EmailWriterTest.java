@@ -83,7 +83,8 @@ public class EmailWriterTest {
 
     this.emailWriter.doConfigure(this.props);
 
-    assertEquals(url, this.emailWriter.mailSession);
+    String mailSession = Whitebox.getInternalState( this.emailWriter, "mailSession");
+    assertEquals(url, mailSession);
     verify(this.logger, times(1)).debug(contains("beanName: "));
   }
 
