@@ -19,7 +19,6 @@ import java.util.Properties;
  * incoming request from the FCML-Proxy to the appropriate component.
  */
 public class Process implements IProcess, BeanNameAware, InitializingBean {
-    private static Logger logger = LogManager.getLogger(Process.class);
 
     // This activity is used to issue command requests to the chain of
     // activities.
