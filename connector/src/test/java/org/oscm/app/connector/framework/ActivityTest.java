@@ -1,27 +1,17 @@
-/**
- * *****************************************************************************
+/********************************************************************************
  *
- * <p>Copyright FUJITSU LIMITED 2019
+ * Copyright FUJITSU LIMITED 2020
  *
- * <p>Creation Date: 28.11.2019
- *
- * <p>*****************************************************************************
- */
+ *******************************************************************************/
 package org.oscm.app.connector.framework;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.oscm.app.connector.activity.EmailWriter;
-import org.oscm.app.connector.util.SpringBeanSupport;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -60,10 +50,11 @@ public class ActivityTest {
 
   @Before
   public void setUp() {
-    this.activity = new Activity() {
-      @Override
-      public void doConfigure(Properties props) throws ProcessException { }
-    };
+    this.activity =
+        new Activity() {
+          @Override
+          public void doConfigure(Properties props) throws ProcessException {}
+        };
     this.activity = PowerMockito.spy(this.activity);
     this.props = mock(Properties.class);
 
@@ -135,6 +126,7 @@ public class ActivityTest {
     verify(this.activity, times(2)).transmitReceiveData(this.transmitData);
     assertEquals(this.emptyMap, result);
   }
+
   @Test
   public void testSetNextActivity() {
 

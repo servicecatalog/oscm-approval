@@ -1,7 +1,11 @@
+/********************************************************************************
+ *
+ * Copyright FUJITSU LIMITED 2020
+ *
+ *******************************************************************************/
 package org.oscm.app.connector.activity;
 
 import bsh.EvalError;
-import bsh.Interpreter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Before;

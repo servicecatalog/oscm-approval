@@ -1,6 +1,10 @@
+/********************************************************************************
+ *
+ * Copyright FUJITSU LIMITED 2020
+ *
+ *******************************************************************************/
 package org.oscm.app.connector.framework;
 
-import org.apache.logging.log4j.LogManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
