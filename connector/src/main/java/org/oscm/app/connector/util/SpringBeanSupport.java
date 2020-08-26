@@ -46,7 +46,7 @@ public class SpringBeanSupport {
      * @return the property value if the key is valid otherwise the default
      * value
      */
-    synchronized public static String getProperty(java.util.Properties props,
+    public static synchronized String getProperty(java.util.Properties props,
                                                   String key, String defaultValue) {
         if (props.containsKey(key)) {
             return props.getProperty(key);
@@ -67,7 +67,7 @@ public class SpringBeanSupport {
      * @return the property value if the key is valid otherwise the default
      * value
      */
-    synchronized public static boolean getProperty(java.util.Properties props,
+    public static synchronized boolean getProperty(java.util.Properties props,
                                                    String key, boolean defaultValue) {
         if (props.containsKey(key)) {
             return props.getProperty(key).equals("true");
@@ -88,7 +88,7 @@ public class SpringBeanSupport {
      * @return the property value if the key is valid otherwise the default
      * value
      */
-    synchronized public static int getProperty(java.util.Properties props,
+    public static synchronized int getProperty(java.util.Properties props,
                                                String key, int defaultValue) {
         if (props == null) {
             throw new IllegalArgumentException(
@@ -122,7 +122,7 @@ public class SpringBeanSupport {
         return true;
     }
 
-    synchronized public static void logProperties(java.util.Properties props) {
+    public static synchronized void logProperties(java.util.Properties props) {
         for (Object key : props.keySet()) {
             logger.debug(key + ": " + props.getProperty((String) key));
         }

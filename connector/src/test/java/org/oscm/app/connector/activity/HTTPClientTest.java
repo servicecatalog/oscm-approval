@@ -1,3 +1,8 @@
+/********************************************************************************
+ *
+ * Copyright FUJITSU LIMITED 2020
+ *
+ *******************************************************************************/
 package org.oscm.app.connector.activity;
 
 import org.apache.http.StatusLine;
