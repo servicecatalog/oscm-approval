@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
 import org.oscm.app.connector.util.SpringBeanSupport;
 import org.springframework.beans.factory.BeanNameAware;
 
