@@ -5,22 +5,18 @@
  *******************************************************************************/
 package org.oscm.app.connector.activity;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Map;
-import java.util.Properties;
-
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.oscm.app.connector.framework.Activity;
 import org.oscm.app.connector.framework.ProcessException;
 import org.oscm.app.connector.util.SpringBeanSupport;
 
+import java.sql.*;
+import java.util.Map;
+import java.util.Properties;
+
 public class DatabaseWriter extends Activity {
-    private static Logger logger = Logger.getLogger(DatabaseWriter.class);
+    private static Logger logger = LogManager.getLogger(DatabaseWriter.class);
 
     String statement = null;
     String url, driver, username, password, namespace = "";
@@ -36,8 +32,7 @@ public class DatabaseWriter extends Activity {
      * configuration parameter is described in the javadoc of the class that
      * uses the configuration parameter.
      *
-     * @param props
-     *            the configuration paramters
+     * @param props the configuration paramters
      * @see Activity
      */
     @Override

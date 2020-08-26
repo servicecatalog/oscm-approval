@@ -5,18 +5,18 @@
  *******************************************************************************/
 package org.oscm.app.connector.activity;
 
-import java.util.Map;
-import java.util.Properties;
-
-import org.apache.log4j.Logger;
+import bsh.EvalError;
+import bsh.Interpreter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.oscm.app.connector.framework.Activity;
 import org.oscm.app.connector.framework.ProcessException;
 
-import bsh.EvalError;
-import bsh.Interpreter;
+import java.util.Map;
+import java.util.Properties;
 
 public class Gateway extends Activity {
-    private static Logger logger = Logger.getLogger(Gateway.class);
+    private static Logger logger = LogManager.getLogger(Gateway.class);
 
     Activity activity1 = null;
     Activity activity2 = null;
@@ -40,8 +40,7 @@ public class Gateway extends Activity {
      * configuration parameter is described in the javadoc of the class that
      * uses the configuration parameter.
      *
-     * @param props
-     *            the configuration paramters
+     * @param props the configuration paramters
      * @see Activity
      */
     @Override

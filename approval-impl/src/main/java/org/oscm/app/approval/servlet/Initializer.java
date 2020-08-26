@@ -8,6 +8,15 @@
 
 package org.oscm.app.approval.servlet;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.LogManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.apache.logging.log4j.core.LoggerContext;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.annotation.WebListener;
 import java.io.File;
 import java.io.InputStream;
 import java.util.concurrent.Executors;
@@ -15,19 +24,9 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import javax.servlet.ServletContextEvent;
-import javax.servlet.annotation.WebListener;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.PropertyConfigurator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Initializer for logging facade.
- * 
+ *
  * @author goebel
  */
 @WebListener
@@ -50,11 +49,11 @@ public class Initializer implements javax.servlet.ServletContextListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(Initializer.class);
 
-    private String LOG4J_TEMPLATE = "log4j.properties.template";
+    private String LOG4J_TEMPLATE = "log4j2.properties.template";
 
     private long TIMER_DELAY_VALUE = 60000;
 
-    
+
     private File logFile;
 
     private long logFileLastModified = 0;
@@ -108,7 +107,6 @@ public class Initializer implements javax.servlet.ServletContextListener {
         }
     }
 
-    
     private void publishTemplateFile() {
         try (InputStream is = this.getClass().getClassLoader()
                 .getResourceAsStream(LOG4J_TEMPLATE)) {
@@ -142,16 +140,15 @@ public class Initializer implements javax.servlet.ServletContextListener {
     }
 
     void configurePropertyConfigurator(File logFile) {
-        new PropertyConfigurator().doConfigure(logFile.getAbsolutePath(),
-                LogManager.getLoggerRepository());
+        LoggerContext context = (LoggerContext) LogManager.getContext(false);
+
+        context.setConfigLocation(logFile.toURI());
     }
 
-   
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
         if (refreshHandle != null) {
             refreshHandle.cancel(true);
         }
-
     }
 }
