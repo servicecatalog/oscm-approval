@@ -51,7 +51,7 @@ public class ProcessExceptionTest {
   }
 
   @Test
-  public void testProcessExceptionWithoutException() {
+  public void testProcessExceptionWithoutCause() {
     this.process = new ProcessException(this.message, this.errorCode);
     this.process = PowerMockito.spy(this.process);
 
