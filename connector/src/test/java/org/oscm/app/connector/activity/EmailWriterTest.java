@@ -55,7 +55,7 @@ public class EmailWriterTest {
   private Activity activity;
   private Session session;
   private Logger logger;
-  private static InitialContext mockCtx;
+  private static InitialContext initialContext;
   private Map<String, String> transmitData;
 
   @BeforeClass
@@ -73,7 +73,7 @@ public class EmailWriterTest {
     this.activity = mock(Activity.class);
     this.session = mock(Session.class);
     this.logger = mock(Logger.class);
-    mockCtx = mock(InitialContext.class);
+    initialContext = mock(InitialContext.class);
 
     Whitebox.setInternalState(EmailWriter.class, "logger", logger);
   }
@@ -178,7 +178,7 @@ public class EmailWriterTest {
 
     Whitebox.invokeMethod(this.emailWriter, "getMailSession");
 
-    verify(mockCtx, times(1)).lookup(anyString());
+    verify(initialContext, times(1)).lookup(anyString());
   }
 
   @Test(expected = Exception.class)
@@ -193,8 +193,8 @@ public class EmailWriterTest {
     @Override
     public Context getInitialContext(Hashtable<?, ?> environment) throws NamingException {
       ConnectionFactory mockConnFact = mock(ConnectionFactory.class);
-      when(mockCtx.lookup("jms1")).thenReturn(mockConnFact);
-      return mockCtx;
+      when(initialContext.lookup("jms1")).thenReturn(mockConnFact);
+      return initialContext;
     }
   }
 }

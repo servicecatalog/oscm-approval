@@ -132,7 +132,7 @@ public class LDAPReaderTest extends TestCase {
     final Map<String, String> result = this.ldapReader.transmitReceiveData(this.transmitData);
 
     verify(this.logger, times(1)).debug(contains("beanName: "));
-    verify(this.ldapReader, times(2)).isHasMore(any(), any());
+    verify(this.ldapReader, times(2)).isLdapHasMoreAttributes(any(), any());
     PowerMockito.verifyPrivate(this.ldapReader, times(4)).invoke("getNextActivity");
     assertNotEquals(this.transmitData, result);
   }
@@ -155,7 +155,7 @@ public class LDAPReaderTest extends TestCase {
     final Map<String, String> result = this.ldapReader.transmitReceiveData(this.transmitData);
 
     verify(this.logger, times(1)).debug(contains("beanName: "));
-    verify(this.ldapReader, times(2)).isHasMore(any(), any());
+    verify(this.ldapReader, times(2)).isLdapHasMoreAttributes(any(), any());
     assertEquals(this.transmitData, result);
   }
 
@@ -171,7 +171,7 @@ public class LDAPReaderTest extends TestCase {
     when(this.ids.next()).thenReturn("id1");
     when(this.attributes.get(anyString())).thenReturn(this.attribute);
 
-    final boolean result = this.ldapReader.isHasMore(this.transmitData, this.results);
+    final boolean result = this.ldapReader.isLdapHasMoreAttributes(this.transmitData, this.results);
 
     verify(this.results, times(1)).hasMore();
     verify(this.logger, times(2)).debug(startsWith("PUT: "));

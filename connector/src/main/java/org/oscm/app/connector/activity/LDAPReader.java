@@ -144,7 +144,7 @@ public class LDAPReader extends Activity {
                         + searchFilter);
             }
             while (hasMore) {
-                if (isHasMore(transmitData, resultEnumeration)) {
+                if (isLdapHasMoreAttributes(transmitData, resultEnumeration)) {
                     if (getNextActivity() != null) {
                         getNextActivity().transmitReceiveData(transmitData);
                     }
@@ -172,7 +172,8 @@ public class LDAPReader extends Activity {
         }
     }
 
-    protected boolean isHasMore(Map<String, String> transmitData, NamingEnumeration<SearchResult> resultEnumeration) throws javax.naming.NamingException {
+    protected boolean isLdapHasMoreAttributes(Map<String, String> transmitData, NamingEnumeration<SearchResult> resultEnumeration)
+            throws javax.naming.NamingException {
         boolean hasMore;
         SearchResult result = resultEnumeration.next();
         Attributes attrs = result.getAttributes();
