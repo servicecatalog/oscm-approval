@@ -68,6 +68,16 @@ public class ApprovalTaskTest {
   }
 
   @Test
+  public void testConstructorApproval() throws Exception {
+
+    String trigger = "testTrigger";
+
+    ApprovalTask task = new ApprovalTask(trigger);
+
+    assertEquals("{}", task.getJSON());
+  }
+
+  @Test
   public void testConstructor() throws Exception {
 
     // given
