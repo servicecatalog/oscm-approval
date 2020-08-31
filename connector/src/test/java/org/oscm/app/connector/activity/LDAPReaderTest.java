@@ -1,8 +1,10 @@
-/********************************************************************************
+/**
+ * ******************************************************************************
  *
- * Copyright FUJITSU LIMITED 2020
+ * <p>Copyright FUJITSU LIMITED 2020
  *
- *******************************************************************************/
+ * <p>*****************************************************************************
+ */
 package org.oscm.app.connector.activity;
 
 import junit.framework.TestCase;
@@ -58,18 +60,18 @@ public class LDAPReaderTest extends TestCase {
 
   @Before
   public void setUp() {
-    this.ldapReader = PowerMockito.spy(new LDAPReader());
+    ldapReader = PowerMockito.spy(new LDAPReader());
 
-    this.logger = mock(Logger.class);
-    this.props = mock(Properties.class);
-    this.results = (NamingEnumeration<SearchResult>) mock(NamingEnumeration.class);
-    this.ids = (NamingEnumeration<String>) mock(NamingEnumeration.class);
-    this.result = mock(SearchResult.class);
-    this.attributes = mock(Attributes.class);
-    this.attribute = mock(Attribute.class);
-    this.activity = mock(Activity.class);
+    logger = mock(Logger.class);
+    props = mock(Properties.class);
+    results = (NamingEnumeration<SearchResult>) mock(NamingEnumeration.class);
+    ids = (NamingEnumeration<String>) mock(NamingEnumeration.class);
+    result = mock(SearchResult.class);
+    attributes = mock(Attributes.class);
+    attribute = mock(Attribute.class);
+    activity = mock(Activity.class);
 
-    this.transmitData = new HashMap<>();
+    transmitData = new HashMap<>();
 
     Whitebox.setInternalState(LDAPReader.class, "logger", logger);
   }
@@ -77,167 +79,167 @@ public class LDAPReaderTest extends TestCase {
   @Test
   public void testDoConfigure() throws ProcessException {
 
-    this.ldapReader.doConfigure(this.props);
+    ldapReader.doConfigure(props);
 
-    assertNull(this.ldapReader.url);
-    assertNull(this.ldapReader.password);
-    verify(this.logger, times(1)).debug(contains("beanName: "));
+    assertNull(ldapReader.url);
+    assertNull(ldapReader.password);
+    verify(logger, times(1)).debug(contains("beanName: "));
   }
 
   @Test(expected = ProcessException.class)
   public void testTransmitReceiveDataSearchBeanIsNull() throws Exception {
-    this.transmitData.put("filter", "filterValue");
+    transmitData.put("filter", "filterValue");
 
-    this.ldapReader.url = "ldap://test.com";
-    this.ldapReader.username = "user";
-    this.ldapReader.password = "secret";
-    this.ldapReader.referral = "ignore";
-    this.ldapReader.searchFilter = "_$(filter)";
+    ldapReader.url = "ldap://test.com";
+    ldapReader.username = "user";
+    ldapReader.password = "secret";
+    ldapReader.referral = "ignore";
+    ldapReader.searchFilter = "_$(filter)";
 
-    this.ldapReader.transmitReceiveData(this.transmitData);
+    ldapReader.transmitReceiveData(transmitData);
   }
 
   @Test(expected = ProcessException.class)
   public void testTransmitReceiveDataNoMore() throws Exception {
-    this.transmitData.put("filter", "filterValue");
+    transmitData.put("filter", "filterValue");
 
-    this.ldapReader.url = "ldap://test.com";
-    this.ldapReader.username = "user";
-    this.ldapReader.password = "secret";
-    this.ldapReader.referral = "ignore";
-    this.ldapReader.searchFilter = "_$(filter)";
-    this.ldapReader.searchBaseDN = new String[] {"base1", "base2", "base3"};
+    ldapReader.url = "ldap://test.com";
+    ldapReader.username = "user";
+    ldapReader.password = "secret";
+    ldapReader.referral = "ignore";
+    ldapReader.searchFilter = "_$(filter)";
+    ldapReader.searchBaseDN = new String[] {"base1", "base2", "base3"};
 
     mockInitialDirContextFactory();
 
-    this.ldapReader.transmitReceiveData(this.transmitData);
+    ldapReader.transmitReceiveData(transmitData);
   }
 
   @Test
   public void testTransmitReceiveDataReturnNextActivity() throws Exception {
-    this.transmitData.put("filter", "filterValue");
+    transmitData.put("filter", "filterValue");
 
-    this.ldapReader.url = "ldap://test.com";
-    this.ldapReader.username = "user";
-    this.ldapReader.password = "secret";
-    this.ldapReader.referral = "ignore";
-    this.ldapReader.searchFilter = "_$(filter)";
-    this.ldapReader.searchBaseDN = new String[] {"base1", "base2", "base3"};
-    this.ldapReader.setNextActivity(this.activity);
+    ldapReader.url = "ldap://test.com";
+    ldapReader.username = "user";
+    ldapReader.password = "secret";
+    ldapReader.referral = "ignore";
+    ldapReader.searchFilter = "_$(filter)";
+    ldapReader.searchBaseDN = new String[] {"base1", "base2", "base3"};
+    ldapReader.setNextActivity(activity);
 
     mockInitialDirContextFactory();
-    when(this.results.hasMore()).thenReturn(false, false, true, true);
-    PowerMockito.doReturn(true, false).when(this.ldapReader, "isHasMore", any(), any());
+    when(results.hasMore()).thenReturn(false, false, true, true);
+    PowerMockito.doReturn(true, false).when(ldapReader, "isLdapHasMoreAttributes", any(), any());
 
-    final Map<String, String> result = this.ldapReader.transmitReceiveData(this.transmitData);
+    final Map<String, String> result = ldapReader.transmitReceiveData(transmitData);
 
-    verify(this.logger, times(1)).debug(contains("beanName: "));
-    verify(this.ldapReader, times(2)).isLdapHasMoreAttributes(any(), any());
-    PowerMockito.verifyPrivate(this.ldapReader, times(4)).invoke("getNextActivity");
-    assertNotEquals(this.transmitData, result);
+    verify(logger, times(1)).debug(contains("beanName: "));
+    verify(ldapReader, times(2)).isLdapHasMoreAttributes(any(), any());
+    PowerMockito.verifyPrivate(ldapReader, times(4)).invoke("getNextActivity");
+    assertNotEquals(transmitData, result);
   }
 
   @Test
   public void testTransmitReceiveDataReturnTransmitData() throws Exception {
-    this.transmitData.put("filter", "filterValue");
+    transmitData.put("filter", "filterValue");
 
-    this.ldapReader.url = "ldap://test.com";
-    this.ldapReader.username = "user";
-    this.ldapReader.password = "secret";
-    this.ldapReader.referral = "ignore";
-    this.ldapReader.searchFilter = "_$(filter)";
-    this.ldapReader.searchBaseDN = new String[] {"base1", "base2", "base3"};
+    ldapReader.url = "ldap://test.com";
+    ldapReader.username = "user";
+    ldapReader.password = "secret";
+    ldapReader.referral = "ignore";
+    ldapReader.searchFilter = "_$(filter)";
+    ldapReader.searchBaseDN = new String[] {"base1", "base2", "base3"};
 
     mockInitialDirContextFactory();
-    when(this.results.hasMore()).thenReturn(false, false, true, true);
-    PowerMockito.doReturn(true, false).when(this.ldapReader, "isHasMore", any(), any());
+    when(results.hasMore()).thenReturn(false, false, true, true);
+    PowerMockito.doReturn(true, false).when(ldapReader, "isLdapHasMoreAttributes", any(), any());
 
-    final Map<String, String> result = this.ldapReader.transmitReceiveData(this.transmitData);
+    final Map<String, String> result = ldapReader.transmitReceiveData(transmitData);
 
-    verify(this.logger, times(1)).debug(contains("beanName: "));
-    verify(this.ldapReader, times(2)).isLdapHasMoreAttributes(any(), any());
-    assertEquals(this.transmitData, result);
+    verify(logger, times(1)).debug(contains("beanName: "));
+    verify(ldapReader, times(2)).isLdapHasMoreAttributes(any(), any());
+    assertEquals(transmitData, result);
   }
 
   @Test
   public void testIsHasMoreReturnHasMoreAttr() throws Exception {
-    this.transmitData.put("filter", "filterValue");
-    this.ldapReader.attributes = new String[] {"id1", "id2", "id3"};
+    transmitData.put("filter", "filterValue");
+    ldapReader.attributes = new String[] {"id1", "id2", "id3"};
 
-    when(this.results.next()).thenReturn(this.result);
-    when(this.result.getAttributes()).thenReturn(this.attributes);
-    when(this.attributes.getIDs()).thenReturn(this.ids);
-    when(this.ids.hasMore()).thenReturn(true, true, false);
-    when(this.ids.next()).thenReturn("id1");
-    when(this.attributes.get(anyString())).thenReturn(this.attribute);
+    when(results.next()).thenReturn(result);
+    when(result.getAttributes()).thenReturn(attributes);
+    when(attributes.getIDs()).thenReturn(ids);
+    when(ids.hasMore()).thenReturn(true, true, false);
+    when(ids.next()).thenReturn("id1");
+    when(attributes.get(anyString())).thenReturn(attribute);
 
-    final boolean result = this.ldapReader.isLdapHasMoreAttributes(this.transmitData, this.results);
+    final boolean result = ldapReader.isLdapHasMoreAttributes(transmitData, results);
 
-    verify(this.results, times(1)).hasMore();
-    verify(this.logger, times(2)).debug(startsWith("PUT: "));
+    verify(results, times(1)).hasMore();
+    verify(logger, times(2)).debug(startsWith("PUT: "));
     assertFalse(result);
   }
 
   @Test
   public void testIsReturnAttributeReturnTrue() throws Exception {
-    this.ldapReader.attributes = new String[] {"id1", "id2", "id3"};
+    ldapReader.attributes = new String[] {"id1", "id2", "id3"};
 
-    assertTrue(Whitebox.invokeMethod(this.ldapReader, "isReturnAttribute", "id1"));
+    assertTrue(Whitebox.invokeMethod(ldapReader, "isReturnAttribute", "id1"));
   }
 
   @Test
   public void testSetSearchFilter() {
-    this.ldapReader.setSearchFilter("filter");
+    ldapReader.setSearchFilter("filter");
 
-    assertEquals("filter", this.ldapReader.searchFilter);
+    assertEquals("filter", ldapReader.searchFilter);
   }
 
   @Test
   public void testSetSearchBaseDN() {
     String[] baseDN = new String[] {"base1", "base2", "base3"};
 
-    this.ldapReader.setSearchBaseDN(baseDN);
+    ldapReader.setSearchBaseDN(baseDN);
 
-    assertEquals(baseDN, this.ldapReader.searchBaseDN);
+    assertEquals(baseDN, ldapReader.searchBaseDN);
   }
 
   @Test
   public void testSetSearchResultLimit() {
     int limit = RANDOM.nextInt(1000);
 
-    this.ldapReader.setSearchResultLimit(limit);
+    ldapReader.setSearchResultLimit(limit);
 
-    assertEquals(limit, this.ldapReader.searchResultLimit);
+    assertEquals(limit, ldapReader.searchResultLimit);
   }
 
   @Test
   public void testSetNamespace() {
-    this.ldapReader.setNamespace("namespace");
+    ldapReader.setNamespace("namespace");
 
-    assertEquals("namespace.", this.ldapReader.namespace);
+    assertEquals("namespace.", ldapReader.namespace);
   }
 
   @Test
   public void testSetAttributes() {
     String[] attributes = new String[] {"id1", "id2", "id3"};
 
-    this.ldapReader.setAttributes(attributes);
+    ldapReader.setAttributes(attributes);
 
-    assertEquals(attributes, this.ldapReader.attributes);
+    assertEquals(attributes, ldapReader.attributes);
   }
 
   @Test
   public void testSetSearchScope() {
 
-    this.ldapReader.setSearchScope("subtree");
+    ldapReader.setSearchScope("subtree");
 
-    assertEquals(LDAPReader.Scope.SUBTREE_SCOPE, this.ldapReader.searchScope);
+    assertEquals(LDAPReader.Scope.SUBTREE_SCOPE, ldapReader.searchScope);
   }
 
   @Test(expected = RuntimeException.class)
   public void testSetSearchScopeException() {
 
-    this.ldapReader.setSearchScope("wrongScope");
+    ldapReader.setSearchScope("wrongScope");
   }
 
   private void mockInitialDirContextFactory() throws Exception {
@@ -248,12 +250,12 @@ public class LDAPReaderTest extends TestCase {
                 Mockito.any(String.class),
                 Mockito.any(String.class),
                 Mockito.any(SearchControls.class)))
-        .thenReturn(this.results);
-    Mockito.when(this.results.hasMore()).thenReturn(true).thenReturn(true).thenReturn(false);
-    Mockito.when(this.results.next()).thenReturn(result);
-    Mockito.when(this.result.getName()).thenReturn("test");
+        .thenReturn(results);
+    Mockito.when(results.hasMore()).thenReturn(true).thenReturn(true).thenReturn(false);
+    Mockito.when(results.next()).thenReturn(result);
+    Mockito.when(result.getName()).thenReturn("test");
     Attributes attributes = Mockito.mock(Attributes.class);
-    Mockito.when(this.result.getAttributes()).thenReturn(attributes);
+    Mockito.when(result.getAttributes()).thenReturn(attributes);
     Attribute attribute = Mockito.mock(Attribute.class);
     Mockito.when(attributes.get(Mockito.anyString())).thenReturn(attribute);
     Mockito.when(attribute.get()).thenReturn("test");

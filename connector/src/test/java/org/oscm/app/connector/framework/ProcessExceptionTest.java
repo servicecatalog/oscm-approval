@@ -32,63 +32,63 @@ public class ProcessExceptionTest {
 
   @Before
   public void setUp() {
-    this.exceptionMsg = "\nDescription of what caused the error";
-    this.message = "Test message for TestException";
-    this.errorCode = 100;
-    this.cause = new TestException(this.exceptionMsg);
+    exceptionMsg = "\nDescription of what caused the error";
+    message = "Test message for TestException";
+    errorCode = 100;
+    cause = new TestException(exceptionMsg);
   }
 
   @Test
   public void testProcessException() {
-    this.process = new ProcessException(this.message, this.errorCode, this.cause);
-    this.process = PowerMockito.spy(this.process);
+    process = new ProcessException(message, errorCode, cause);
+    process = PowerMockito.spy(process);
 
-    assertEquals(this.message, Whitebox.getInternalState(this.process, "message"));
+    assertEquals(message, Whitebox.getInternalState(process, "message"));
     assertEquals(
-        Optional.ofNullable(this.errorCode),
-        Optional.ofNullable(Whitebox.getInternalState(this.process, "errorCode")));
-    assertEquals(this.cause, Whitebox.getInternalState(this.process, "cause"));
+        Optional.ofNullable(errorCode),
+        Optional.ofNullable(Whitebox.getInternalState(process, "errorCode")));
+    assertEquals(cause, Whitebox.getInternalState(process, "cause"));
   }
 
   @Test
   public void testProcessExceptionWithoutCause() {
-    this.process = new ProcessException(this.message, this.errorCode);
-    this.process = PowerMockito.spy(this.process);
+    process = new ProcessException(message, errorCode);
+    process = PowerMockito.spy(process);
 
-    assertEquals(this.message, Whitebox.getInternalState(this.process, "message"));
+    assertEquals(message, Whitebox.getInternalState(process, "message"));
     assertEquals(
-        Optional.ofNullable(this.errorCode),
-        Optional.ofNullable(Whitebox.getInternalState(this.process, "errorCode")));
+        Optional.ofNullable(errorCode),
+        Optional.ofNullable(Whitebox.getInternalState(process, "errorCode")));
   }
 
   @Test
   public void testGetErrorCode() {
-    this.process = new ProcessException(this.message, this.errorCode, this.cause);
-    this.process = PowerMockito.spy(this.process);
+    process = new ProcessException(message, errorCode, cause);
+    process = PowerMockito.spy(process);
 
-    final int result = this.process.getErrorcode();
+    final int result = process.getErrorcode();
 
-    assertEquals(this.errorCode, result);
+    assertEquals(errorCode, result);
   }
 
   @Test
   public void testGetCause() {
-    this.process = new ProcessException(this.message, this.errorCode, this.cause);
-    this.process = PowerMockito.spy(this.process);
+    process = new ProcessException(message, errorCode, cause);
+    process = PowerMockito.spy(process);
 
-    final Exception result = this.process.getCause();
+    final Exception result = process.getCause();
 
-    assertEquals(this.cause, result);
+    assertEquals(cause, result);
   }
 
   @Test
   public void testToString() {
     String expectedResult =
         "errorCode=100\nTest message for TestException\nDescription of what caused the error\n";
-    this.process = new ProcessException(this.message, this.errorCode, this.cause);
-    this.process = PowerMockito.spy(this.process);
+    process = new ProcessException(message, errorCode, cause);
+    process = PowerMockito.spy(process);
 
-    final String result = this.process.toString();
+    final String result = process.toString();
 
     assertEquals(expectedResult, result);
   }

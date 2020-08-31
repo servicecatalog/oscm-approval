@@ -65,16 +65,16 @@ public class DatabaseWriterTest {
 
   @Before
   public void setUp() {
-    this.databaseWriter = PowerMockito.spy(new DatabaseWriter());
+    databaseWriter = PowerMockito.spy(new DatabaseWriter());
 
-    this.statement = mock(Statement.class);
-    this.connection = mock(Connection.class);
-    this.metadata = mock(ResultSetMetaData.class);
-    this.props = mock(Properties.class);
-    this.logger = mock(Logger.class);
-    this.activity = mock(Activity.class);
+    statement = mock(Statement.class);
+    connection = mock(Connection.class);
+    metadata = mock(ResultSetMetaData.class);
+    props = mock(Properties.class);
+    logger = mock(Logger.class);
+    activity = mock(Activity.class);
 
-    this.transmitData = new HashMap<>();
+    transmitData = new HashMap<>();
 
     Whitebox.setInternalState(DatabaseWriter.class, "logger", logger);
   }
@@ -82,55 +82,55 @@ public class DatabaseWriterTest {
   @Test
   public void testDoConfigure() throws ProcessException {
 
-    when(this.props.containsKey(any())).thenReturn(true);
-    when(this.props.getProperty(anyString())).thenReturn(anyString());
-    when(SpringBeanSupport.getProperty(this.props, SpringBeanSupport.URL, null)).thenReturn("url");
-    when(SpringBeanSupport.getProperty(this.props, SpringBeanSupport.DRIVER, null))
+    when(props.containsKey(any())).thenReturn(true);
+    when(props.getProperty(anyString())).thenReturn(anyString());
+    when(SpringBeanSupport.getProperty(props, SpringBeanSupport.URL, null)).thenReturn("url");
+    when(SpringBeanSupport.getProperty(props, SpringBeanSupport.DRIVER, null))
         .thenReturn("driver");
-    when(SpringBeanSupport.getProperty(this.props, SpringBeanSupport.USER, null))
+    when(SpringBeanSupport.getProperty(props, SpringBeanSupport.USER, null))
         .thenReturn("user");
-    when(SpringBeanSupport.getProperty(this.props, SpringBeanSupport.PASSWORD, null))
+    when(SpringBeanSupport.getProperty(props, SpringBeanSupport.PASSWORD, null))
         .thenReturn("password");
 
-    this.databaseWriter.doConfigure(this.props);
+    databaseWriter.doConfigure(props);
 
-    assertEquals("url", this.databaseWriter.url);
-    assertEquals("driver", this.databaseWriter.driver);
-    assertEquals("user", this.databaseWriter.username);
-    assertEquals("password", this.databaseWriter.password);
-    verify(this.logger, times(1)).debug(contains("beanName: "));
+    assertEquals("url", databaseWriter.url);
+    assertEquals("driver", databaseWriter.driver);
+    assertEquals("user", databaseWriter.username);
+    assertEquals("password", databaseWriter.password);
+    verify(logger, times(1)).debug(contains("beanName: "));
   }
 
   @Test(expected = ProcessException.class)
   public void testDoConfigureThrowException() throws Exception {
 
-    when(this.props.containsKey(any())).thenReturn(true);
-    when(this.props.getProperty(anyString())).thenReturn(null);
-    when(SpringBeanSupport.getProperty(this.props, anyString(), null)).thenReturn(null);
+    when(props.containsKey(any())).thenReturn(true);
+    when(props.getProperty(anyString())).thenReturn(null);
+    when(SpringBeanSupport.getProperty(props, anyString(), null)).thenReturn(null);
 
-    this.databaseWriter.doConfigure(this.props);
+    databaseWriter.doConfigure(props);
   }
 
   @Test
   public void testSetStatement() {
 
-    this.databaseWriter.setStatement("statement");
+    databaseWriter.setStatement("statement");
 
-    assertEquals("statement", this.databaseWriter.statement);
+    assertEquals("statement", databaseWriter.statement);
   }
 
   @Test
   public void testSetNamespace() {
 
-    this.databaseWriter.setNamespace("namespace");
+    databaseWriter.setNamespace("namespace");
 
-    assertEquals("namespace.", this.databaseWriter.namespace);
+    assertEquals("namespace.", databaseWriter.namespace);
   }
 
   @Test(expected = ProcessException.class)
   public void testTransmitReceiveDataStatementNull() throws Exception {
 
-    this.databaseWriter.transmitReceiveData(this.transmitData);
+    databaseWriter.transmitReceiveData(transmitData);
   }
 
   @Test
@@ -139,29 +139,29 @@ public class DatabaseWriterTest {
     PowerMockito.mockStatic(DriverManager.class);
     PowerMockito.mockStatic(ResultSet.class);
 
-    this.transmitData.put("statement", "returning");
-    this.databaseWriter.statement = "insert_$(statement)";
-    this.databaseWriter.driver = "org.junit.Test";
-    this.databaseWriter.username = "user";
-    this.databaseWriter.password = "password";
-    this.databaseWriter.url = "url";
-    this.databaseWriter.namespace = "namespace";
+    transmitData.put("statement", "returning");
+    databaseWriter.statement = "insert_$(statement)";
+    databaseWriter.driver = "org.junit.Test";
+    databaseWriter.username = "user";
+    databaseWriter.password = "password";
+    databaseWriter.url = "url";
+    databaseWriter.namespace = "namespace";
 
-    when(DriverManager.getConnection(anyString(), any())).thenReturn(this.connection);
-    when(this.connection.createStatement()).thenReturn(this.statement);
-    when(this.statement.execute(anyString())).thenReturn(true);
-    when(this.resultSet.getMetaData()).thenReturn(this.metadata);
-    when(this.metadata.getColumnCount()).thenReturn(noColumns);
-    when(this.metadata.getColumnName(anyInt())).thenReturn("column");
-    when(this.resultSet.next()).thenReturn(true, true, true, false);
-    when(this.resultSet.getString(anyInt())).thenReturn("value" + RANDOM.nextInt(1000));
+    when(DriverManager.getConnection(anyString(), any())).thenReturn(connection);
+    when(connection.createStatement()).thenReturn(statement);
+    when(statement.execute(anyString())).thenReturn(true);
+    when(resultSet.getMetaData()).thenReturn(metadata);
+    when(metadata.getColumnCount()).thenReturn(noColumns);
+    when(metadata.getColumnName(anyInt())).thenReturn("column");
+    when(resultSet.next()).thenReturn(true, true, true, false);
+    when(resultSet.getString(anyInt())).thenReturn("value" + RANDOM.nextInt(1000));
 
     final Map<String, String> receivedData =
-        this.databaseWriter.transmitReceiveData(this.transmitData);
+        databaseWriter.transmitReceiveData(transmitData);
 
-    verify(this.metadata, times(noColumns)).getColumnName(anyInt());
-    verify(this.logger, times(3 * noColumns)).debug(startsWith("column"));
-    assertEquals(this.transmitData, receivedData);
+    verify(metadata, times(noColumns)).getColumnName(anyInt());
+    verify(logger, times(3 * noColumns)).debug(startsWith("column"));
+    assertEquals(transmitData, receivedData);
   }
 
   @Test
@@ -169,56 +169,56 @@ public class DatabaseWriterTest {
     PowerMockito.mockStatic(DriverManager.class);
     PowerMockito.mockStatic(ResultSet.class);
 
-    this.transmitData.put("statement", "subjectValue");
-    this.databaseWriter.statement = "_$(statement)";
-    this.databaseWriter.driver = "org.junit.Test";
-    this.databaseWriter.username = "user";
-    this.databaseWriter.password = "password";
-    this.databaseWriter.url = "url";
-    this.databaseWriter.namespace = "namespace";
-    this.databaseWriter.setNextActivity(this.activity);
+    transmitData.put("statement", "subjectValue");
+    databaseWriter.statement = "_$(statement)";
+    databaseWriter.driver = "org.junit.Test";
+    databaseWriter.username = "user";
+    databaseWriter.password = "password";
+    databaseWriter.url = "url";
+    databaseWriter.namespace = "namespace";
+    databaseWriter.setNextActivity(activity);
 
-    when(DriverManager.getConnection(anyString(), any())).thenReturn(this.connection);
-    when(this.connection.createStatement()).thenReturn(this.statement);
-    when(this.statement.execute(anyString())).thenReturn(true);
-    when(this.resultSet.getMetaData()).thenReturn(this.metadata);
-    when(this.resultSet.next()).thenReturn(false);
+    when(DriverManager.getConnection(anyString(), any())).thenReturn(connection);
+    when(connection.createStatement()).thenReturn(statement);
+    when(statement.execute(anyString())).thenReturn(true);
+    when(resultSet.getMetaData()).thenReturn(metadata);
+    when(resultSet.next()).thenReturn(false);
 
     final Map<String, String> receivedData =
-        this.databaseWriter.transmitReceiveData(this.transmitData);
+        databaseWriter.transmitReceiveData(transmitData);
 
-    assertNotEquals(this.transmitData, receivedData);
+    assertNotEquals(transmitData, receivedData);
   }
 
   @Test(expected = ProcessException.class)
   public void testTransmitReceiveDataReturnClassNotFoundException() throws Exception {
 
-    this.transmitData.put("statement", "subjectValue");
-    this.databaseWriter.statement = "_$(statement)";
-    this.databaseWriter.driver = "Test";
+    transmitData.put("statement", "subjectValue");
+    databaseWriter.statement = "_$(statement)";
+    databaseWriter.driver = "Test";
 
-    this.databaseWriter.transmitReceiveData(this.transmitData);
+    databaseWriter.transmitReceiveData(transmitData);
   }
 
   @Test(expected = ProcessException.class)
   public void testTransmitReceiveDataReturnSQLException() throws Exception {
 
-    this.transmitData.put("statement", "subjectValue");
-    this.databaseWriter.statement = "_$(statement)";
-    this.databaseWriter.driver = "org.junit.Test";
-    this.databaseWriter.username = "user";
-    this.databaseWriter.password = "password";
-    this.databaseWriter.url = "url";
+    transmitData.put("statement", "subjectValue");
+    databaseWriter.statement = "_$(statement)";
+    databaseWriter.driver = "org.junit.Test";
+    databaseWriter.username = "user";
+    databaseWriter.password = "password";
+    databaseWriter.url = "url";
 
-    this.databaseWriter.transmitReceiveData(this.transmitData);
+    databaseWriter.transmitReceiveData(transmitData);
   }
 
   @Test(expected = ProcessException.class)
   public void testTransmitReceiveDataNotContainsKey() throws Exception {
 
-    this.transmitData.put("wrongKey", "subjectValue");
-    this.databaseWriter.statement = "_$(statement)";
+    transmitData.put("wrongKey", "subjectValue");
+    databaseWriter.statement = "_$(statement)";
 
-    this.databaseWriter.transmitReceiveData(this.transmitData);
+    databaseWriter.transmitReceiveData(transmitData);
   }
 }

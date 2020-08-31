@@ -50,16 +50,16 @@ public class ActivityTest {
 
   @Before
   public void setUp() {
-    this.activity =
+    activity =
         new Activity() {
           @Override
           public void doConfigure(Properties props) throws ProcessException {}
         };
-    this.activity = PowerMockito.spy(this.activity);
-    this.props = mock(Properties.class);
+    activity = PowerMockito.spy(activity);
+    props = mock(Properties.class);
 
-    this.transmitData = new HashMap<>();
-    this.emptyMap = new HashMap<>();
+    transmitData = new HashMap<>();
+    emptyMap = new HashMap<>();
   }
 
   final String PROPERTY_TEMPLATE =
@@ -95,44 +95,44 @@ public class ActivityTest {
 
   @Test(expected = ProcessException.class)
   public void testReplacePlaceholderTransmitDataWithoutKey() throws Exception {
-    this.transmitData.put("wrongKey", "anyValue");
+    transmitData.put("wrongKey", "anyValue");
 
-    replacePlaceholders(this.transmitData);
+    replacePlaceholders(transmitData);
   }
 
   @Test
   public void testSetBeanName() {
 
-    this.activity.setBeanName("beanName");
+    activity.setBeanName("beanName");
 
-    assertEquals("beanName", this.activity.getBeanName());
+    assertEquals("beanName", activity.getBeanName());
   }
 
   @Test
   public void testSetConfiguration() throws Exception {
-    when(this.activity.getNextActivity()).thenReturn(this.activity, this.activity, null);
+    when(activity.getNextActivity()).thenReturn(activity, activity, null);
 
-    this.activity.setConfiguration(this.props);
+    activity.setConfiguration(props);
 
-    verify(this.activity, times(2)).setConfiguration(this.props);
+    verify(activity, times(2)).setConfiguration(props);
   }
 
   @Test
   public void testTransmitReceiveData() throws Exception {
-    when(this.activity.getNextActivity()).thenReturn(this.activity, this.activity, null);
+    when(activity.getNextActivity()).thenReturn(activity, activity, null);
 
-    final Map<String, String> result = this.activity.transmitReceiveData(this.transmitData);
+    final Map<String, String> result = activity.transmitReceiveData(transmitData);
 
-    verify(this.activity, times(2)).transmitReceiveData(this.transmitData);
-    assertEquals(this.emptyMap, result);
+    verify(activity, times(2)).transmitReceiveData(transmitData);
+    assertEquals(emptyMap, result);
   }
 
   @Test
   public void testSetNextActivity() {
 
-    this.activity.setNextActivity(this.activity);
+    activity.setNextActivity(activity);
 
-    assertEquals(this.activity, this.activity.getNextActivity());
+    assertEquals(activity, activity.getNextActivity());
   }
 
   private String replacePlaceholders(final Map<String, String> settings) throws ProcessException {

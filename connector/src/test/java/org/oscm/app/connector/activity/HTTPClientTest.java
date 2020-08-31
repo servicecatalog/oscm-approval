@@ -54,16 +54,16 @@ public class HTTPClientTest {
 
   @Before
   public void setUp() {
-    this.httpClient = PowerMockito.spy(new HTTPClient());
+    httpClient = PowerMockito.spy(new HTTPClient());
 
-    this.logger = mock(Logger.class);
-    this.props = mock(Properties.class);
-    this.statusLine = mock(StatusLine.class);
-    this.client = mock(CloseableHttpClient.class);
-    this.response = mock(CloseableHttpResponse.class);
-    this.activity = mock(Activity.class);
+    logger = mock(Logger.class);
+    props = mock(Properties.class);
+    statusLine = mock(StatusLine.class);
+    client = mock(CloseableHttpClient.class);
+    response = mock(CloseableHttpResponse.class);
+    activity = mock(Activity.class);
 
-    this.transmitData = new HashMap<>();
+    transmitData = new HashMap<>();
 
     Whitebox.setInternalState(HTTPClient.class, "logger", logger);
   }
@@ -71,78 +71,78 @@ public class HTTPClientTest {
   @Test
   public void testDoConfigure() throws ProcessException {
 
-    this.httpClient.doConfigure(this.props);
+    httpClient.doConfigure(props);
 
-    verify(this.logger, times(1)).debug(contains("beanName: "));
+    verify(logger, times(1)).debug(contains("beanName: "));
   }
 
   @Test(expected = ProcessException.class)
   public void testTransmitReceiveDataUrlNull() throws ProcessException {
 
-    this.httpClient.transmitReceiveData(this.transmitData);
+    httpClient.transmitReceiveData(transmitData);
   }
 
   @Test(expected = ProcessException.class)
   public void testTransmitReceiveDataHttpFail() throws Exception {
     PowerMockito.mockStatic(HttpClients.class);
 
-    this.httpClient.setUrl("url");
+    httpClient.setUrl("url");
 
-    PowerMockito.doReturn(this.client).when(HttpClients.class, "createDefault");
+    PowerMockito.doReturn(client).when(HttpClients.class, "createDefault");
 
-    this.httpClient.transmitReceiveData(this.transmitData);
+    httpClient.transmitReceiveData(transmitData);
   }
 
   @Test(expected = ProcessException.class)
   public void testTransmitReceiveDataReturnCodeNot200() throws Exception {
     PowerMockito.mockStatic(HttpClients.class);
 
-    this.httpClient.setUrl("url");
+    httpClient.setUrl("url");
 
-    when(this.client.execute(any())).thenReturn(response);
-    PowerMockito.doReturn(this.client).when(HttpClients.class, "createDefault");
-    PowerMockito.doReturn(this.statusLine).when(this.response, "getStatusLine");
+    when(client.execute(any())).thenReturn(response);
+    PowerMockito.doReturn(client).when(HttpClients.class, "createDefault");
+    PowerMockito.doReturn(statusLine).when(response, "getStatusLine");
 
-    this.httpClient.transmitReceiveData(this.transmitData);
+    httpClient.transmitReceiveData(transmitData);
   }
 
   @Test
   public void testTransmitReceiveDataReturnTransmitData() throws Exception {
 
-    this.httpClient.setUrl("url&amp;url");
-    this.httpClient.setUsername("username");
-    this.httpClient.setPassword("password");
+    httpClient.setUrl("url&amp;url");
+    httpClient.setUsername("username");
+    httpClient.setPassword("password");
 
-    PowerMockito.doReturn(this.client).when(this.httpClient, "getClient", any());
-    PowerMockito.doReturn(this.statusLine).when(this.response, "getStatusLine");
-    PowerMockito.doReturn(200).when(this.statusLine, "getStatusCode");
-    when(this.client.execute(any())).thenReturn(response);
+    PowerMockito.doReturn(client).when(httpClient, "getClient", any());
+    PowerMockito.doReturn(statusLine).when(response, "getStatusLine");
+    PowerMockito.doReturn(200).when(statusLine, "getStatusCode");
+    when(client.execute(any())).thenReturn(response);
 
-    final Map<String, String> returnData = this.httpClient.transmitReceiveData(this.transmitData);
+    final Map<String, String> returnData = httpClient.transmitReceiveData(transmitData);
 
-    assertEquals(this.transmitData, returnData);
-    verify(this.response, times(1)).close();
-    verify(this.client, times(1)).close();
-    verify(this.logger, times(3)).debug(anyString());
+    assertEquals(transmitData, returnData);
+    verify(response, times(1)).close();
+    verify(client, times(1)).close();
+    verify(logger, times(3)).debug(anyString());
   }
 
   @Test
   public void testTransmitReceiveDataReturnNextActivity() throws Exception {
     PowerMockito.mockStatic(HttpClients.class);
 
-    this.httpClient.setUrl("url");
-    this.httpClient.setNextActivity(this.activity);
+    httpClient.setUrl("url");
+    httpClient.setNextActivity(activity);
 
-    PowerMockito.doReturn(this.client).when(HttpClients.class, "createDefault");
-    PowerMockito.doReturn(this.statusLine).when(this.response, "getStatusLine");
-    PowerMockito.doReturn(200).when(this.statusLine, "getStatusCode");
-    when(this.client.execute(any())).thenReturn(response);
+    PowerMockito.doReturn(client).when(HttpClients.class, "createDefault");
+    PowerMockito.doReturn(statusLine).when(response, "getStatusLine");
+    PowerMockito.doReturn(200).when(statusLine, "getStatusCode");
+    when(client.execute(any())).thenReturn(response);
 
-    this.httpClient.transmitReceiveData(this.transmitData);
+    httpClient.transmitReceiveData(transmitData);
 
-    PowerMockito.verifyPrivate(this.httpClient, times(2)).invoke("getNextActivity");
-    verify(this.response, times(1)).close();
-    verify(this.client, times(1)).close();
-    verify(this.logger, times(2)).debug(anyString());
+    PowerMockito.verifyPrivate(httpClient, times(2)).invoke("getNextActivity");
+    verify(response, times(1)).close();
+    verify(client, times(1)).close();
+    verify(logger, times(2)).debug(anyString());
   }
 }

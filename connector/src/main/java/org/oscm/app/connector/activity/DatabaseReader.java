@@ -52,19 +52,19 @@ public class DatabaseReader extends Activity {
                 SpringBeanSupport.PASSWORD, null);
 
         if (url == null) {
-            throwsProcessException(SpringBeanSupport.URL);
+            throwProcessException(SpringBeanSupport.URL);
         }
 
         if (driver == null) {
-            throwsProcessException(SpringBeanSupport.DRIVER);
+            throwProcessException(SpringBeanSupport.DRIVER);
         }
 
         if (username == null) {
-            throwsProcessException(SpringBeanSupport.USER);
+            throwProcessException(SpringBeanSupport.USER);
         }
 
         if (password == null) {
-            throwsProcessException(SpringBeanSupport.PASSWORD);
+            throwProcessException(SpringBeanSupport.PASSWORD);
         }
 
     }
@@ -178,7 +178,7 @@ public class DatabaseReader extends Activity {
         }
     }
 
-    private void throwsProcessException(String configurableProperty) throws ProcessException {
+    private void throwProcessException(String configurableProperty) throws ProcessException {
         logger.error(String.format("beanName: %s The property \"%s\" is not set.", getBeanName(), configurableProperty));
         throw new ProcessException(
                 "beanName: " + getBeanName() + " The property \""

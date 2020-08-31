@@ -48,8 +48,8 @@ public class SpringBeanSupportTest {
 
     @Before
     public void setUp() {
-      this.logger = mock(Logger.class);
-      this.props = mock(Properties.class);
+      logger = mock(Logger.class);
+      props = mock(Properties.class);
 
       Whitebox.setInternalState(SpringBeanSupport.class, "logger", logger);
     }
@@ -57,40 +57,40 @@ public class SpringBeanSupportTest {
     @Test
     public void testGetPropertyWithStringDefaultValueWithKey() {
       String key = "key";
-      when(this.props.containsKey(anyString())).thenReturn(true);
-      when(this.props.getProperty(anyString())).thenReturn(key);
+      when(props.containsKey(anyString())).thenReturn(true);
+      when(props.getProperty(anyString())).thenReturn(key);
 
-      final String result = SpringBeanSupport.getProperty(this.props, key, anyString());
+      final String result = SpringBeanSupport.getProperty(props, key, anyString());
 
       assertEquals(key, result);
     }
 
     @Test
     public void testGetPropertyWithStringDefaultValueWithoutKey() {
-      when(this.props.containsKey(anyString())).thenReturn(false);
+      when(props.containsKey(anyString())).thenReturn(false);
 
-      final String result = SpringBeanSupport.getProperty(this.props, anyString(), "default");
+      final String result = SpringBeanSupport.getProperty(props, anyString(), "default");
 
-      verify(this.logger, times(1)).info(startsWith("getProperty() Key not found: "));
+      verify(logger, times(1)).info(startsWith("getProperty() Key not found: "));
       assertEquals("default", result);
     }
 
     @Test
     public void testGetPropertyWithBooleanDefaultValueWithKey() {
       String key = "true";
-      when(this.props.containsKey(anyString())).thenReturn(true);
-      when(this.props.getProperty(anyString())).thenReturn(key);
+      when(props.containsKey(anyString())).thenReturn(true);
+      when(props.getProperty(anyString())).thenReturn(key);
 
-      final boolean result = SpringBeanSupport.getProperty(this.props, key, anyBoolean());
+      final boolean result = SpringBeanSupport.getProperty(props, key, anyBoolean());
 
       assertTrue(result);
     }
 
     @Test
     public void testGetPropertyWithBooleanDefaultValueWithoutKey() {
-      when(this.props.containsKey(anyString())).thenReturn(false);
+      when(props.containsKey(anyString())).thenReturn(false);
 
-      final boolean result = SpringBeanSupport.getProperty(this.props, anyString(), true);
+      final boolean result = SpringBeanSupport.getProperty(props, anyString(), true);
 
       assertTrue(result);
     }
@@ -108,7 +108,7 @@ public class SpringBeanSupportTest {
 
       SpringBeanSupport.logProperties(properties);
 
-      verify(this.logger, times(21)).debug(anyString());
+      verify(logger, times(21)).debug(anyString());
     }
   }
 
@@ -119,7 +119,7 @@ public class SpringBeanSupportTest {
 
     @Before
     public void setUp() {
-      this.props = mock(Properties.class);
+      props = mock(Properties.class);
     }
 
     @Parameterized.Parameter(0)
@@ -151,27 +151,27 @@ public class SpringBeanSupportTest {
 
     @Test
     public void testGetPropertyWithIntegerDefaultValueWithKey() {
-      when(this.props.containsKey(anyString())).thenReturn(this.isContain);
-      when(this.props.getProperty(anyString())).thenReturn(propsValue);
+      when(props.containsKey(anyString())).thenReturn(isContain);
+      when(props.getProperty(anyString())).thenReturn(propsValue);
 
-      final int result = SpringBeanSupport.getProperty(this.props, anyString(), this.propsDefault);
+      final int result = SpringBeanSupport.getProperty(props, anyString(), propsDefault);
 
-      assertEquals(result, this.propsResult);
+      assertEquals(result, propsResult);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testGetPropertyWhenPropsIsNull() {
 
-      SpringBeanSupport.getProperty(null, this.propsValue, this.propsDefault);
+      SpringBeanSupport.getProperty(null, propsValue, propsDefault);
     }
 
     @Test
     public void testIsNumber() throws Exception {
 
       final boolean result =
-          Whitebox.invokeMethod(SpringBeanSupport.class, "isNumber", this.propsValue);
+          Whitebox.invokeMethod(SpringBeanSupport.class, "isNumber", propsValue);
 
-      assertEquals(result, this.isContain);
+      assertEquals(result, isContain);
     }
   }
 }

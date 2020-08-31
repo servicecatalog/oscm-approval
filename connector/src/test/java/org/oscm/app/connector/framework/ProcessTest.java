@@ -34,34 +34,34 @@ public class ProcessTest {
 
   @Before
   public void setUp() {
-    this.process = PowerMockito.spy(new Process());
-    this.props = mock(Properties.class);
-    this.iActivity = mock(Activity.class);
-    this.transmitData = new HashMap<>();
+    process = PowerMockito.spy(new Process());
+    props = mock(Properties.class);
+    iActivity = mock(Activity.class);
+    transmitData = new HashMap<>();
   }
 
   @Test
   public void testSetConfiguration() {
 
-    this.process.setConfiguration(this.props);
+    process.setConfiguration(props);
 
-    assertEquals(this.props, this.process.getConfiguration());
+    assertEquals(props, process.getConfiguration());
   }
 
   @Test
   public void testSetActivity() throws ProcessException {
 
-    this.process.setActivity(this.iActivity);
+    process.setActivity(iActivity);
 
-    assertEquals(this.iActivity, Whitebox.getInternalState(this.process, "activity"));
+    assertEquals(iActivity, Whitebox.getInternalState(process, "activity"));
   }
 
   @Test
   public void testExecute() throws ProcessException {
-    this.process.setActivity(this.iActivity);
+    process.setActivity(iActivity);
 
-    this.process.execute(this.transmitData);
+    process.execute(transmitData);
 
-    verify(this.iActivity, times(1)).transmitReceiveData(this.transmitData);
+    verify(iActivity, times(1)).transmitReceiveData(transmitData);
   }
 }

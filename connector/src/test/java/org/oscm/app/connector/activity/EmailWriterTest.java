@@ -66,13 +66,13 @@ public class EmailWriterTest {
 
   @Before
   public void setUp() {
-    this.transmitData = new HashMap<>();
+    transmitData = new HashMap<>();
 
-    this.emailWriter = PowerMockito.spy(new EmailWriter());
-    this.props = mock(Properties.class);
-    this.activity = mock(Activity.class);
-    this.session = mock(Session.class);
-    this.logger = mock(Logger.class);
+    emailWriter = PowerMockito.spy(new EmailWriter());
+    props = mock(Properties.class);
+    activity = mock(Activity.class);
+    session = mock(Session.class);
+    logger = mock(Logger.class);
     initialContext = mock(InitialContext.class);
 
     Whitebox.setInternalState(EmailWriter.class, "logger", logger);
@@ -82,101 +82,101 @@ public class EmailWriterTest {
   public void testDoConfigure() throws Exception {
 
     String url = "url";
-    when(this.props.containsKey(any())).thenReturn(true);
-    when(this.props.getProperty(anyString())).thenReturn(url);
-    when(SpringBeanSupport.getProperty(this.props, anyString(), null)).thenReturn(url);
+    when(props.containsKey(any())).thenReturn(true);
+    when(props.getProperty(anyString())).thenReturn(url);
+    when(SpringBeanSupport.getProperty(props, anyString(), null)).thenReturn(url);
 
-    this.emailWriter.doConfigure(this.props);
+    emailWriter.doConfigure(props);
 
-    String mailSession = Whitebox.getInternalState( this.emailWriter, "mailSession");
+    String mailSession = Whitebox.getInternalState( emailWriter, "mailSession");
     assertEquals(url, mailSession);
-    verify(this.logger, times(1)).debug(contains("beanName: "));
+    verify(logger, times(1)).debug(contains("beanName: "));
   }
 
   @Test(expected = ProcessException.class)
   public void testDoConfigureThrowException() throws Exception {
 
-    when(this.props.containsKey(any())).thenReturn(true);
-    when(this.props.getProperty(anyString())).thenReturn(null);
-    when(SpringBeanSupport.getProperty(this.props, anyString(), null)).thenReturn(null);
+    when(props.containsKey(any())).thenReturn(true);
+    when(props.getProperty(anyString())).thenReturn(null);
+    when(SpringBeanSupport.getProperty(props, anyString(), null)).thenReturn(null);
 
-    this.emailWriter.doConfigure(this.props);
+    emailWriter.doConfigure(props);
   }
 
   @Test
   public void testTransmitReceiveDataOnce() throws Exception {
-    this.transmitData.put("subject", "subjectValue");
+    transmitData.put("subject", "subjectValue");
     PowerMockito.doNothing()
-        .when(this.emailWriter, PowerMockito.method(EmailWriter.class, "sendEmail"))
-        .withArguments(eq(this.transmitData));
+        .when(emailWriter, PowerMockito.method(EmailWriter.class, "sendEmail"))
+        .withArguments(eq(transmitData));
 
-    final Map<String, String> result = this.emailWriter.transmitReceiveData(this.transmitData);
+    final Map<String, String> result = emailWriter.transmitReceiveData(transmitData);
 
-    PowerMockito.verifyPrivate(this.emailWriter, times(1)).invoke("getNextActivity");
-    PowerMockito.verifyPrivate(this.emailWriter, times(1)).invoke("sendEmail", this.transmitData);
-    verify(this.logger, times(1)).debug(contains("beanName: "));
-    assertEquals(this.transmitData, result);
+    PowerMockito.verifyPrivate(emailWriter, times(1)).invoke("getNextActivity");
+    PowerMockito.verifyPrivate(emailWriter, times(1)).invoke("sendEmail", transmitData);
+    verify(logger, times(1)).debug(contains("beanName: "));
+    assertEquals(transmitData, result);
   }
 
   @Test
   public void testTransmitReceiveDataTwice() throws Exception {
-    this.transmitData.put("subject", "subjectValue");
-    this.emailWriter.setNextActivity(this.activity);
+    transmitData.put("subject", "subjectValue");
+    emailWriter.setNextActivity(activity);
 
     PowerMockito.doNothing()
-        .when(this.emailWriter, PowerMockito.method(EmailWriter.class, "sendEmail"))
-        .withArguments(eq(this.transmitData));
+        .when(emailWriter, PowerMockito.method(EmailWriter.class, "sendEmail"))
+        .withArguments(eq(transmitData));
 
-    final Map<String, String> result = this.emailWriter.transmitReceiveData(this.transmitData);
+    final Map<String, String> result = emailWriter.transmitReceiveData(transmitData);
 
-    PowerMockito.verifyPrivate(this.emailWriter, times(2)).invoke("getNextActivity");
-    assertNotEquals(this.transmitData, result);
+    PowerMockito.verifyPrivate(emailWriter, times(2)).invoke("getNextActivity");
+    assertNotEquals(transmitData, result);
   }
 
   @Test
   public void testSendEmail() throws Exception {
-    this.transmitData.put("subject", "subjectValue");
-    this.transmitData.put("body", "://body.com");
-    this.transmitData.put("sender", "senderValue");
-    this.emailWriter.setSubject("_$(subject)");
-    this.emailWriter.setBody("html$(body)");
-    this.emailWriter.setSender("_$(sender)");
-    this.emailWriter.setRecipients("Recipients");
+    transmitData.put("subject", "subjectValue");
+    transmitData.put("body", "://body.com");
+    transmitData.put("sender", "senderValue");
+    emailWriter.setSubject("_$(subject)");
+    emailWriter.setBody("html$(body)");
+    emailWriter.setSender("_$(sender)");
+    emailWriter.setRecipients("Recipients");
 
-    PowerMockito.doReturn(true).when(this.emailWriter, "isHtmlContent", anyString());
-    PowerMockito.doReturn(this.session).when(this.emailWriter, "getMailSession");
+    PowerMockito.doReturn(true).when(emailWriter, "isHtmlContent", anyString());
+    PowerMockito.doReturn(session).when(emailWriter, "getMailSession");
     PowerMockito.mockStatic(Transport.class);
     PowerMockito.doNothing().when(Transport.class, "send", Mockito.any(MimeMessage.class));
 
-    Whitebox.invokeMethod(this.emailWriter, "sendEmail", this.transmitData);
+    Whitebox.invokeMethod(emailWriter, "sendEmail", transmitData);
 
-    PowerMockito.verifyPrivate(this.emailWriter, times(1)).invoke("getMailSession");
+    PowerMockito.verifyPrivate(emailWriter, times(1)).invoke("getMailSession");
     PowerMockito.verifyStatic(Transport.class, Mockito.times(1));
     Transport.send(Mockito.any());
-    verify(this.logger, times(2)).debug(anyString());
+    verify(logger, times(2)).debug(anyString());
   }
 
   @Test(expected = Exception.class)
   public void testSendEmailException() throws Exception {
-    this.transmitData.put("subject", "subjectValue");
-    this.transmitData.put("body", "://body.com");
-    this.transmitData.put("sender", "senderValue");
-    this.emailWriter.setSubject("_$(subject)");
-    this.emailWriter.setBody("html$(body)");
-    this.emailWriter.setSender("_$(sender)");
+    transmitData.put("subject", "subjectValue");
+    transmitData.put("body", "://body.com");
+    transmitData.put("sender", "senderValue");
+    emailWriter.setSubject("_$(subject)");
+    emailWriter.setBody("html$(body)");
+    emailWriter.setSender("_$(sender)");
 
-    PowerMockito.doReturn(null).when(this.emailWriter, "getMailSession");
+    PowerMockito.doReturn(null).when(emailWriter, "getMailSession");
 
-    Whitebox.invokeMethod(this.emailWriter, "sendEmail", this.transmitData);
+    Whitebox.invokeMethod(emailWriter, "sendEmail", transmitData);
   }
 
   @Test
   public void testGetMailSession() throws Exception {
 
     System.setProperty(
-        "java.naming.factory.initial", this.getClass().getCanonicalName() + "$MyContextFactory");
+        "java.naming.factory.initial", getClass().getCanonicalName() + "$MyContextFactory");
 
-    Whitebox.invokeMethod(this.emailWriter, "getMailSession");
+    Whitebox.invokeMethod(emailWriter, "getMailSession");
 
     verify(initialContext, times(1)).lookup(anyString());
   }
@@ -184,9 +184,9 @@ public class EmailWriterTest {
   @Test(expected = Exception.class)
   public void testGetMailSessionException() throws Exception {
 
-    System.setProperty("java.naming.factory.initial", this.getClass().getCanonicalName());
+    System.setProperty("java.naming.factory.initial", getClass().getCanonicalName());
 
-    Whitebox.invokeMethod(this.emailWriter, "getMailSession");
+    Whitebox.invokeMethod(emailWriter, "getMailSession");
   }
 
   public static class MyContextFactory implements InitialContextFactory {

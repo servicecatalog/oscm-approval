@@ -50,12 +50,12 @@ public class LDAPTest extends TestCase {
 
   @Before
   public void setUp() {
-    this.ldap = new LDAP(this.url, this.referral, this.username, this.password);
-    this.ldapSpy = PowerMockito.spy(this.ldap);
+    ldap = new LDAP(url, referral, username, password);
+    ldapSpy = PowerMockito.spy(ldap);
 
-    this.logger = mock(Logger.class);
-    this.dirContext = this.ldap.dirCtx = mock(DirContext.class);
-    this.results = mock(NamingEnumeration.class);
+    logger = mock(Logger.class);
+    dirContext = ldap.dirCtx = mock(DirContext.class);
+    results = mock(NamingEnumeration.class);
 
     Whitebox.setInternalState(LDAP.class, "logger", logger);
   }
@@ -63,15 +63,15 @@ public class LDAPTest extends TestCase {
   @Test
   public void testLdapConstructor() {
 
-    String urlLDAP = Whitebox.getInternalState(this.ldapSpy, "directoryURL");
-    String referralLDAP = Whitebox.getInternalState(this.ldapSpy, "referral");
-    String usernameLDAP = Whitebox.getInternalState(this.ldapSpy, "username");
-    String passwordLDAP = Whitebox.getInternalState(this.ldapSpy, "password");
+    String urlLDAP = Whitebox.getInternalState(ldapSpy, "directoryURL");
+    String referralLDAP = Whitebox.getInternalState(ldapSpy, "referral");
+    String usernameLDAP = Whitebox.getInternalState(ldapSpy, "username");
+    String passwordLDAP = Whitebox.getInternalState(ldapSpy, "password");
 
-    assertEquals(this.url + "/", urlLDAP);
-    assertEquals(this.referral, referralLDAP);
-    assertEquals(this.username, usernameLDAP);
-    assertEquals(this.password, passwordLDAP);
+    assertEquals(url + "/", urlLDAP);
+    assertEquals(referral, referralLDAP);
+    assertEquals(username, usernameLDAP);
+    assertEquals(password, passwordLDAP);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -89,10 +89,10 @@ public class LDAPTest extends TestCase {
                 Mockito.any(String.class),
                 Mockito.any(String.class),
                 Mockito.any(SearchControls.class)))
-        .thenReturn(this.results);
-    Mockito.when(this.results.hasMore()).thenReturn(true).thenReturn(true).thenReturn(false);
+        .thenReturn(results);
+    Mockito.when(results.hasMore()).thenReturn(true).thenReturn(true).thenReturn(false);
     SearchResult result = Mockito.mock(SearchResult.class);
-    Mockito.when(this.results.next()).thenReturn(result);
+    Mockito.when(results.next()).thenReturn(result);
     Mockito.when(result.getName()).thenReturn("test");
     Attributes attributes = Mockito.mock(Attributes.class);
     Mockito.when(result.getAttributes()).thenReturn(attributes);
@@ -103,29 +103,29 @@ public class LDAPTest extends TestCase {
         .withArguments(Mockito.any())
         .thenReturn(initialDirContext);
 
-    this.ldapSpy.connect();
+    ldapSpy.connect();
 
-    boolean connectedLdap = Whitebox.getInternalState(this.ldapSpy, "isConnected");
+    boolean connectedLdap = Whitebox.getInternalState(ldapSpy, "isConnected");
     assertEquals(true, connectedLdap);
   }
 
   @Test
   public void testDisconnect() {
-    Whitebox.setInternalState(this.ldapSpy, "isConnected", true);
-    Whitebox.setInternalState(this.ldapSpy, "dirCtx", this.dirContext);
+    Whitebox.setInternalState(ldapSpy, "isConnected", true);
+    Whitebox.setInternalState(ldapSpy, "dirCtx", dirContext);
 
-    this.ldapSpy.disconnect();
+    ldapSpy.disconnect();
 
-    boolean connectedLdap = Whitebox.getInternalState(this.ldapSpy, "isConnected");
+    boolean connectedLdap = Whitebox.getInternalState(ldapSpy, "isConnected");
     assertEquals(false, connectedLdap);
   }
 
   @Test
   public void testSearch() throws Exception {
-    Whitebox.setInternalState(this.ldapSpy, "dirCtx", this.dirContext);
+    Whitebox.setInternalState(ldapSpy, "dirCtx", dirContext);
 
-    this.ldapSpy.search(anyString(), anyString(), any());
+    ldapSpy.search(anyString(), anyString(), any());
 
-    verify(this.logger, times(1)).debug(contains("baseDN: "));
+    verify(logger, times(1)).debug(contains("baseDN: "));
   }
 }
