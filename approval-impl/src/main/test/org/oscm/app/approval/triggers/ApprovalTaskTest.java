@@ -10,6 +10,7 @@
 package org.oscm.app.approval.triggers;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -75,8 +76,9 @@ public class ApprovalTaskTest {
     ApprovalTask task = new ApprovalTask(trigger);
 
     assertEquals("{}", task.getJSON());
+    assertNotNull(task);
   }
-  
+
   @Test
   public void testConstructor() throws Exception {
 
