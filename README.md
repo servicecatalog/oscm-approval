@@ -1,5 +1,5 @@
-# oscm-approval
-OSCM Approval Tool (WIP)
+# oscm-approval [![Build Status](https://travis-ci.org/servicecatalog/oscm-approval.svg?branch=master)](https://travis-ci.org/servicecatalog/oscm-approval) [![codecov](https://codecov.io/gh/servicecatalog/oscm-approval/branch/master/graph/badge.svg)](https://codecov.io/gh/servicecatalog/oscm-approval)
+OSCM Approval Tool (WIP) 
 
 
 ## Build ##
