@@ -7,7 +7,7 @@
  *
  * <p>*****************************************************************************
  */
-package org.oscm.app.approval.triggers;
+package java.org.oscm.app.app.approval.triggers;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -26,6 +26,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.oscm.app.approval.triggers.ApprovalNotificationService;
+import org.oscm.app.approval.triggers.ApprovalTask;
 import org.oscm.notification.vo.VONotification;
 import org.oscm.types.enumtypes.UserRoleType;
 import org.oscm.vo.VOOrganization;
@@ -47,8 +49,10 @@ import org.oscm.vo.VOUserDetails;
 @RunWith(MockitoJUnitRunner.class)
 public class ApprovalNotificationServiceTest {
 
-  @Spy ApprovalNotificationService service;
-  @Mock ApprovalTask task;
+  @Spy
+  ApprovalNotificationService service;
+  @Mock
+  ApprovalTask task;
   VOTriggerProcess process;
 
   @Before

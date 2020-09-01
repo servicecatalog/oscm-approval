@@ -7,7 +7,7 @@
  *
  * <p>*****************************************************************************
  */
-package org.oscm.app.approval.triggers;
+package java.org.oscm.app.app.approval.triggers;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.times;
@@ -19,6 +19,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.oscm.app.approval.triggers.ApprovalTask;
 import org.oscm.app.dataaccess.AppDataService;
 import org.oscm.vo.VOPriceModel;
 import org.oscm.vo.VOService;

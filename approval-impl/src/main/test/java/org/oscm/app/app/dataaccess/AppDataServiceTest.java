@@ -7,7 +7,7 @@
  *
  * <p>*****************************************************************************
  */
-package org.oscm.app.dataaccess;
+package java.org.oscm.app.app.dataaccess;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -27,6 +27,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.oscm.app.dataaccess.AppDataService;
+import org.oscm.app.dataaccess.Credentials;
 
 /** @author worf */
 @RunWith(MockitoJUnitRunner.class)
@@ -37,7 +39,8 @@ public class AppDataServiceTest {
   @Mock PreparedStatement ps;
   @Mock ResultSet rs;
 
-  @Spy AppDataService dataService;
+  @Spy
+  AppDataService dataService;
 
   @Before
   public void setUp() throws Exception {

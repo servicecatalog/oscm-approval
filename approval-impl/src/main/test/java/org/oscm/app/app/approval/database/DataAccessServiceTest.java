@@ -7,7 +7,7 @@
  *
  * <p>*****************************************************************************
  */
-package org.oscm.app.approval.database;
+package java.org.oscm.app.app.approval.database;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -38,6 +38,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.oscm.app.approval.database.DataAccessService;
+import org.oscm.app.approval.database.Task;
 import org.oscm.vo.VOOrganization;
 import org.oscm.vo.VOTriggerDefinition;
 import org.oscm.vo.VOTriggerProcess;
@@ -56,7 +58,8 @@ public class DataAccessServiceTest {
   @Mock VOOrganization org;
   @Mock VOUser user;
 
-  @Spy DataAccessService dataService;
+  @Spy
+  DataAccessService dataService;
 
   @Before
   public void setUp() throws Exception {
