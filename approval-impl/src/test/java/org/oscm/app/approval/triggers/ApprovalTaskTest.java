@@ -7,7 +7,7 @@
  *
  * <p>*****************************************************************************
  */
-package java.org.oscm.app.app.approval.triggers;
+package org.oscm.app.approval.triggers;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.times;

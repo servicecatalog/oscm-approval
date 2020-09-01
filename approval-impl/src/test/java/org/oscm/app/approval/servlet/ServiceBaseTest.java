@@ -7,7 +7,7 @@
  *
  * <p>*****************************************************************************
  */
-package java.org.oscm.app.app.approval.servlet;
+package org.oscm.app.approval.servlet;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;

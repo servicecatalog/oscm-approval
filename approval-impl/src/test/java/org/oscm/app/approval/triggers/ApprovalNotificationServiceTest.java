@@ -7,7 +7,7 @@
  *
  * <p>*****************************************************************************
  */
-package java.org.oscm.app.app.approval.triggers;
+package org.oscm.app.approval.triggers;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;

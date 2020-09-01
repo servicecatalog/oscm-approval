@@ -7,7 +7,7 @@
  *
  * <p>*****************************************************************************
  */
-package java.org.oscm.app.app.dataaccess;
+package org.oscm.app.dataaccess;
 
 import static org.junit.Assert.assertEquals;
 

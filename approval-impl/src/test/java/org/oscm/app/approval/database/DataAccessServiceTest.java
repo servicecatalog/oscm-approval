@@ -7,7 +7,7 @@
  *
  * <p>*****************************************************************************
  */
-package java.org.oscm.app.app.approval.database;
+package org.oscm.app.approval.database;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
