@@ -34,6 +34,9 @@ import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.oscm.app.approval.database.DataAccessService;
 import org.oscm.app.approval.database.Task;
+import org.oscm.app.approval.servlet.ServiceParams;
+import org.oscm.app.approval.servlet.ServiceResult;
+import org.oscm.app.approval.servlet.TaskServlet;
 import org.oscm.app.dataaccess.AppDataService;
 
 /** @author worf */
@@ -43,7 +46,8 @@ public class TaskServletTest {
   @Mock DataAccessService das;
   @Mock AppDataService ads;
   @Mock Task task;
-  @Spy TaskServlet taskServlet;
+  @Spy
+  TaskServlet taskServlet;
   private final String[] PATHS =
       new String[] {"https://www.fujitsu.com/de/products/software/enterprise-catalogmgr/"};
 

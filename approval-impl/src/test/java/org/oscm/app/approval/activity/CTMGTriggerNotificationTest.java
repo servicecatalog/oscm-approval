@@ -23,13 +23,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.oscm.app.approval.activity.CTMGTriggerNotification;
 import org.oscm.app.connector.framework.ProcessException;
 
 /** @author worf */
 @RunWith(MockitoJUnitRunner.class)
 public class CTMGTriggerNotificationTest {
 
-  @Spy CTMGTriggerNotification notification;
+  @Spy
+  CTMGTriggerNotification notification;
 
   @Before
   public void setUp() throws Exception {

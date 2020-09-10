@@ -21,6 +21,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.oscm.app.approval.database.Task;
 import org.oscm.app.approval.json.Organization;
 import org.oscm.app.approval.json.PriceModel;
 import org.oscm.app.approval.json.Seller;
@@ -38,7 +39,8 @@ public class TaskTest {
   Organization organization;
   Subscription subscription;
 
-  @Spy Task task;
+  @Spy
+  Task task;
 
   @Before
   public void setUp() {

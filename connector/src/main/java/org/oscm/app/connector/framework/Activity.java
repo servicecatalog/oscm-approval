@@ -25,7 +25,7 @@ abstract public class Activity implements BeanNameAware, IActivity {
     private static Logger logger = LogManager.getLogger(Activity.class);
 
     // the reference to the next activity in the chain of activities
-    // for the last activity in the chain this value is null;
+    // for the last activity in the chain this value is null
     private Activity nextActivity = null;
 
     /*
@@ -103,8 +103,7 @@ abstract public class Activity implements BeanNameAware, IActivity {
         if (getNextActivity() != null) {
             return getNextActivity().transmitReceiveData(transmitData);
         } else {
-            // end of chain
-            return new HashMap<>();
+            return new HashMap<>(); // end of chain
         }
     }
 
@@ -143,9 +142,7 @@ abstract public class Activity implements BeanNameAware, IActivity {
             String rest = value.substring(beginIndex + 2);
             String key = rest.substring(0, rest.indexOf(")"));
             if (!transmitData.containsKey(key)) {
-                logger.error("Failed to replace placeholder " + value
-                        + ". beanName: " + getBeanName() + " key " + key
-                        + " is not defined as property");
+                logger.error(String.format("Failed to replace placeholder %s. beanName: %s key %s is not defined as property", value, getBeanName(), key));
                 throw new ProcessException(
                         "Failed to replace placeholder " + value
                                 + ". beanName: " + getBeanName() + " key " + key
@@ -154,8 +151,7 @@ abstract public class Activity implements BeanNameAware, IActivity {
             }
             value = first + transmitData.get(key)
                     + rest.substring(rest.indexOf(")") + 1, rest.length());
-            logger.debug("replaced " + key + " with " + transmitData.get(key)
-                    + " - new value is " + value);
+            logger.debug(String.format("replaced %s with %s - new value is %s", key, transmitData.get(key), value));
         }
         return value;
 

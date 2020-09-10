@@ -15,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 
 import org.junit.Test;
+import org.oscm.app.dataaccess.AESEncrypter;
 
 /** @author worf */
 public class AESEncrypterTest {

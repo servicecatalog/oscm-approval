@@ -121,47 +121,30 @@ public class LDAPReader extends Activity {
 
         try {
             ldap.connect();
-            NamingEnumeration<SearchResult> _resultEnumeration = null;
+            NamingEnumeration<SearchResult> resultEnumeration = null;
             int i = 0;
             do {
-                _resultEnumeration = ldap.search(searchBaseDN[i], searchFilter,
+                resultEnumeration = ldap.search(searchBaseDN[i], searchFilter,
                         constraints);
 
-                if (_resultEnumeration.hasMore()) {
+                if (resultEnumeration.hasMore()) {
                     logger.debug(
-                            "Found entry for searchBaseDN: " + searchBaseDN[i]
-                                    + " searchFilter: " + searchFilter);
+                            String.format("Found entry for searchBaseDN: %s searchFilter: %s", searchBaseDN[i], searchFilter));
                 } else {
                     logger.debug(
-                            "No result for searchBaseDN: " + searchBaseDN[i]
-                                    + " searchFilter: " + searchFilter);
+                            String.format("No result for searchBaseDN: %s searchFilter: %s", searchBaseDN[i], searchFilter));
                 }
 
                 i++;
-            } while (!_resultEnumeration.hasMore() && i < searchBaseDN.length);
+            } while (!resultEnumeration.hasMore() && i < searchBaseDN.length);
 
-            boolean hasMore = _resultEnumeration.hasMore();
+            boolean hasMore = resultEnumeration.hasMore();
             if (!hasMore) {
                 throw new Exception("LDAP search without result. searchFilter: "
                         + searchFilter);
             }
             while (hasMore) {
-                SearchResult result = _resultEnumeration.next();
-                Attributes attrs = result.getAttributes();
-                NamingEnumeration<String> ids = attrs.getIDs();
-                boolean hasMoreAttr = ids.hasMore();
-                while (hasMoreAttr) {
-                    String id = ids.next();
-                    Attribute attr = attrs.get(id);
-                    if (isReturnAttribute(id)) {
-                        transmitData.put(namespace + id, (String) attr.get());
-                        logger.debug("PUT: " + id + ":" + attr.get());
-                    }
-                    hasMoreAttr = ids.hasMore();
-                }
-
-                hasMore = _resultEnumeration.hasMore();
-                if (hasMore) {
+                if (isLdapHasMoreAttributes(transmitData, resultEnumeration)) {
                     if (getNextActivity() != null) {
                         getNextActivity().transmitReceiveData(transmitData);
                     }
@@ -187,6 +170,27 @@ public class LDAPReader extends Activity {
         } else {
             return getNextActivity().transmitReceiveData(transmitData);
         }
+    }
+
+    protected boolean isLdapHasMoreAttributes(Map<String, String> transmitData, NamingEnumeration<SearchResult> resultEnumeration)
+            throws javax.naming.NamingException {
+        boolean hasMore;
+        SearchResult result = resultEnumeration.next();
+        Attributes attrs = result.getAttributes();
+        NamingEnumeration<String> ids = attrs.getIDs();
+        boolean hasMoreAttr = ids.hasMore();
+        while (hasMoreAttr) {
+            String id = ids.next();
+            Attribute attr = attrs.get(id);
+            if (isReturnAttribute(id)) {
+                transmitData.put(namespace + id, (String) attr.get());
+                logger.debug("PUT: " + id + ":" + attr.get());
+            }
+            hasMoreAttr = ids.hasMore();
+        }
+
+        hasMore = resultEnumeration.hasMore();
+        return hasMore;
     }
 
     private boolean isReturnAttribute(String name) {

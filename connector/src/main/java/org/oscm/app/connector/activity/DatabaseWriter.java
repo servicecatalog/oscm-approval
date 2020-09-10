@@ -48,39 +48,19 @@ public class DatabaseWriter extends Activity {
                 SpringBeanSupport.PASSWORD, null);
 
         if (url == null) {
-            logger.error("beanName: " + getBeanName() + " The property \""
-                    + SpringBeanSupport.URL + "\" is not set.");
-            throw new ProcessException(
-                    "beanName: " + getBeanName() + " The property \""
-                            + SpringBeanSupport.URL + "\" is not set.",
-                    ProcessException.CONFIG_ERROR);
+            throwProcessException(SpringBeanSupport.URL);
         }
 
         if (driver == null) {
-            logger.error("beanName: " + getBeanName() + " The property \""
-                    + SpringBeanSupport.DRIVER + "\" is not set.");
-            throw new ProcessException(
-                    "beanName: " + getBeanName() + " The property \""
-                            + SpringBeanSupport.DRIVER + "\" is not set.",
-                    ProcessException.CONFIG_ERROR);
+            throwProcessException(SpringBeanSupport.DRIVER);
         }
 
         if (username == null) {
-            logger.error("beanName: " + getBeanName() + " The property \""
-                    + SpringBeanSupport.USER + "\" is not set.");
-            throw new ProcessException(
-                    "beanName: " + getBeanName() + " The property \""
-                            + SpringBeanSupport.USER + "\" is not set.",
-                    ProcessException.CONFIG_ERROR);
+            throwProcessException(SpringBeanSupport.USER);
         }
 
         if (password == null) {
-            logger.error("beanName: " + getBeanName() + " The property \""
-                    + SpringBeanSupport.PASSWORD + "\" is not set.");
-            throw new ProcessException(
-                    "beanName: " + getBeanName() + " The property \""
-                            + SpringBeanSupport.PASSWORD + "\" is not set.",
-                    ProcessException.CONFIG_ERROR);
+            throwProcessException(SpringBeanSupport.PASSWORD);
         }
     }
 
@@ -199,4 +179,11 @@ public class DatabaseWriter extends Activity {
         }
     }
 
+    private void throwProcessException(String configurableProperty) throws ProcessException {
+        logger.error(String.format("beanName: %s The property \"%s\" is not set.", getBeanName(), configurableProperty));
+        throw new ProcessException(
+                "beanName: " + getBeanName() + " The property \""
+                        + configurableProperty + "\" is not set.",
+                ProcessException.CONFIG_ERROR);
+    }
 }

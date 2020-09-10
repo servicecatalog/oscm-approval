@@ -80,7 +80,7 @@ public class Gateway extends Activity {
     @Override
     public Map<String, String> transmitReceiveData(
             Map<String, String> transmitData) throws ProcessException {
-        logger.debug("beanName: " + getBeanName());
+        logger.debug(String.format("beanName: %s", getBeanName()));
 
         condition1 = (condition1 == null ? "false" : condition1);
         condition2 = (condition2 == null ? "false" : condition2);

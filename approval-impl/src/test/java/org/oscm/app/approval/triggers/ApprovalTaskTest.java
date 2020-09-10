@@ -19,6 +19,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.oscm.app.approval.triggers.ApprovalTask;
 import org.oscm.app.dataaccess.AppDataService;
 import org.oscm.vo.VOPriceModel;
 import org.oscm.vo.VOService;
