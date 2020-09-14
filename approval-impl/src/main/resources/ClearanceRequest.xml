@@ -16,33 +16,6 @@
        <property name="activity" ref="NotifyApprover"/>
     </bean>
  
-    <!-- bean id="RetrieveApprover" class="org.oscm.app.connector.activity.LDAPReader">
-       <property name="configuration">
-            <props>
-                <prop key="url">${ldap.url}</prop>
-                <prop key="referral">${ldap.referral}</prop>
-                <prop key="username">${ldap.username}</prop>
-                <prop key="password">${ldap.password}</prop>
-                <prop key="authentication">${ldap.authentication}</prop>
-            </props>
-        </property>
-        <property name="searchFilter" value="givenName=fg1"/>
-        <property name="searchScope" value="subtree"/>
-        <property name="searchBaseDN">
-            <list>
-            	<value>OU=OU_Accounts,DC=intern,DC=est,DC=fujitsu,DC=com</value>
-            </list>
-        </property>
-       <property name="attributes">
-            <list>
-            	<value>sAMAccountName</value>
-            	<value>mail</value>
-            </list>
-        </property>
-        <property name="namespace" value="ldap"/>
-       <property name="nextActivity" ref="NotifyApprover"/>
-     </bean  -->
-	
     <bean id="NotifyApprover" class="org.oscm.app.connector.activity.EmailWriter">
         <property name="configuration">
             <props>
