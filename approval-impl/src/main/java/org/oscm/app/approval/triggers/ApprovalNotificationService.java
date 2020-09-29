@@ -488,13 +488,12 @@ public class ApprovalNotificationService implements NotificationService {
     };
   }
 
-  <T> WebServiceTask<T> createSubscriptionDetailsByIdWSCall(Class<T> serv, String subscriptionId)
-      throws MalformedURLException, ConfigurationException {
-    return new WebServiceTask<T>(serv) {
+  <T> WebServiceTask<T> createSubscriptionDetailsByIdWSCall(
+      Class<T> service, String subscriptionId) {
 
+    return new WebServiceTask<T>(service) {
       @Override
       public Object execute(T svc) throws Exception {
-
         log.debug("subscriptionId: " + subscriptionId);
         SubscriptionService subSvc = (SubscriptionService) svc;
         return subSvc.getSubscriptionDetails(subscriptionId);
@@ -502,12 +501,11 @@ public class ApprovalNotificationService implements NotificationService {
     };
   }
 
-  <T> WebServiceTask<T> getOrganizationDataWSCall(Class<T> serv, String orgId) throws Exception {
+  <T> WebServiceTask<T> getOrganizationDataWSCall(Class<T> service, String orgId) {
 
-    return new WebServiceTask<T>(serv) {
-
+    return new WebServiceTask<T>(service) {
       @Override
-      public Object execute(T svc) throws Exception {
+      public Object execute(T svc) {
         AccountService accountSvc = (AccountService) svc;
         log.debug("OrgId: " + orgId);
         return accountSvc.getOrganizationData();

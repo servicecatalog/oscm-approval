@@ -18,7 +18,7 @@
             org.springframework.web.context.ContextLoaderListener
      </listener-class>
   </listener>
-  <servlet>
+<!--  <servlet>
     <servlet-name>CXFServlet</servlet-name>
     <servlet-class>org.apache.cxf.transport.servlet.CXFServlet</servlet-class>
     <init-param>
@@ -30,7 +30,7 @@
   <servlet-mapping>
     <servlet-name>CXFServlet</servlet-name>
     <url-pattern>/notification</url-pattern>
-  </servlet-mapping>
+  </servlet-mapping>-->
   <security-constraint>
     <display-name>Constraint1</display-name>
     <web-resource-collection>
