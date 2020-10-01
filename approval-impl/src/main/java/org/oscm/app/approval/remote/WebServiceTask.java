@@ -69,7 +69,7 @@ public abstract class WebServiceTask<T> extends Thread {
     BindingProvider bindingProvider = (BindingProvider) port;
 
     Binding binding = bindingProvider.getBinding();
-    List<Handler> handlerChain = binding.getHandlerChain();
+    @SuppressWarnings("rawtypes") List<Handler> handlerChain = binding.getHandlerChain();
     if (handlerChain == null) {
       handlerChain = new ArrayList<>();
     }

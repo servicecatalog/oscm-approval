@@ -12,19 +12,10 @@ import org.oscm.app.v2_0.data.PasswordAuthentication;
  */
 public class Credentials {
 
-    private boolean sso;
     private long userKey;
     private String userId;
     private String password;
     private String organizationId;
-
-    public boolean isSso() {
-        return sso;
-    }
-
-    public void setSso(boolean sso) {
-        this.sso = sso;
-    }
 
     public long getUserKey() {
         return userKey;

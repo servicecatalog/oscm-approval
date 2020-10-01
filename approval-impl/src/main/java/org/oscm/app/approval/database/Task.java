@@ -122,7 +122,6 @@ public class Task {
 
       if ("GrantClearance".equals(processData.ctmg_trigger_id)) {
         cred = das.loadControllerOwnerCredentials();
-
       } else {
         cred = das.loadOrgAdminCredentials(processData.ctmg_organization.id);
       }

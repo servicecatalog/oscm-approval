@@ -113,7 +113,7 @@ public class TaskServlet extends ServiceBase {
       task.description = content;
       String mailSubject = Messages.get("mail_approval.subject");
       AppDataService appDas = createAppDataService();
-      String webuiLink = appDas.loadControllerSettings().get("APPROVAL_URL");
+      String webuiLink = appDas.getApprovalUrl();
       String mailBody = Messages.get("mail_approval.text", new Object[] {webuiLink});
 
       Map<String, String> data = task.getTriggerProcessData();
