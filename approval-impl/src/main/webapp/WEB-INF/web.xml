@@ -31,7 +31,7 @@
     <servlet-name>CXFServlet</servlet-name>
     <url-pattern>/notification</url-pattern>
   </servlet-mapping>-->
-  <security-constraint>
+<!--  <security-constraint>
     <display-name>Constraint1</display-name>
     <web-resource-collection>
       <web-resource-name>allowed</web-resource-name>
@@ -75,5 +75,5 @@
   <security-role>
     <description></description>
     <role-name>role1</role-name>
-  </security-role>
+  </security-role>-->
 </web-app>

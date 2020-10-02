@@ -15,15 +15,15 @@
       <br>
       <h4><fmt:message key='login.subtitle' /></h4>
       <br>
-      <form action="j_security_check" method=post>
+      <form action="/approval/login" method=post>
         <table style="border-spacing: 5px;">
           <tr>
             <td><fmt:message key='login.label.user' /></td>
-            <td><input type="text" name="j_username" size="30"></td>
+            <td><input type="text" name="username" size="30"></td>
           </tr>
           <tr>
             <td><fmt:message key='login.label.password' /></td>
-            <td><input type="password" size="30" name="j_password"></td>
+            <td><input type="password" size="30" name="password"></td>
           </tr>
           <tr>
             <td></td>
