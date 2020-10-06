@@ -7,10 +7,13 @@
  */
 package org.oscm.app.dataaccess;
 
+import java.io.File;
+import java.nio.file.Files;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Properties;
 
@@ -18,6 +21,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
+import org.oscm.encrypter.AESEncrypter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -116,7 +120,13 @@ public class AppDataService {
       return userPwd.substring(userPwd.indexOf(":") + 1, userPwd.length());
     }
 
-    return AESEncrypter.decrypt(userPwd);
+
+    String keyPath = loadKey();
+    File keyFile = new File(keyPath);
+    byte[] key = Files.readAllBytes(keyFile.toPath());
+    org.oscm.encrypter.AESEncrypter.setKey(Arrays.copyOfRange(key, 0, AESEncrypter.KEY_BYTES));
+
+    return org.oscm.encrypter.AESEncrypter.decrypt(userPwd);
   }
 
   protected String loadControllerOwnerUserId() throws Exception {
@@ -268,7 +278,7 @@ public class AppDataService {
       return userPwd.substring(userPwd.indexOf(":") + 1, userPwd.length());
     }
 
-    return AESEncrypter.decrypt(userPwd);
+    return  org.oscm.encrypter.AESEncrypter.decrypt(userPwd);
   }
 
   public HashMap<String, String> loadControllerSettings() throws Exception {
@@ -333,5 +343,26 @@ public class AppDataService {
     }
 
     throw new RuntimeException("Failed to retrieve the BSS web service URL from the APP database");
+  }
+
+  protected String loadKey() throws Exception {
+    String sql =
+            "SELECT settingvalue FROM configurationsetting WHERE settingkey = 'APP_KEY_PATH' AND controllerid = 'PROXY'";
+
+    try (Connection con = findDatasource().getConnection();
+         PreparedStatement stmt = con.prepareStatement(sql)) {
+
+      @SuppressWarnings("resource")
+      ResultSet rs = stmt.executeQuery();
+
+      while (rs.next()) {
+        return rs.getString("settingvalue");
+      }
+    } catch (SQLException e) {
+      LOGGER.error("Failed to retrieve userId for controller owner", e);
+    }
+
+    throw new RuntimeException("Failed to retrieve userId for controller owner");
+
   }
 }

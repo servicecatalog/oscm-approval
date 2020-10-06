@@ -9,7 +9,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <ctmg.version>1.4.3</ctmg.version>
+    <ctmg.version>master-SNAPSHOT</ctmg.version>
     <mockito.version>3.5.0</mockito.version>
     <log4j.version>2.13.3</log4j.version>
     <jacoco.maven.plugin.version>0.8.5</jacoco.maven.plugin.version>
@@ -111,6 +111,11 @@
       <dependency>
         <groupId>com.github.servicecatalog.oscm-interfaces</groupId>
         <artifactId>oscm-extsvc-notification</artifactId>
+        <version>${ctmg.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.github.servicecatalog.oscm-commons</groupId>
+        <artifactId>oscm-common</artifactId>
         <version>${ctmg.version}</version>
       </dependency>
       <dependency>

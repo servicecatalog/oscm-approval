@@ -1,6 +1,10 @@
 package org.oscm.app.approval.servlet;
 
 import org.oscm.app.approval.auth.User;
+import org.oscm.app.approval.remote.BesClient;
+import org.oscm.app.dataaccess.AppDataService;
+import org.oscm.intf.IdentityService;
+import org.oscm.vo.VOUserDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,13 +37,26 @@ public class LoginServlet extends HttpServlet {
     String username = request.getParameter("username");
     String password = request.getParameter("password");
 
-    if ("approver".equals(username) && "approver".equals(password)) {
+    try {
+      IdentityService identityService =
+          BesClient.getWebservice(username, password, IdentityService.class);
+
+      VOUserDetails userDetails = identityService.getCurrentUserDetails();
+      LOGGER.info(
+          "USER_DETAILS:"
+              + userDetails.getKey()
+              + ", "
+              + userDetails.getUserId()
+              + ", "
+              + userDetails.getOrganizationId());
+
       User user = User.builder().username("approver").build();
       request.getSession().setAttribute("user", user);
       response.sendRedirect(request.getContextPath());
       return;
+    } catch (Exception e) {
+      LOGGER.error(e.getMessage());
     }
-
     request.getRequestDispatcher(LOGIN_PAGE).forward(request, response);
   }
 }
