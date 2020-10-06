@@ -15,7 +15,6 @@ import org.apache.commons.codec.binary.Base64;
 /**
  * Simple AES Encryption
  */
-@Deprecated
 public class AESEncrypter {
 
     /** The Constant ENCRYPTION_KEY - generated only once here. */

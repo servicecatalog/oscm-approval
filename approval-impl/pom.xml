@@ -54,10 +54,6 @@
             <artifactId>oscm-extsvc-notification</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.github.servicecatalog.oscm-commons</groupId>
-            <artifactId>oscm-common</artifactId>
-        </dependency>
-        <dependency>
             <groupId>commons-configuration</groupId>
             <artifactId>commons-configuration</artifactId>
         </dependency>
