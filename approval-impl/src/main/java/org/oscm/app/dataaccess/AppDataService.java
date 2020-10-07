@@ -38,13 +38,14 @@ public class AppDataService {
       p.setProperty(
           Context.INITIAL_CONTEXT_FACTORY, "org.apache.openejb.client.LocalInitialContextFactory");
       final String JNDI_NAME = "bss/app/controlleraccess/ess.approval";
-      
+
       try {
         InitialContext context = new InitialContext(p);
         ApprovalControllerAccess access = (ApprovalControllerAccess) context.lookup(JNDI_NAME);
         settings = access.getSettings();
       } catch (NamingException e) {
-        LOGGER.error(String.format("Failed lookup ApprovalControllerAccess with name %s", JNDI_NAME), e);  
+        LOGGER.error(
+            String.format("Failed lookup ApprovalControllerAccess with name %s", JNDI_NAME), e);
         throw new RuntimeException("Internal error", e);
       }
     }
@@ -67,7 +68,9 @@ public class AppDataService {
   public Credentials loadOrgAdminCredentials(String orgId) throws Exception {
     ApprovalInstanceAccess.ClientData data = getCustomerSettings(orgId);
     if (!data.isSet()) {
-        throw new APPlatformException(String.format("Missing approval connection settings for customer organization %s.", orgId));
+      throw new APPlatformException(
+          String.format(
+              "Missing approval connection settings for customer organization %s.", orgId));
     }
     String userPwd = data.getOrgAdminUserPwd().getValue();
     String userId = data.getOrgAdminUserId().getValue();
