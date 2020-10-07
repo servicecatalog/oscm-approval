@@ -66,6 +66,9 @@ public class AppDataService {
 
   public Credentials loadOrgAdminCredentials(String orgId) throws Exception {
     ApprovalInstanceAccess.ClientData data = getCustomerSettings(orgId);
+    if (!data.isSet()) {
+        throw new APPlatformException(String.format("Missing approval connection settings for customer organization %s.", orgId));
+    }
     String userPwd = data.getOrgAdminUserPwd().getValue();
     String userId = data.getOrgAdminUserId().getValue();
     String userKey = data.getOrgAdminUserKey().getValue();
