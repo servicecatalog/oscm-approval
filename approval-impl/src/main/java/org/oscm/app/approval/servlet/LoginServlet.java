@@ -1,8 +1,16 @@
+/**
+ * *****************************************************************************
+ *
+ * <p>Copyright FUJITSU LIMITED 2020
+ *
+ * <p>Creation Date: 01 Oct 2020
+ *
+ * <p>*****************************************************************************
+ */
 package org.oscm.app.approval.servlet;
 
 import org.oscm.app.approval.auth.User;
 import org.oscm.app.approval.remote.BesClient;
-import org.oscm.app.dataaccess.AppDataService;
 import org.oscm.intf.IdentityService;
 import org.oscm.vo.VOUserDetails;
 import org.slf4j.Logger;
