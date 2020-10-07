@@ -114,9 +114,9 @@
         <version>${ctmg.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.oscm</groupId>
+        <groupId>com.github.servicecatalog.oscm-app</groupId>
         <artifactId>oscm-app-approval</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>master-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>

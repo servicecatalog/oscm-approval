@@ -42,7 +42,7 @@
       <version>0.0.2-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <groupId>org.oscm</groupId>
+      <groupId>com.github.servicecatalog.oscm-app</groupId>
       <artifactId>oscm-app-approval</artifactId>
     </dependency>
     <dependency>
