@@ -61,7 +61,6 @@ public class LoginServlet extends HttpServlet {
       User user = User.builder().username("approver").build();
       request.getSession().setAttribute("user", user);
       response.sendRedirect(request.getContextPath());
-      return;
     } catch (Exception e) {
       LOGGER.error(e.getMessage());
       request.setAttribute("authError", true);
