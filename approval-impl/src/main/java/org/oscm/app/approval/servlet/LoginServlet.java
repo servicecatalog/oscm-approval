@@ -64,7 +64,8 @@ public class LoginServlet extends HttpServlet {
       return;
     } catch (Exception e) {
       LOGGER.error(e.getMessage());
+      request.setAttribute("authError", true);
+      request.getRequestDispatcher(LOGIN_PAGE).forward(request, response);
     }
-    request.getRequestDispatcher(LOGIN_PAGE).forward(request, response);
   }
 }

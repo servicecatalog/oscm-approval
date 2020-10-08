@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <fmt:setLocale value="${pageContext.request.locale}" />
 <fmt:setBundle basename="i18n.messages" />
 
@@ -15,6 +16,9 @@
       <br>
       <h4><fmt:message key='login.subtitle' /></h4>
       <br>
+      <c:if test="${authError}">
+         <span class="errorLabel"><fmt:message key='error.page.title' /></span>
+      </c:if>
       <form action="/approval/login" method=post>
         <table style="border-spacing: 5px;">
           <tr>
