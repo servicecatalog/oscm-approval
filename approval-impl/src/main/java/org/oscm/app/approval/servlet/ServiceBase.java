@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.oscm.app.approval.auth.User;
 import org.oscm.app.approval.servlet.ServiceParams.MODE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +62,9 @@ public abstract class ServiceBase extends HttpServlet {
 
       // Invoke service method
       ServiceParams params = new ServiceParams(mode, path, req.getParameterMap());
-      result = doService(params, req.getReader(), req.getUserPrincipal().getName());
+      User approver = (User) req.getSession().getAttribute("user");
+      result = doService(params, req.getReader(), approver.getUsername());
+
       if (result == null) {
         result = createServiceResult();
         result.setStatus(HttpServletResponse.SC_BAD_REQUEST);

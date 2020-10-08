@@ -326,3 +326,7 @@ font-weight: 700;
   line-height: 20px;
   padding: 5px 5px 5px 5px;
 }
+
+.errorLabel{
+    color: #DE3737
+}
