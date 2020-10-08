@@ -208,6 +208,7 @@ public class AppDataServiceTest {
     // given
     String pwd = "Ajgbts55l+DNxlgBjxxjFg==";
     doReturn(pwd).when(rs).getString("settingvalue");
+
     // when
     String result = dataService.loadUserPwd("orgId");
 
@@ -289,6 +290,7 @@ public class AppDataServiceTest {
     // given
     String pwd = "Ajgbts55l+DNxlgBjxxjFg==";
     doReturn(pwd).when(rs).getString("settingvalue");
+
     // when
     String result = dataService.loadControllerOwnerPassword();
 
