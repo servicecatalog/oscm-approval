@@ -92,7 +92,7 @@ public class AppDataServiceTest {
     assertEquals("testUser", cred.getUserId());
   }
 
-  //@Test
+  @Test
   public void getOrgAdminCredentials_fromParams() throws Exception {
     // given
     defineParameter("USERKEY_1af3c", "3000");
