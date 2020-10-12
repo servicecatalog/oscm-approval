@@ -51,8 +51,9 @@ public class AppDataServiceTest {
 
   @Before
   public void setUp() throws Exception {
-
+     
     ApprovalControllerAccess aca = mock(ApprovalControllerAccess.class);
+    dataService.setControllerAccess(aca);
     PowerMockito.when(aca.getSettings()).thenReturn(new ControllerSettings(ctrlSet));
     InitialContext ic = mock(InitialContext.class);
     PowerMockito.whenNew(InitialContext.class).withArguments(Mockito.any()).thenReturn(ic);
