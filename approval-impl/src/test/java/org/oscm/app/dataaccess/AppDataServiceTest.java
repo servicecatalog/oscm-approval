@@ -26,9 +26,10 @@ import org.mockito.Captor;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.oscm.app.approval.controller.ApprovalControllerAccess;
+
 import org.oscm.app.approval.controller.ApprovalInstanceAccess;
 import org.oscm.app.approval.controller.ApprovalInstanceAccess.ClientData;
+import org.oscm.app.approval.intf.ApprovalControllerAccess;
 import org.oscm.app.v2_0.data.ControllerSettings;
 import org.oscm.app.v2_0.data.ProvisioningSettings;
 import org.oscm.app.v2_0.data.Setting;
