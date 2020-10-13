@@ -13,10 +13,10 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import org.oscm.app.approval.controller.ApprovalController;
 import org.oscm.app.approval.controller.ApprovalControllerAccess;
 import org.oscm.app.approval.controller.ApprovalInstanceAccess;
 import org.oscm.app.approval.controller.ApprovalInstanceAccess.ClientData;
+import org.oscm.app.approval.intf.ApprovalController;
 import org.oscm.app.v2_0.data.ControllerSettings;
 import org.oscm.app.v2_0.data.Setting;
 import org.oscm.app.v2_0.exceptions.APPlatformException;
@@ -43,29 +43,35 @@ public class AppDataService {
     if (controllerAccess != null) {
       return controllerAccess.getSettings();
     } else {
+      // Lookup approval controller remote EJB to obtain controller settings   
+      final String name = "bss/app/controller/ess.approval";
+      final String factory = "org.apache.openejb.client.LocalInitialContextFactory";
 
-      final String JNDI_NAME =
-          "ejb:oscm-app-approval/oscm-app-approval/ApprovalController!org.oscm.app.approval.controller.ApprovalController";
-    
-      Properties p = new Properties();
-      p.setProperty(
-          Context.INITIAL_CONTEXT_FACTORY, "org.apache.openejb.client.LocalInitialContextFactory");
+      Object lookup = jndiLookup(name, factory);
 
-      try {
-        InitialContext context = new InitialContext(p);
-        Object lookup = context.lookup(JNDI_NAME);
-        if (!ApprovalController.class.isAssignableFrom(lookup.getClass())) {
-            throw new IllegalStateException(
-                "Failed to look up ApprovalController. The returned service is not implementing correct interface");
-        }
-        ApprovalController controller = (ApprovalController) context.lookup(JNDI_NAME);
-        controllerAccess = controller.getControllerAccess();
-        return controllerAccess.getSettings();
-      } catch (NamingException e) {
+      if (!ApprovalController.class.isAssignableFrom(lookup.getClass())) {
         LOGGER.error(
-            String.format("Failed lookup ApprovalControllerAccess with name %s", JNDI_NAME), e);
-        throw new RuntimeException("Internal error", e);
+            String.format(
+                "Class %s is unassignable from interface ApprovalController. ",
+                lookup.getClass().getName()));
+        throw new IllegalStateException(
+            "Failed to look up ApprovalController. The returned service is not implementing correct interface");
       }
+      controllerAccess = ((ApprovalController) lookup).getControllerAccess();
+      return controllerAccess.getSettings();
+    }
+  }
+
+  private Object jndiLookup(final String name, final String cf) {
+    try {
+      Properties p = new Properties();
+      p.setProperty(Context.INITIAL_CONTEXT_FACTORY, cf);
+      InitialContext context = new InitialContext(p);
+      return context.lookup(name);
+    } catch (NamingException e) {
+      LOGGER.error(String.format("Failed lookup ApprovalControllerAccess with name %s", name), e);
+      throw new RuntimeException(
+          String.format("Internal error.\nJNDI_NAME=%s,\nJNDI_CONTEXT_FACTORY=%s", name, cf), e);
     }
   }
 
