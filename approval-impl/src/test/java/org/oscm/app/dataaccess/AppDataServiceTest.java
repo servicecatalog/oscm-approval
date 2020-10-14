@@ -27,7 +27,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.oscm.app.approval.controller.ApprovalControllerAccessBean;
 import org.oscm.app.approval.controller.ApprovalInstanceAccess;
 import org.oscm.app.approval.controller.ApprovalInstanceAccess.ClientData;
 import org.oscm.app.v2_0.APPlatformServiceFactory;
@@ -56,8 +55,7 @@ public class AppDataServiceTest {
   @Before
   public void setUp() throws Exception {
     PowerMockito.mockStatic(APPlatformServiceFactory.class);
-    ApprovalControllerAccessBean aca = mock(ApprovalControllerAccessBean.class);
-
+   
     ApprovalInstanceAccess aic = spy(new ApprovalInstanceAccess());
     PowerMockito.whenNew(ApprovalInstanceAccess.class).withNoArguments().thenReturn(aic);
 
