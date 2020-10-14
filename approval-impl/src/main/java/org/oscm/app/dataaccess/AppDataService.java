@@ -7,7 +7,6 @@
  */
 package org.oscm.app.dataaccess;
 
-import org.oscm.app.approval.controller.ApprovalControllerAccessBean;
 import org.oscm.app.approval.controller.ApprovalInstanceAccess;
 import org.oscm.app.approval.controller.ApprovalInstanceAccess.BasicSettings;
 import org.oscm.app.approval.controller.ApprovalInstanceAccess.ClientData;
@@ -21,7 +20,6 @@ public class AppDataService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(AppDataService.class);
 
-  private ApprovalControllerAccessBean controllerAccess;
   private BasicSettings settings;
 
   ClientData getCustomerSettings(String org) throws APPlatformException {
