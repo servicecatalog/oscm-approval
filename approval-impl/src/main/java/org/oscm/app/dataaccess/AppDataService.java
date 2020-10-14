@@ -19,7 +19,6 @@ import org.slf4j.LoggerFactory;
 public class AppDataService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(AppDataService.class);
-
   private BasicSettings settings;
 
   ClientData getCustomerSettings(String org) throws APPlatformException {
@@ -53,7 +52,6 @@ public class AppDataService {
     String userPwd = data.getOrgAdminUserPwd().getValue();
     String userId = data.getOrgAdminUserId().getValue();
     String userKey = data.getOrgAdminUserKey().getValue();
-
     Credentials credentials = new Credentials();
     credentials.setUserId(userId);
     credentials.setUserKey(Long.parseLong(userKey));
@@ -62,7 +60,6 @@ public class AppDataService {
   }
 
   public String getApprovalUrl() throws APPlatformException {
-    
     Setting s = getBasicSettings().getApprovalURL();
     if (s == null)
       throw new RuntimeException(String.format("Missing controller setting %s", "APPROVAL_URL"));
