@@ -7,20 +7,12 @@
  */
 package org.oscm.app.dataaccess;
 
-import java.util.Properties;
-
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
-import org.oscm.app.approval.intf.ApprovalControllerAccess;
+import org.oscm.app.approval.controller.ApprovalControllerAccessBean;
 import org.oscm.app.approval.controller.ApprovalInstanceAccess;
+import org.oscm.app.approval.controller.ApprovalInstanceAccess.BasicSettings;
 import org.oscm.app.approval.controller.ApprovalInstanceAccess.ClientData;
-
-import org.oscm.app.v2_0.data.ControllerSettings;
 import org.oscm.app.v2_0.data.Setting;
 import org.oscm.app.v2_0.exceptions.APPlatformException;
-import org.oscm.app.v2_0.intf.ControllerAccess;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,65 +21,26 @@ public class AppDataService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(AppDataService.class);
 
-  private ApprovalControllerAccess controllerAccess;
+  private ApprovalControllerAccessBean controllerAccess;
+  private BasicSettings settings;
 
   ClientData getCustomerSettings(String org) throws APPlatformException {
     return new ApprovalInstanceAccess().getCustomerSettings(org);
   }
 
-  public void setControllerAccess(final ControllerAccess access) {
-    this.controllerAccess = (ApprovalControllerAccess) access;
-  }
-
-  ControllerSettings getControllerSettings() {
-    if (controllerAccess != null) {
-      return controllerAccess.getSettings();
-    } else {
-      // Lookup approval controller remote EJB to obtain controller settings
-      final String name = "bss/app/controllersettings/ess.approval";
-      final String factory = "org.apache.openejb.client.LocalInitialContextFactory";
-
-      controllerAccess = jndiLookup(ApprovalControllerAccess.class, name, factory);
-
-      return controllerAccess.getSettings();
+  BasicSettings getBasicSettings() throws APPlatformException {
+    if (settings == null) {
+      settings = new ApprovalInstanceAccess().getBasicSettings();
     }
-  }
-
-  @SuppressWarnings("unchecked")
-  private <T> T jndiLookup(Class<T> clazz, final String name, final String cf) {
-
-    Object o;
-    try {
-      Properties p = new Properties();
-      p.setProperty(Context.INITIAL_CONTEXT_FACTORY, cf);
-      InitialContext context = new InitialContext(p);
-      o = context.lookup(name);
-    } catch (NamingException e) {
-      LOGGER.error(String.format("Failed lookup ApprovalControllerAccess with name %s", name), e);
-      throw new RuntimeException(
-          String.format("Internal error.\nJNDI_NAME=%s,\nJNDI_CONTEXT_FACTORY=%s", name, cf), e);
-    }
-    if (!clazz.isAssignableFrom(o.getClass())) {
-      LOGGER.error(
-          String.format(
-              "Class %s is unassignable from interface ApprovalController. ",
-              o.getClass().getName()));
-      throw new IllegalStateException(
-          "Failed to look up ApprovalController. The returned service is not implementing correct interface");
-    }
-
-    return (T) o;
+    return settings;
   }
 
   public Credentials loadControllerOwnerCredentials() throws Exception {
-    ControllerSettings settings = getControllerSettings();
-    String userPwd = settings.getConfigSettings().get("BSS_USER_PWD").getValue();
-    String userId = settings.getConfigSettings().get("BSS_USER_ID").getValue();
-    String userKey = settings.getConfigSettings().get("BSS_USER_KEY").getValue();
-
+    BasicSettings settings = getBasicSettings();
+    String userPwd = settings.getOwnerCredentials().getPassword();
+    String userId = settings.getOwnerCredentials().getUserName();
     Credentials credentials = new Credentials();
     credentials.setUserId(userId);
-    credentials.setUserKey(Long.parseLong(userKey));
     credentials.setPassword(userPwd);
     return credentials;
   }
@@ -110,15 +63,16 @@ public class AppDataService {
     return credentials;
   }
 
-  public String getApprovalUrl() {
-    Setting s = getControllerSettings().getConfigSettings().get("APPROVAL_URL");
+  public String getApprovalUrl() throws APPlatformException {
+    
+    Setting s = getBasicSettings().getApprovalURL();
     if (s == null)
-      throw new RuntimeException(String.format("Missing controller setting %", "APPROVAL_URL"));
+      throw new RuntimeException(String.format("Missing controller setting %s", "APPROVAL_URL"));
     return s.getValue();
   }
 
-  public String loadBesWebServiceWsdl() {
-    Setting s = getControllerSettings().getConfigSettings().get("BSS_WEBSERVICE_WSDL_URL");
+  public String loadBesWebServiceWsdl()  throws APPlatformException {
+    Setting s = getBasicSettings().getWsdlUrl();
     if (s == null)
       throw new RuntimeException(
           String.format("Missing controller setting %", "BSS_WEBSERVICE_WSDL_URL"));

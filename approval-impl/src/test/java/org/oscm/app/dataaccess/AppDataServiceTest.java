@@ -10,60 +10,58 @@
 package org.oscm.app.dataaccess;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 
+import java.util.Arrays;
 import java.util.HashMap;
-
-import javax.naming.InitialContext;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-
+import org.oscm.app.approval.controller.ApprovalControllerAccessBean;
 import org.oscm.app.approval.controller.ApprovalInstanceAccess;
 import org.oscm.app.approval.controller.ApprovalInstanceAccess.ClientData;
-import org.oscm.app.approval.intf.ApprovalControllerAccess;
-import org.oscm.app.v2_0.data.ControllerSettings;
+import org.oscm.app.v2_0.APPlatformServiceFactory;
+import org.oscm.app.v2_0.data.PasswordAuthentication;
 import org.oscm.app.v2_0.data.ProvisioningSettings;
 import org.oscm.app.v2_0.data.Setting;
 import org.oscm.app.v2_0.exceptions.APPlatformException;
+import org.oscm.app.v2_0.intf.APPlatformService;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 /** @author goebel */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({AppDataService.class, InitialContext.class})
+@PrepareForTest({AppDataService.class, APPlatformServiceFactory.class})
 public class AppDataServiceTest {
 
-  AppDataService dataService = new AppDataService();
-  HashMap<String, Setting> params = new HashMap<String, Setting>();
-  HashMap<String, Setting> customAttributes = new HashMap<String, Setting>();
-  HashMap<String, Setting> attributes = new HashMap<String, Setting>();
-  HashMap<String, Setting> ctrlSet = new HashMap<String, Setting>();
-  @Captor ArgumentCaptor<String> strCap;
+  private AppDataService dataService = new AppDataService();
+  private HashMap<String, Setting> params = new HashMap<String, Setting>();
+  private HashMap<String, Setting> customAttributes = new HashMap<String, Setting>();
+  private HashMap<String, Setting> attributes = new HashMap<String, Setting>();
+
+  private HashMap<String, Setting> configSettings = new HashMap<String, Setting>();
+  private PasswordAuthentication authentication;
 
   @Before
   public void setUp() throws Exception {
-     
-    ApprovalControllerAccess aca = mock(ApprovalControllerAccess.class);
-    dataService.setControllerAccess(aca);
-    PowerMockito.when(aca.getSettings()).thenReturn(new ControllerSettings(ctrlSet));
-    InitialContext ic = mock(InitialContext.class);
-    PowerMockito.whenNew(InitialContext.class).withArguments(Mockito.any()).thenReturn(ic);
-    PowerMockito.when(ic.lookup(Mockito.anyString())).thenReturn(aca);
+    PowerMockito.mockStatic(APPlatformServiceFactory.class);
+    ApprovalControllerAccessBean aca = mock(ApprovalControllerAccessBean.class);
 
-    ApprovalInstanceAccess aic = mock(ApprovalInstanceAccess.class);
+    ApprovalInstanceAccess aic = spy(new ApprovalInstanceAccess());
     PowerMockito.whenNew(ApprovalInstanceAccess.class).withNoArguments().thenReturn(aic);
 
-    Answer<ApprovalInstanceAccess.ClientData> answer =
+    Answer<ApprovalInstanceAccess.ClientData> clientData =
         new Answer<ApprovalInstanceAccess.ClientData>() {
           @Override
           public ClientData answer(InvocationOnMock arg0) throws Throwable {
@@ -75,7 +73,9 @@ public class AppDataServiceTest {
           }
         };
 
-    doAnswer(answer).when(aic).getCustomerSettings(anyString());
+    doAnswer(clientData).when(aic).getCustomerSettings(anyString());
+
+    mockPlatformService();
   }
 
   @Test
@@ -84,7 +84,7 @@ public class AppDataServiceTest {
     defineCustomAttribute("USERKEY_1af3c", "3000");
     defineCustomAttribute("USERID_1af3c", "testUser");
     defineCustomAttribute("USERPWD_1af3c", "pass");
-    defineAttribute("APPROVER_ORG_ID_1af3c", "approver");
+    defineCustomAttribute("APPROVER_ORG_ID_1af3c", "approver");
 
     // when
     Credentials cred = dataService.loadOrgAdminCredentials("1af3c");
@@ -100,7 +100,7 @@ public class AppDataServiceTest {
     defineParameter("USERKEY_1af3c", "3000");
     defineParameter("USERID_1af3c", "testUser");
     defineParameter("USERPWD_1af3c", "pass");
-    defineAttribute("APPROVER_ORG_ID_1af3c", "approver");
+    defineCustomAttribute("APPROVER_ORG_ID_1af3c", "approver");
 
     // when
     Credentials cred = dataService.loadOrgAdminCredentials("1af3c");
@@ -113,7 +113,7 @@ public class AppDataServiceTest {
   @Test(expected = APPlatformException.class)
   public void getOrgAdminCredentials_missing() throws Exception {
     // given
-    defineAttribute("APPROVER_ORG_ID_1af3c", "approver");
+    defineCustomAttribute("APPROVER_ORG_ID_1af3c", "approver");
 
     // when
     Credentials cred = dataService.loadOrgAdminCredentials("1af3c");
@@ -122,16 +122,40 @@ public class AppDataServiceTest {
   @Test
   public void loadControllerOwnerCredentials() throws Exception {
     // given
-    defineConrollerSetting("BSS_USER_ID", "Admin");
-    defineConrollerSetting("BSS_USER_KEY", "6000");
-    defineConrollerSetting("BSS_USER_PWD", "Passwd");
+    authentication = new PasswordAuthentication("admin", "adminpwd");
+    defineCustomAttribute("APPROVER_ORG_ID_1af3c", "approver");
 
     // when
     Credentials cred = dataService.loadControllerOwnerCredentials();
 
     // then
-    assertEquals("Passwd", cred.getPassword());
-    assertEquals("Admin", cred.getUserId());
+    assertEquals("adminpwd", cred.getPassword());
+    assertEquals("admin", cred.getUserId());
+  }
+
+  @Test
+  public void getApprovalUrl() throws Exception {
+    // given
+    authentication = new PasswordAuthentication("admin", "adminpwd");
+    defineConfigSetting("APPROVAL_URL", "http://oscm-app/approval");
+    defineConfigSetting("BSS_WEBSERVICE_WSDL_URL", "http://oscm-core/trigger?wsld");
+    defineCustomAttribute("APPROVER_ORG_ID_1af3c", "approver");
+
+    // when
+    String url = dataService.getApprovalUrl();
+
+    // then
+    assertNotNull(url);
+  }
+
+  @Test(expected = RuntimeException.class)
+  public void getApprovalUrl_missing() throws Exception {
+    // given
+    authentication = new PasswordAuthentication("admin", "adminpwd");
+    defineConfigSetting("BSS_WEBSERVICE_WSDL_URL", "http://oscm-core/trigger?wsld");
+
+    // when
+    String url = dataService.getApprovalUrl();
   }
 
   private void defineAttribute(String key, String value) {
@@ -146,7 +170,32 @@ public class AppDataServiceTest {
     params.put(key, new Setting(key, value));
   }
 
-  private void defineConrollerSetting(String key, String value) {
-    ctrlSet.put(key, new Setting(key, value));
+  private void defineConfigSetting(String key, String value) {
+    configSettings.put(key, new Setting(key, value));
+  }
+
+  ProvisioningSettings buildProvisioningSettings() {
+    ProvisioningSettings ps =
+        new ProvisioningSettings(params, attributes, customAttributes, configSettings, "en");
+    ps.setAuthentication(authentication);
+    return ps;
+  }
+
+  private void mockPlatformService() throws APPlatformException {
+    APPlatformService pm = mock(APPlatformService.class);
+    PowerMockito.when(APPlatformServiceFactory.getInstance()).thenReturn(pm);
+
+    Answer<ProvisioningSettings> details =
+        new Answer<ProvisioningSettings>() {
+          @Override
+          public ProvisioningSettings answer(InvocationOnMock arg0) throws Throwable {
+            return buildProvisioningSettings();
+          }
+        };
+
+    doAnswer(details).when(pm).getServiceInstanceDetails(anyString(), anyString(), any());
+
+    final List<String> instances = Arrays.asList(new String[] {"instance_123456789"});
+    doReturn(instances).when(pm).listServiceInstances(anyString(), any());
   }
 }
