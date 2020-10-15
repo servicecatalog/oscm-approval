@@ -108,6 +108,7 @@ public class CTMGTriggerNotification extends Activity {
     };
   }
 
+  
   protected void notifyCTMGTrigger(String triggerkey, String orgid, String reason, boolean approve)
       throws ProcessException {
     logger.debug("triggerkey: " + triggerkey + "orgid: " + orgid + " approve: " + approve);

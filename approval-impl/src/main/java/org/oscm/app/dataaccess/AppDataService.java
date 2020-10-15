@@ -70,7 +70,7 @@ public class AppDataService {
     Setting s = getBasicSettings().getWsdlUrl();
     if (s == null)
       throw new RuntimeException(
-          String.format("Missing controller setting %", "BSS_WEBSERVICE_WSDL_URL"));
+          String.format("Missing controller setting %s", "BSS_WEBSERVICE_WSDL_URL"));
     return s.getValue();
   }
 }

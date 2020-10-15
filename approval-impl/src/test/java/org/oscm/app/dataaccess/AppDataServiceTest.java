@@ -135,8 +135,8 @@ public class AppDataServiceTest {
   public void getApprovalUrl() throws Exception {
     // given
     authentication = new PasswordAuthentication("admin", "adminpwd");
-    defineConfigSetting("APPROVAL_URL", "http://oscm-app/approval");
-    defineConfigSetting("BSS_WEBSERVICE_WSDL_URL", "http://oscm-core/trigger?wsld");
+    defineCustomAttribute("APPROVAL_URL", "http://oscm-app/approval");
+    defineCustomAttribute("BSS_WEBSERVICE_WSDL_URL", "http://oscm-core/trigger?wsld");
     defineCustomAttribute("APPROVER_ORG_ID_1af3c", "approver");
 
     // when
@@ -150,7 +150,7 @@ public class AppDataServiceTest {
   public void getApprovalUrl_missing() throws Exception {
     // given
     authentication = new PasswordAuthentication("admin", "adminpwd");
-    defineConfigSetting("BSS_WEBSERVICE_WSDL_URL", "http://oscm-core/trigger?wsld");
+    defineCustomAttribute("BSS_WEBSERVICE_WSDL_URL", "http://oscm-core/trigger?wsld");
 
     // when
     String url = dataService.getApprovalUrl();

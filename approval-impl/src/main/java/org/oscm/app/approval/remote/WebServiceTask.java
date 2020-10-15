@@ -19,6 +19,7 @@ public abstract class WebServiceTask<T> extends Thread {
   private Class<T> webService;
   private Object rc;
   private PasswordAuthentication pa;
+  private String wsdlUrl;
 
   public WebServiceTask(Class<T> ws) {
     webService = ws;
@@ -28,6 +29,10 @@ public abstract class WebServiceTask<T> extends Thread {
     return rc;
   }
 
+  void setWsdlUrl(String wsdlUrl) {
+    this.wsdlUrl = wsdlUrl;
+  }
+
   void setAuthentication(PasswordAuthentication pa) {
     this.pa = pa;
   }
@@ -35,7 +40,7 @@ public abstract class WebServiceTask<T> extends Thread {
   @Override
   public void run() {
     try {
-      T service = BesClient.getWebservice(pa.getUserName(), pa.getPassword(), webService);
+      T service = BesClient.getWebserviceIntern(wsdlUrl, pa.getUserName(), pa.getPassword(), webService);
       rc = execute(service);
     } catch (Exception e) {
       rc = e;
