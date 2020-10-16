@@ -186,7 +186,7 @@ public class TaskServletTest {
     Map<String, String[]> paramMap = new HashMap<String, String[]>();
     paramMap.put("cmd", new String[] {"start_process"});
     ServiceParams params = new ServiceParams(ServiceParams.MODE.POST, PATHS, paramMap);
-    doReturn(createControllerSettings()).when(ads).loadControllerSettings();
+    
     doReturn(createControllerSettings()).when(task).getTriggerProcessData();
     doNothing().when(taskServlet).excecuteProcess(anyString(), any());
 

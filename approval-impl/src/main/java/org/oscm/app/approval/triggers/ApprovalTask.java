@@ -170,19 +170,19 @@ public class ApprovalTask {
     } else if ("onGrantClearance".equals(triggerId)) {
       String mailSubject = process.getTriggerDefinition().getName();
       AppDataService das = createAppDataService();
-      String webuiLink = das.loadControllerSettings().get("APPROVAL_URL");
+      String webuiLink = das.getApprovalUrl();
       String mailBody = Messages.get("mail_approval.text", new Object[] {webuiLink});
       excecuteProcess("ClearanceRequest.xml", mailSubject, mailBody);
     } else if (isSuspendProcess) {
       String mailSubject = process.getTriggerDefinition().getName();
       AppDataService das = createAppDataService();
-      String webuiLink = das.loadControllerSettings().get("APPROVAL_URL");
+      String webuiLink = das.getApprovalUrl();
       String mailBody = Messages.get("mail_approval.text", new Object[] {webuiLink});
       excecuteProcess("ApprovalRequest.xml", mailSubject, mailBody);
     } else {
       String mailSubject = process.getTriggerDefinition().getName();
       AppDataService das = createAppDataService();
-      String webuiLink = das.loadControllerSettings().get("APPROVAL_URL");
+      String webuiLink = das.getApprovalUrl();
       String mailBody = Messages.get("mail_approval.text", new Object[] {webuiLink});
       excecuteProcess("NotificationRequest.xml", mailSubject, mailBody);
     }
@@ -261,14 +261,9 @@ public class ApprovalTask {
     this.subscription = subscription;
     String id = subscription.getServiceInstanceId();
     if (id != null) {
-      try {
-        AppDataService das = createAppDataService();
-        String instanceName = das.loadInstancename(id);
-        add("instanceid", id);
-        add("instancename", instanceName);
-      } catch (Exception e) {
-        log.error("Failed to load instancename from APP database.", e);
-      }
+      String instanceName = subscription.getSubscriptionId();
+      add("instanceid", id);
+      add("instancename", instanceName);
     }
     json.begin(node);
     json.add("id", subscription.getSubscriptionId());
