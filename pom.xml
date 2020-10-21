@@ -116,7 +116,7 @@
       <dependency>
         <groupId>com.github.servicecatalog.oscm-app</groupId>
         <artifactId>oscm-app-approval</artifactId>
-        <version>master-SNAPSHOT</version>
+        <version>task~approval-settings-97-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>

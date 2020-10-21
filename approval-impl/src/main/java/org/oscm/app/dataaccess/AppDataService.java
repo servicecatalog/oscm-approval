@@ -66,11 +66,15 @@ public class AppDataService {
     return s.getValue();
   }
 
-  public String loadBesWebServiceWsdl()  throws APPlatformException {
-    Setting s = getBasicSettings().getWsdlUrl();
+  public String loadBesWebServiceWsdl() throws APPlatformException {
+    String s = getBasicSettings().getWsdlUrl();
     if (s == null)
       throw new RuntimeException(
           String.format("Missing controller setting %s", "BSS_WEBSERVICE_WSDL_URL"));
-    return s.getValue();
+    return s;
+  }
+
+  public EmailSettings loadEmailSettings() throws APPlatformException {
+    return new EmailSettings(getBasicSettings().getParams());
   }
 }
