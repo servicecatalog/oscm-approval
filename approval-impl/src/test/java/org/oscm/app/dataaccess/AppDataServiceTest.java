@@ -135,7 +135,7 @@ public class AppDataServiceTest {
   public void getApprovalUrl() throws Exception {
     // given
     authentication = new PasswordAuthentication("admin", "adminpwd");
-    defineCustomAttribute("APPROVAL_URL", "http://oscm-app/approval");
+    defineConfigSetting("APPROVAL_URL", "http://oscm-app/approval");
     defineCustomAttribute("BSS_WEBSERVICE_WSDL_URL", "http://oscm-core/trigger?wsld");
     defineCustomAttribute("APPROVER_ORG_ID_1af3c", "approver");
 

@@ -1,17 +1,18 @@
 /**
- * ******************************************************************************
+ * *****************************************************************************
  *
  * <p>Copyright FUJITSU LIMITED 2020
  *
+ * <p>Creation Date: 20.10.2020
+ *
  * <p>*****************************************************************************
  */
-package org.oscm.app.connector.activity;
+package org.oscm.app.approval.activity;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.oscm.app.connector.framework.Activity;
-import org.oscm.app.connector.framework.ProcessException;
-import org.oscm.app.connector.util.SpringBeanSupport;
+import java.util.Date;
+import java.util.Map;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 import javax.mail.Message;
 import javax.mail.Session;
@@ -20,16 +21,20 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.naming.Context;
 import javax.naming.InitialContext;
-import java.util.Date;
-import java.util.Map;
-import java.util.StringTokenizer;
-import java.util.Vector;
 
-/** @deprecated Moving to {@link org.oscm.app.approval.activity.EmailWriter} */
-@Deprecated
+import org.oscm.app.connector.framework.Activity;
+import org.oscm.app.connector.framework.ProcessException;
+import org.oscm.app.connector.util.SpringBeanSupport;
+import org.oscm.app.dataaccess.AppDataService;
+import org.oscm.app.dataaccess.EmailSettings;
+import org.oscm.app.v2_0.exceptions.APPlatformException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/** @author goebel */
 public class EmailWriter extends Activity {
+  static Logger logger = LoggerFactory.getLogger(EmailWriter.class);
 
-  private static final Logger logger = LogManager.getLogger(EmailWriter.class);
   private static final String ENCODING_UTF8 = "UTF-8";
   private String mailSession;
 
@@ -41,15 +46,6 @@ public class EmailWriter extends Activity {
     recipients = new Vector<String>();
   }
 
-  /**
-   * Implements the abstract method from the base class. This method will be called from the base
-   * class when the configuration is passed down the chain. How configuration works is described in
-   * bean definition file. A configuration parameter is described in the javadoc of the class that
-   * uses the configuration parameter.
-   *
-   * @param props the configuration paramters
-   * @see Activity
-   */
   @Override
   public void doConfigure(java.util.Properties props) throws ProcessException {
 
@@ -95,15 +91,47 @@ public class EmailWriter extends Activity {
   @Override
   public Map<String, String> transmitReceiveData(Map<String, String> transmitData)
       throws ProcessException {
-
     logger.debug("beanName: " + getBeanName());
 
-    sendEmail(transmitData);
+    // Read email settings from service parameters
+    AppDataService das = new AppDataService();
+    try {
+      updateFromServiceParams(das.loadEmailSettings());
+    } catch (APPlatformException e) {
+      throw new ProcessException(e.getLocalizedMessage(), ProcessException.CONFIG_ERROR, e);
+    }
 
+    sendEmail(transmitData);
     if (getNextActivity() == null) {
       return transmitData;
     } else {
       return getNextActivity().transmitReceiveData(transmitData);
+    }
+  }
+
+  private void updateFromServiceParams(EmailSettings es) throws ProcessException {
+    String body = es.getApprovalMsgBody();
+    if (body != null) {
+      setBody(body);
+    }
+    String recipients = es.getApprovalRecipients();
+    if (recipients != null) {
+      setRecipients(recipients);
+    }
+
+    String subject = es.getApprovalSubject();
+    if (subject != null) {
+      setSubject(subject);
+    }
+
+    String format = es.getFormat();
+    if (format != null) {
+      setFormat(format);
+    }
+
+    String sender = es.getApprovalSender();
+    if (sender != null) {
+      setSender(sender);
     }
   }
 
@@ -117,6 +145,7 @@ public class EmailWriter extends Activity {
       boolean isHTML = isHtmlContent(body);
 
       Session mailSession = getMailSession();
+    
       MimeMessage message = new MimeMessage(mailSession);
       message.setFrom(new InternetAddress(sender));
       InternetAddress[] address = new InternetAddress[recipients.size()];
