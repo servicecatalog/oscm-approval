@@ -4,6 +4,7 @@ sudo: false
 jdk:
 - openjdk8
 
+env:
 - MVN_GOAL=test
 
 before_install: mvn clean
