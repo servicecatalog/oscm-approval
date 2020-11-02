@@ -121,7 +121,7 @@ public class JSONMapperTest {
   }
 
   @Test
-  public void testToTriggerProcessDataThrowException() throws Exception {
+  public void testToTriggerProcessDataReturnNull() throws Exception {
 
     TriggerProcessData data =
         Whitebox.invokeMethod(
