@@ -1,3 +1,12 @@
+/**
+ * *****************************************************************************
+ *
+ * <p>Copyright FUJITSU LIMITED 2020
+ *
+ * <p>Creation Date: 2 Nov 2020
+ *
+ * <p>*****************************************************************************
+ */
 package org.oscm.app.approval.json;
 
 import org.junit.Before;
@@ -31,10 +40,9 @@ public class JSONMapperTest {
   @Before
   public void setUp() {
     jsonMapper = PowerMockito.spy(new JSONMapper());
-    PowerMockito.mockStatic(LoggerFactory.class);
-
     logger = mock(Logger.class);
 
+    PowerMockito.mockStatic(LoggerFactory.class);
     PowerMockito.when(LoggerFactory.getLogger(any(Class.class))).thenReturn(logger);
   }
 
