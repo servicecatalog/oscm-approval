@@ -4,8 +4,9 @@
  *
  *******************************************************************************/
 package org.oscm.app.approval.triggers;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.oscm.app.approval.remote.BesClient;
 import org.oscm.app.approval.remote.WebServiceTask;
 import org.oscm.intf.TriggerService;
@@ -16,7 +17,7 @@ import org.oscm.app.connector.framework.ProcessException;
  * Implements a thread which automatically approves a started trigger.
  */
 public class AutoApprovalThread implements Runnable {
-    private final static Logger log = LoggerFactory.getLogger(AutoApprovalThread.class);
+    private final static Logger log = LogManager.getLogger(AutoApprovalThread.class);
 
     private final int MAX_ATTEMPTS = 5;
 
