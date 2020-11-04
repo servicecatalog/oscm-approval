@@ -29,6 +29,7 @@ import org.oscm.app.approval.json.Service;
 import org.oscm.app.approval.json.Subscription;
 import org.oscm.app.approval.json.TriggerProcessData;
 import org.oscm.app.approval.json.User;
+import org.oscm.app.v2_0.exceptions.APPlatformException;
 
 /** @author worf */
 @RunWith(MockitoJUnitRunner.class)
@@ -119,7 +120,7 @@ public class TaskTest {
   }
 
   @Test
-  public void testGetTriggerProcessData_ctmg_serviceIsNull() {
+  public void testGetTriggerProcessData_ctmg_serviceIsNull() throws Exception {
     // when
     Map<String, String> result = task.getTriggerProcessData();
 
@@ -129,7 +130,7 @@ public class TaskTest {
   }
 
   @Test
-  public void testGetTriggerProcessData_ctmg_serviceNotNull() {
+  public void testGetTriggerProcessData_ctmg_serviceNotNull() throws Exception {
     // given
     processData.ctmg_service = service;
 

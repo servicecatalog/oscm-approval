@@ -14,6 +14,7 @@ import org.oscm.app.approval.json.JSONMapper;
 import org.oscm.app.approval.json.TriggerProcessData;
 import org.oscm.app.dataaccess.AppDataService;
 import org.oscm.app.dataaccess.Credentials;
+import org.oscm.app.v2_0.exceptions.APPlatformException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +51,7 @@ public class Task {
   public String status;
   public String status_tkey;
 
-  public Map<String, String> getTriggerProcessData() {
+  public Map<String, String> getTriggerProcessData() throws APPlatformException {
     logger.debug("description: " + description);
     TriggerProcessData processData = mapDescriptionToTriggerProcessData();
 
@@ -116,7 +117,9 @@ public class Task {
     props.put("instancename", processData.instancename);
 
     AppDataService das = new AppDataService();
-    Credentials cred = null;
+    Credentials cred;
+    String approverOrgId = das.getApproverOrgId(processData.ctmg_trigger_orgid);
+    props.put("approver.org.id", approverOrgId);
 
     try {
 

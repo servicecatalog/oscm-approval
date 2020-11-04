@@ -32,6 +32,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.oscm.app.approval.auth.User;
 import org.oscm.app.approval.database.DataAccessService;
 import org.oscm.app.approval.database.Task;
 import org.oscm.app.approval.servlet.ServiceParams;
@@ -46,8 +47,7 @@ public class TaskServletTest {
   @Mock DataAccessService das;
   @Mock AppDataService ads;
   @Mock Task task;
-  @Spy
-  TaskServlet taskServlet;
+  @Spy TaskServlet taskServlet;
   private final String[] PATHS =
       new String[] {"https://www.fujitsu.com/de/products/software/enterprise-catalogmgr/"};
 
@@ -81,7 +81,8 @@ public class TaskServletTest {
         .getTaskList(
             anyString(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean());
     // when
-    ServiceResult result = taskServlet.doService(params, getTestReader(), "id");
+    ServiceResult result =
+        taskServlet.doService(params, getTestReader(), User.builder().orgId("orgId").build());
     // then
     assertEquals(expected, result.getJson().getJson());
   }
@@ -97,7 +98,8 @@ public class TaskServletTest {
     ServiceParams params = new ServiceParams(ServiceParams.MODE.GET, PATHS, paramMap);
     doReturn(createTask()).when(das).getTask(anyString());
     // when
-    ServiceResult result = taskServlet.doService(params, getTestReader(), "id");
+    ServiceResult result =
+        taskServlet.doService(params, getTestReader(), User.builder().orgId("orgId").build());
     // then
     assertEquals(expected, result.getJson().getJson());
   }
@@ -113,7 +115,8 @@ public class TaskServletTest {
     ServiceParams params = new ServiceParams(ServiceParams.MODE.GET, PATHS, paramMap);
     doReturn(createTask()).when(das).getTask(anyString());
     // when
-    ServiceResult result = taskServlet.doService(params, getTestReader(), "id");
+    ServiceResult result =
+        taskServlet.doService(params, getTestReader(), User.builder().orgId("orgId").build());
     // then
     assertEquals(expected, result.getJson().getJson());
   }
@@ -126,7 +129,7 @@ public class TaskServletTest {
     paramMap.put("cmd", new String[] {"delete"});
     ServiceParams params = new ServiceParams(ServiceParams.MODE.GET, PATHS, paramMap);
     // when
-    taskServlet.doService(params, getTestReader(), "id");
+    taskServlet.doService(params, getTestReader(), User.builder().orgId("orgId").build());
     // then
     verify(das, times(1))
         .deleteApprovedTasks(anyString(), anyBoolean(), anyBoolean(), anyBoolean());
@@ -142,7 +145,7 @@ public class TaskServletTest {
     doReturn(createResultData()).when(taskServlet).createResultData(anyString(), any());
 
     // when
-    taskServlet.doService(params, getTestReader(), "id");
+    taskServlet.doService(params, getTestReader(), User.builder().orgId("orgId").build());
     // then
     verify(das, times(1)).saveTask(any());
   }
@@ -158,7 +161,7 @@ public class TaskServletTest {
     doNothing().when(taskServlet).notifyCTMGTrigger(anyString(), anyBoolean());
 
     // when
-    taskServlet.doService(params, getTestReader(), "id");
+    taskServlet.doService(params, getTestReader(), User.builder().orgId("orgId").build());
     // then
     verify(das, times(1)).updateTaskStatus(any(), any(), any());
   }
@@ -174,7 +177,7 @@ public class TaskServletTest {
     doNothing().when(taskServlet).notifyCTMGTrigger(anyString(), anyBoolean());
 
     // when
-    taskServlet.doService(params, getTestReader(), "id");
+    taskServlet.doService(params, getTestReader(), User.builder().orgId("orgId").build());
     // then
     verify(das, times(1)).updateTaskStatus(any(), any(), any());
   }
@@ -186,12 +189,12 @@ public class TaskServletTest {
     Map<String, String[]> paramMap = new HashMap<String, String[]>();
     paramMap.put("cmd", new String[] {"start_process"});
     ServiceParams params = new ServiceParams(ServiceParams.MODE.POST, PATHS, paramMap);
-    
+
     doReturn(createControllerSettings()).when(task).getTriggerProcessData();
     doNothing().when(taskServlet).excecuteProcess(anyString(), any());
 
     // when
-    taskServlet.doService(params, getTestReader(), "id");
+    taskServlet.doService(params, getTestReader(), User.builder().orgId("orgId").build());
     // then
     verify(taskServlet, times(1)).excecuteProcess(any(), any());
   }
@@ -208,7 +211,7 @@ public class TaskServletTest {
     doNothing().when(taskServlet).excecuteProcess(anyString(), any());
 
     // when
-    taskServlet.doService(params, getTestReader(), "id");
+    taskServlet.doService(params, getTestReader(), User.builder().orgId("orgId").build());
     // then
     verify(taskServlet, times(1)).excecuteProcess(any(), any());
   }

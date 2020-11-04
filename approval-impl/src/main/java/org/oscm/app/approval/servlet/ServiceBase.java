@@ -63,7 +63,7 @@ public abstract class ServiceBase extends HttpServlet {
       // Invoke service method
       ServiceParams params = new ServiceParams(mode, path, req.getParameterMap());
       User approver = (User) req.getSession().getAttribute("user");
-      result = doService(params, req.getReader(), approver.getUsername());
+      result = doService(params, req.getReader(), approver);
 
       if (result == null) {
         result = createServiceResult();
@@ -85,7 +85,7 @@ public abstract class ServiceBase extends HttpServlet {
 
   /** Main method */
   public abstract ServiceResult doService(
-      ServiceParams params, BufferedReader reader, String userid) throws Exception;
+      ServiceParams params, BufferedReader reader, User user) throws Exception;
 
   /** Split given path info into segments */
   protected String[] splitPath(String path) {

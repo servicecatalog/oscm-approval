@@ -34,31 +34,24 @@ public class LoginServlet extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-
     request.getRequestDispatcher(LOGIN_PAGE).forward(request, response);
   }
 
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-
     String username = request.getParameter("username");
     String password = request.getParameter("password");
 
     try {
       IdentityService identityService =
           BesClient.getWebservice(username, password, IdentityService.class);
-
       VOUserDetails userDetails = identityService.getCurrentUserDetails();
-      LOGGER.info(
-          "USER_DETAILS:"
-              + userDetails.getKey()
-              + ", "
-              + userDetails.getUserId()
-              + ", "
-              + userDetails.getOrganizationId());
-
-      User user = User.builder().username("approver").build();
+      String userId = userDetails.getUserId();
+      long key = userDetails.getKey();
+      String organizationId = userDetails.getOrganizationId();
+      LOGGER.info("Successful user authentication:" + key + ", " + userId + ", " + organizationId);
+      User user = User.builder().userId(userId).orgId(organizationId).key(key).build();
       request.getSession().setAttribute("user", user);
       response.sendRedirect(request.getContextPath());
     } catch (Exception e) {

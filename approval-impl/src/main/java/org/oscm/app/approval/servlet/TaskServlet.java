@@ -17,6 +17,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.oscm.app.approval.auth.User;
 import org.oscm.app.approval.database.DataAccessService;
 import org.oscm.app.approval.database.Task;
 import org.oscm.app.approval.i18n.Messages;
@@ -50,16 +51,16 @@ public class TaskServlet extends ServiceBase {
   private static final Logger logger = LoggerFactory.getLogger(TaskServlet.class);
 
   @Override
-  public ServiceResult doService(ServiceParams params, BufferedReader reader, String userid)
+  public ServiceResult doService(ServiceParams params, BufferedReader reader, User user)
       throws Exception {
     ServiceResult result = new ServiceResult();
     DataAccessService das = createDataAccessService();
-    if (!das.doesUserExistInDB(userid)) {
-      das.createUser(userid);
+    if (!das.doesUserExistInDB(user.getOrgId())) {
+      das.createUser(user.getOrgId());
     }
 
     if (params.getMode() == MODE.GET) {
-      executeGet(params, userid, result, das);
+      executeGet(params, user.getOrgId(), result, das);
 
     } else if (params.getMode() == MODE.POST) {
 
@@ -177,6 +178,7 @@ public class TaskServlet extends ServiceBase {
               show_open_tasks,
               show_granted_clearances,
               show_open_clearances);
+
       logger.debug("command: " + command + " #tasks: " + tasklist.size());
       JsonResult json = result.getJson();
       json.beginArray();

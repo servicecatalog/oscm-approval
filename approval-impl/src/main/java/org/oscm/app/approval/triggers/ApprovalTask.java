@@ -171,19 +171,19 @@ public class ApprovalTask {
       String mailSubject = process.getTriggerDefinition().getName();
       AppDataService das = createAppDataService();
       String webuiLink = das.getApprovalUrl();
-      String mailBody = Messages.get("mail_approval.text", new Object[] {webuiLink});
+      String mailBody = Messages.get("mail_approval.text", webuiLink);
       excecuteProcess("ClearanceRequest.xml", mailSubject, mailBody);
     } else if (isSuspendProcess) {
       String mailSubject = process.getTriggerDefinition().getName();
       AppDataService das = createAppDataService();
       String webuiLink = das.getApprovalUrl();
-      String mailBody = Messages.get("mail_approval.text", new Object[] {webuiLink});
+      String mailBody = Messages.get("mail_approval.text", webuiLink);
       excecuteProcess("ApprovalRequest.xml", mailSubject, mailBody);
     } else {
       String mailSubject = process.getTriggerDefinition().getName();
       AppDataService das = createAppDataService();
       String webuiLink = das.getApprovalUrl();
-      String mailBody = Messages.get("mail_approval.text", new Object[] {webuiLink});
+      String mailBody = Messages.get("mail_approval.text", webuiLink);
       excecuteProcess("NotificationRequest.xml", mailSubject, mailBody);
     }
   }
