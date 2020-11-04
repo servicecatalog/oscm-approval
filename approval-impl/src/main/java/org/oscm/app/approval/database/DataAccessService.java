@@ -44,7 +44,7 @@ public class DataAccessService {
   public boolean doesUserExistInDB(String userid) throws Exception {
     logger.debug("userid: " + userid);
     boolean userExists = false;
-    String query = "select count(*) as numUsers from approver where userid = ?";
+    String query = "select count(*) as numUsers from approver where orgid = ?";
     try (Connection con = getDatasource().getConnection();
         PreparedStatement stmt = con.prepareStatement(query); ) {
       stmt.setString(1, userid);
@@ -67,7 +67,7 @@ public class DataAccessService {
     logger.debug("userid: " + userid);
     int tkey = -1;
     String query =
-        "insert into approver (tkey,userid) values (DEFAULT,'" + userid + "') returning tkey";
+        "insert into approver (tkey,orgid) values (DEFAULT,'" + userid + "') returning tkey";
     try (Connection con = getDatasource().getConnection();
         PreparedStatement stmt = con.prepareStatement(query); ) {
 
@@ -122,7 +122,7 @@ public class DataAccessService {
             + " delete_granted_clearances: "
             + delete_granted_clearances);
     String query =
-        "delete from task where (status_tkey = ? or status_tkey = ? or status_tkey = ? or status_tkey = ?) and approver_tkey = (select tkey from approver where userid = ?)";
+        "delete from task where (status_tkey = ? or status_tkey = ? or status_tkey = ? or status_tkey = ?) and approver_tkey = (select tkey from approver where orgid = ?)";
     try (Connection con = getDatasource().getConnection();
         PreparedStatement stmt = con.prepareStatement(query); ) {
 
@@ -146,7 +146,7 @@ public class DataAccessService {
     logger.debug("userId: " + userId);
     List<Task> tasklist = new ArrayList<Task>();
     String query =
-        "select t.tkey,t.orgid,t.orgname,t.triggername,t.requestinguser,t.created,s.name as status,s.tkey as status_tkey from task t, status s where approver_tkey = (select tkey from approver where userid = ?) and (status_tkey = ? or status_tkey = ? or status_tkey = ? or status_tkey = ? or status_tkey = ? or status_tkey = ?)and s.tkey = status_tkey order by t.created desc";
+        "select t.tkey,t.orgid,t.orgname,t.triggername,t.requestinguser,t.created,s.name as status,s.tkey as status_tkey from task t, status s where approver_tkey = (select tkey from approver where orgid = ?) and (status_tkey = ? or status_tkey = ? or status_tkey = ? or status_tkey = ? or status_tkey = ? or status_tkey = ?)and s.tkey = status_tkey order by t.created desc";
     try (Connection con = getDatasource().getConnection();
         PreparedStatement stmt = con.prepareStatement(query); ) {
 
