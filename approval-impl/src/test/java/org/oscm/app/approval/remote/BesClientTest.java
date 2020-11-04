@@ -19,12 +19,21 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
+import javax.jws.WebService;
+import javax.xml.ws.Binding;
+import javax.xml.ws.BindingProvider;
+import javax.xml.ws.Service;
+import javax.xml.ws.handler.Handler;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({BesClient.class})
+@PrepareForTest({BesClient.class, Service.class})
 public class BesClientTest {
 
   private BesClient besClient;
@@ -66,4 +75,53 @@ public class BesClientTest {
     Whitebox.invokeMethod(
         besClient, "runWebServiceAsOrganizationAdmin", "administrator", webServiceTask);
   }
+
+  @Test
+  public void testGetWebservice() throws Exception {
+    Service mockService = mock(Service.class);
+    BindingProvider bindingProvider = mock(BindingProvider.class);
+    Binding binding = mock(Binding.class);
+    PowerMockito.mockStatic(Service.class);
+    List<Handler> handlerList = new ArrayList<>();
+    String webServiceWsdl = "http://oscm-example:3000/{SERVICE}?wsdl";
+    PowerMockito.whenNew(AppDataService.class).withNoArguments().thenReturn(appDataService);
+    when(appDataService.loadBesWebServiceWsdl()).thenReturn(webServiceWsdl);
+    when(Service.create(any(URL.class), any())).thenReturn(mockService);
+    when(mockService.getPort(any())).thenReturn(bindingProvider);
+    when(bindingProvider.getBinding()).thenReturn(binding);
+    when(binding.getHandlerChain()).thenReturn(handlerList);
+
+    BindingProvider result =
+        Whitebox.invokeMethod(besClient, "getWebservice", "user", "password", TestClass.class);
+
+    assertEquals(bindingProvider, result);
+  }
+
+  @Test
+  public void testGetWebserviceWithCreateNewList() throws Exception {
+    Service mockService = mock(Service.class);
+    BindingProvider bindingProvider = mock(BindingProvider.class);
+    Binding binding = mock(Binding.class);
+    PowerMockito.mockStatic(Service.class);
+    List<Handler> handlerList = new ArrayList<>();
+    String webServiceWsdl = "http://oscm-example:3000/{SERVICE}?wsdl";
+    PowerMockito.whenNew(AppDataService.class).withNoArguments().thenReturn(appDataService);
+    when(appDataService.loadBesWebServiceWsdl()).thenReturn(webServiceWsdl);
+    when(Service.create(any(URL.class), any())).thenReturn(mockService);
+    when(mockService.getPort(any())).thenReturn(bindingProvider);
+    when(bindingProvider.getBinding()).thenReturn(binding);
+    when(binding.getHandlerChain()).thenReturn(null);
+
+    BindingProvider result =
+        Whitebox.invokeMethod(besClient, "getWebservice", "user", "password", TestClass.class);
+
+    assertEquals(bindingProvider, result);
+  }
+
+  @WebService(
+      portName = "ApprovalPort",
+      serviceName = "ApprovalService",
+      targetNamespace = "http://oscm-approval.org/wsdl",
+      endpointInterface = "org.oscm.approval")
+  class TestClass {}
 }
