@@ -9,14 +9,22 @@
  */
 package org.oscm.app.approval.servlet;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.oscm.app.approval.database.DataAccessService;
+import org.oscm.app.approval.database.Task;
+import org.oscm.app.approval.remote.BesClient;
+import org.oscm.app.connector.framework.IProcess;
+import org.oscm.app.dataaccess.AppDataService;
+import org.oscm.intf.TriggerService;
+import org.oscm.vo.VOLocalizedText;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
+import org.springframework.beans.factory.xml.XmlBeanFactory;
 
 import java.io.BufferedReader;
 import java.io.Reader;
@@ -26,33 +34,31 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.oscm.app.approval.database.DataAccessService;
-import org.oscm.app.approval.database.Task;
-import org.oscm.app.approval.servlet.ServiceParams;
-import org.oscm.app.approval.servlet.ServiceResult;
-import org.oscm.app.approval.servlet.TaskServlet;
-import org.oscm.app.dataaccess.AppDataService;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 /** @author worf */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({TaskServlet.class, BesClient.class})
 public class TaskServletTest {
 
   @Mock DataAccessService das;
   @Mock AppDataService ads;
   @Mock Task task;
-  @Spy
+  @Mock ServiceResult serviceResult;
+  @Mock XmlBeanFactory factory;
+  @Mock PropertyPlaceholderConfigurer cfg;
+  @Mock IProcess iProcess;
+  @Mock DataAccessService dataAccessService;
+
   TaskServlet taskServlet;
   private final String[] PATHS =
       new String[] {"https://www.fujitsu.com/de/products/software/enterprise-catalogmgr/"};
 
   @Before
   public void setUp() throws Exception {
+    taskServlet = PowerMockito.spy(new TaskServlet());
     doReturn(ads).when(taskServlet).createAppDataService();
     doReturn(task).when(taskServlet).createTask();
     doReturn(task).when(das).getTask(anyString());
@@ -133,6 +139,20 @@ public class TaskServletTest {
   }
 
   @Test
+  public void TestDoService_setError() throws Exception {
+
+    // given
+    PowerMockito.whenNew(ServiceResult.class).withNoArguments().thenReturn(serviceResult);
+    Map<String, String[]> paramMap = new HashMap<>();
+    paramMap.put("cmd", new String[] {"other"});
+    ServiceParams params = new ServiceParams(ServiceParams.MODE.GET, PATHS, paramMap);
+    // when
+    taskServlet.doService(params, getTestReader(), "id");
+    // then
+    verify(serviceResult, times(1)).setError(400, "The command other is not known.");
+  }
+
+  @Test
   public void TestDoService_post_save() throws Exception {
 
     // given
@@ -186,7 +206,7 @@ public class TaskServletTest {
     Map<String, String[]> paramMap = new HashMap<String, String[]>();
     paramMap.put("cmd", new String[] {"start_process"});
     ServiceParams params = new ServiceParams(ServiceParams.MODE.POST, PATHS, paramMap);
-    
+
     doReturn(createControllerSettings()).when(task).getTriggerProcessData();
     doNothing().when(taskServlet).excecuteProcess(anyString(), any());
 
@@ -211,6 +231,68 @@ public class TaskServletTest {
     taskServlet.doService(params, getTestReader(), "id");
     // then
     verify(taskServlet, times(1)).excecuteProcess(any(), any());
+  }
+
+  @Test
+  public void TestExecuteProcess() throws Exception {
+
+    PowerMockito.whenNew(XmlBeanFactory.class).withAnyArguments().thenReturn(factory);
+    PowerMockito.whenNew(PropertyPlaceholderConfigurer.class).withNoArguments().thenReturn(cfg);
+    when(factory.getBean("Process")).thenReturn(iProcess);
+
+    taskServlet.excecuteProcess(anyString(), anyMap());
+
+    verify(iProcess, times(1)).execute(anyMap());
+  }
+
+  @Test
+  public void TestNotifyCTMGTrigger() throws Exception {
+
+    PowerMockito.whenNew(DataAccessService.class).withNoArguments().thenReturn(dataAccessService);
+    when(dataAccessService.getTask(anyString())).thenReturn(task);
+    PowerMockito.mockStatic(BesClient.class);
+    PowerMockito.when(BesClient.runWebServiceAsOrganizationAdmin(anyString(), any()))
+        .thenReturn(task);
+
+    taskServlet.notifyCTMGTrigger(anyString(), anyBoolean());
+
+    PowerMockito.verifyPrivate(taskServlet, times(1))
+        .invoke("notifyCTMGTrigger", task, "", null, false);
+  }
+
+  @Test(expected = Exception.class)
+  public void TestNotifyCTMGTrigger_ThrowsException() throws Exception {
+
+    PowerMockito.whenNew(DataAccessService.class).withNoArguments().thenReturn(dataAccessService);
+    when(dataAccessService.getTask(anyString())).thenReturn(task);
+
+    taskServlet.notifyCTMGTrigger(anyString(), anyBoolean());
+  }
+
+  @Test
+  public void TestCreateTriggerTask_True() throws Exception {
+    TriggerService testService = mock(TriggerService.class);
+
+    String result =
+        (String)
+            taskServlet.createTriggerTask(TriggerService.class, task, true).execute(testService);
+
+    assertEquals("OK", result);
+    verify(testService, times(1)).approveAction(anyLong());
+  }
+
+  @Test
+  public void TestCreateTriggerTask_False() throws Exception {
+    TriggerService testService = mock(TriggerService.class);
+    VOLocalizedText localizedText = mock(VOLocalizedText.class);
+    PowerMockito.whenNew(VOLocalizedText.class).withAnyArguments().thenReturn(localizedText);
+
+    String result =
+        (String)
+            taskServlet.createTriggerTask(TriggerService.class, task, false).execute(testService);
+
+    assertEquals("OK", result);
+    verify(testService, times(1)).rejectAction(anyLong(), any());
   }
 
   private Map<String, String> createControllerSettings() {
