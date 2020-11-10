@@ -51,8 +51,8 @@ public class TaskServlet extends ServiceBase {
       throws Exception {
     ServiceResult result = new ServiceResult();
     DataAccessService das = createDataAccessService();
-    if (!das.doesUserExistInDB(user.getOrgId())) {
-      das.createUser(user.getOrgId());
+    if (!das.doesApproverExistsInDB(user.getOrgId())) {
+      das.createApprover(user.getOrgId());
     }
 
     if (params.getMode() == MODE.GET) {

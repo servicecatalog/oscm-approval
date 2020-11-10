@@ -41,35 +41,35 @@ public class DataAccessService {
    */
   private static final String DATASOURCE = "ApprovalDS";
 
-  public boolean doesUserExistInDB(String userid) throws Exception {
-    logger.debug("userid: " + userid);
-    boolean userExists = false;
-    String query = "select count(*) as numUsers from approver where orgid = ?";
+  public boolean doesApproverExistsInDB(String orgId) throws Exception {
+    logger.debug("Approver organization: " + orgId);
+    boolean exists = false;
+    String query = "select count(*) as numApprovers from approver where orgid = ?";
     try (Connection con = getDatasource().getConnection();
-        PreparedStatement stmt = con.prepareStatement(query); ) {
-      stmt.setString(1, userid);
+        PreparedStatement stmt = con.prepareStatement(query)) {
+      stmt.setString(1, orgId);
 
       @SuppressWarnings("resource")
       ResultSet rs = stmt.executeQuery();
 
       while (rs.next()) {
-        int numUsers = rs.getInt("numUsers");
-        userExists = (numUsers > 0);
+        int numUsers = rs.getInt("numApprovers");
+        exists = (numUsers > 0);
       }
     } catch (SQLException e) {
-      logger.error("Failed to retrieve number of users for " + userid, e);
+      logger.error("Failed to retrieve number of approvers for " + orgId, e);
       throw e;
     }
-    return userExists;
+    return exists;
   }
 
-  public int createUser(String userid) throws Exception {
-    logger.debug("userid: " + userid);
+  public int createApprover(String orgId) throws Exception {
+    logger.debug("Approver organization: " + orgId);
     int tkey = -1;
     String query =
-        "insert into approver (tkey,orgid) values (DEFAULT,'" + userid + "') returning tkey";
+        "insert into approver (tkey,orgid) values (DEFAULT,'" + orgId + "') returning tkey";
     try (Connection con = getDatasource().getConnection();
-        PreparedStatement stmt = con.prepareStatement(query); ) {
+        PreparedStatement stmt = con.prepareStatement(query)) {
 
       @SuppressWarnings("resource")
       ResultSet resultSet = stmt.executeQuery();
@@ -78,7 +78,7 @@ public class DataAccessService {
         tkey = resultSet.getInt("tkey");
       }
     } catch (SQLException e) {
-      logger.error("Failed to create user " + userid, e);
+      logger.error("Failed to create approver " + orgId, e);
       throw e;
     }
     return tkey;
@@ -94,7 +94,7 @@ public class DataAccessService {
             + status.tkey
             + ",?)";
     try (Connection con = getDatasource().getConnection();
-        PreparedStatement stmt = con.prepareStatement(query); ) {
+        PreparedStatement stmt = con.prepareStatement(query)) {
 
       stmt.setString(1, Long.toString(process.getKey()));
       stmt.setString(2, process.getTriggerDefinition().getName());
@@ -109,7 +109,7 @@ public class DataAccessService {
   }
 
   public void deleteApprovedTasks(
-      String userId,
+      String orgId,
       boolean delete_notifications,
       boolean delete_finished_tasks,
       boolean delete_granted_clearances)
@@ -124,33 +124,33 @@ public class DataAccessService {
     String query =
         "delete from task where (status_tkey = ? or status_tkey = ? or status_tkey = ? or status_tkey = ?) and approver_tkey = (select tkey from approver where orgid = ?)";
     try (Connection con = getDatasource().getConnection();
-        PreparedStatement stmt = con.prepareStatement(query); ) {
+        PreparedStatement stmt = con.prepareStatement(query)) {
 
       stmt.setInt(1, delete_notifications ? 6 : 0);
       stmt.setInt(2, delete_finished_tasks ? 4 : 0);
       stmt.setInt(3, delete_finished_tasks ? 5 : 0);
       stmt.setInt(4, delete_granted_clearances ? 8 : 0);
-      stmt.setString(5, userId);
+      stmt.setString(5, orgId);
       stmt.executeUpdate();
     }
   }
 
   public List<Task> getTaskList(
-      String userId,
+      String orgId,
       boolean show_notifications,
       boolean show_finished_tasks,
       boolean show_open_tasks,
       boolean show_granted_clearances,
       boolean show_open_clearances)
       throws Exception {
-    logger.debug("userId: " + userId);
-    List<Task> tasklist = new ArrayList<Task>();
+    logger.debug("Approver organization: " + orgId);
+    List<Task> tasklist = new ArrayList<>();
     String query =
         "select t.tkey,t.orgid,t.orgname,t.triggername,t.requestinguser,t.created,s.name as status,s.tkey as status_tkey from task t, status s where approver_tkey = (select tkey from approver where orgid = ?) and (status_tkey = ? or status_tkey = ? or status_tkey = ? or status_tkey = ? or status_tkey = ? or status_tkey = ?)and s.tkey = status_tkey order by t.created desc";
     try (Connection con = getDatasource().getConnection();
-        PreparedStatement stmt = con.prepareStatement(query); ) {
+        PreparedStatement stmt = con.prepareStatement(query)) {
 
-      stmt.setString(1, userId);
+      stmt.setString(1, orgId);
       stmt.setInt(2, show_notifications ? 6 : 0);
       stmt.setInt(3, show_finished_tasks ? 4 : 0);
       stmt.setInt(4, show_finished_tasks ? 5 : 0);
@@ -174,9 +174,9 @@ public class DataAccessService {
         tasklist.add(task);
         numTasks++;
       }
-      logger.debug("loaded " + numTasks + " tasks for user " + userId);
+      logger.debug("loaded " + numTasks + " tasks for approver " + orgId);
     } catch (SQLException e) {
-      logger.error("Failed to retrieve tasks for user " + userId, e);
+      logger.error("Failed to retrieve tasks for approver " + orgId, e);
       throw e;
     }
     return tasklist;
@@ -188,7 +188,7 @@ public class DataAccessService {
     String query =
         "select t.tkey,t.orgid,t.triggerkey,t.triggername,t.orgname,t.requestinguser,t.description,t.comment,t.created,s.name as status from task t, status s where t.tkey = ? and s.tkey = status_tkey";
     try (Connection con = getDatasource().getConnection();
-        PreparedStatement stmt = con.prepareStatement(query); ) {
+        PreparedStatement stmt = con.prepareStatement(query)) {
 
       stmt.setInt(1, Integer.parseInt(tkey));
 
@@ -238,7 +238,7 @@ public class DataAccessService {
     logger.debug("tkey: " + tkey + " status: " + status);
     String query = "update task set status_tkey = ?, comment = ? where tkey = ?";
     try (Connection con = getDatasource().getConnection();
-        PreparedStatement stmt = con.prepareStatement(query); ) {
+        PreparedStatement stmt = con.prepareStatement(query)) {
       stmt.setInt(1, status.tkey);
       stmt.setString(2, comment);
       stmt.setInt(3, Integer.parseInt(tkey));
