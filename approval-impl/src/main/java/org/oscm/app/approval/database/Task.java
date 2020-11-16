@@ -7,21 +7,22 @@
  */
 package org.oscm.app.approval.database;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.oscm.app.approval.json.JSONMapper;
 import org.oscm.app.approval.json.TriggerProcessData;
 import org.oscm.app.dataaccess.AppDataService;
 import org.oscm.app.dataaccess.Credentials;
+import org.oscm.app.v2_0.exceptions.APPlatformException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Task {
 
   private static final Logger logger = LoggerFactory.getLogger(Task.class);
 
-  public static enum ApprovalStatus {
+  public enum ApprovalStatus {
     WAITING_FOR_APPROVAL(1),
     TIMEOUT(2),
     FAILED(3),
@@ -36,7 +37,7 @@ public class Task {
     ApprovalStatus(int tkey) {
       this.tkey = tkey;
     }
-  };
+  }
 
   public String tkey;
   public long triggerkey;
@@ -54,7 +55,7 @@ public class Task {
     logger.debug("description: " + description);
     TriggerProcessData processData = mapDescriptionToTriggerProcessData();
 
-    Map<String, String> props = new HashMap<String, String>();
+    Map<String, String> props = new HashMap<>();
     props.put("task.description", description);
     props.put("task.comment", comment);
     props.put("task.tkey", tkey);
@@ -116,9 +117,11 @@ public class Task {
     props.put("instancename", processData.instancename);
 
     AppDataService das = new AppDataService();
-    Credentials cred = null;
+    Credentials cred;
 
     try {
+      String approverOrgId = das.getApproverOrgId(processData.ctmg_trigger_orgid);
+      props.put("approver.org.id", approverOrgId);
 
       if ("GrantClearance".equals(processData.ctmg_trigger_id)) {
         cred = das.loadControllerOwnerCredentials();
@@ -127,7 +130,11 @@ public class Task {
       }
       props.put("admin.userid", cred.getUserId());
       props.put("admin.password", cred.getPassword());
-
+    } catch (APPlatformException e) {
+      logger.error(
+          "Failed to retrieve approver organization for organization "
+              + processData.ctmg_trigger_orgid,
+          e);
     } catch (Exception e) {
       logger.error(
           "Failed to retrieve org admin login for organization " + processData.ctmg_organization.id,

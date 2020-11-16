@@ -16,6 +16,6 @@ import lombok.Data;
 @Builder
 public class User {
   private long key;
-  private String username;
+  private String userId;
   private String orgId;
 }

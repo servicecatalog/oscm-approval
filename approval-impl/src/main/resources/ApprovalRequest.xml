@@ -38,19 +38,16 @@
         <prop key="password">${database.password}</prop>
       </props>
     </property>
-    <property name="statement" value="select tkey from approver where userid = 'approver'" />
+    <property name="statement" value="select tkey from approver where orgid = '$(approver.org.id)'" />
     <property name="namespace" value="approver" />
     <property name="nextActivity" ref="Gateway" />
   </bean>
 
   <bean id="Gateway" class="org.oscm.app.connector.activity.Gateway">
-
     <property name="activity1" ref="CreateApprovalTask" />
     <property name="condition1" value="Integer.parseInt(approver.tkey) >= 0" />
-
     <property name="activity2" ref="CreateApprover" />
     <property name="condition2" value="true" />
-
   </bean>
 
 
@@ -63,7 +60,7 @@
         <prop key="password">${database.password}</prop>
       </props>
     </property>
-    <property name="statement" value="insert into approver (tkey,userid) values (DEFAULT,'approver') returning tkey" />
+    <property name="statement" value="insert into approver (tkey,orgid) values (DEFAULT,'$(approver.org.id)') returning tkey" />
     <property name="namespace" value="approver" />
     <property name="nextActivity" ref="CreateApprovalTask" />
   </bean>

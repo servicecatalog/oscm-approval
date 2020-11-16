@@ -77,4 +77,14 @@ public class AppDataService {
   public EmailSettings loadEmailSettings() throws APPlatformException {
     return new EmailSettings(getBasicSettings().getParams());
   }
+
+  public String getApproverOrgId(String orgId) throws APPlatformException {
+    ApprovalInstanceAccess.ClientData data = getCustomerSettings(orgId);
+    if (!data.isSet()) {
+      throw new APPlatformException(
+          String.format(
+              "Missing approval connection settings for customer organization %s.", orgId));
+    }
+    return data.getApproverOrgId().getValue();
+  }
 }

@@ -7,16 +7,8 @@
  */
 package org.oscm.app.approval.servlet;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletResponse;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.oscm.app.approval.auth.User;
 import org.oscm.app.approval.database.DataAccessService;
 import org.oscm.app.approval.database.Task;
 import org.oscm.app.approval.i18n.Messages;
@@ -36,9 +28,14 @@ import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.core.io.ClassPathResource;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Servlet for managing approval tasks. Used by approvers that login to a web application to manage
@@ -50,19 +47,17 @@ public class TaskServlet extends ServiceBase {
   private static final Logger logger = LoggerFactory.getLogger(TaskServlet.class);
 
   @Override
-  public ServiceResult doService(ServiceParams params, BufferedReader reader, String userid)
+  public ServiceResult doService(ServiceParams params, BufferedReader reader, User user)
       throws Exception {
     ServiceResult result = new ServiceResult();
     DataAccessService das = createDataAccessService();
-    if (!das.doesUserExistInDB(userid)) {
-      das.createUser(userid);
+    if (!das.doesApproverExistsInDB(user.getOrgId())) {
+      das.createApprover(user.getOrgId());
     }
 
     if (params.getMode() == MODE.GET) {
-      executeGet(params, userid, result, das);
-
+      executeGet(params, user.getOrgId(), result, das);
     } else if (params.getMode() == MODE.POST) {
-
       executePost(params, reader, result, das);
     }
 
@@ -71,9 +66,9 @@ public class TaskServlet extends ServiceBase {
 
   private void executePost(
       ServiceParams params, BufferedReader reader, ServiceResult result, DataAccessService das)
-      throws IOException, JsonParseException, JsonMappingException, Exception {
+      throws Exception {
     StringBuilder sb = new StringBuilder();
-    String line = null;
+    String line;
     try {
       while ((line = reader.readLine()) != null) {
         sb.append(line);
@@ -89,7 +84,7 @@ public class TaskServlet extends ServiceBase {
 
     // Convert json input into Map
     ObjectMapper mapper = new ObjectMapper();
-    Map<String, String> resultData = new HashMap<String, String>();
+    Map<String, String> resultData = new HashMap<>();
 
     if (!"start_process".equals(command)) {
       resultData = createResultData(content, mapper);
@@ -114,7 +109,7 @@ public class TaskServlet extends ServiceBase {
       String mailSubject = Messages.get("mail_approval.subject");
       AppDataService appDas = createAppDataService();
       String webuiLink = appDas.getApprovalUrl();
-      String mailBody = Messages.get("mail_approval.text", new Object[] {webuiLink});
+      String mailBody = Messages.get("mail_approval.text", webuiLink);
 
       Map<String, String> data = task.getTriggerProcessData();
       data.put("mail.subject", mailSubject);
@@ -124,7 +119,7 @@ public class TaskServlet extends ServiceBase {
         excecuteProcess(process, data);
       } catch (Exception e) {
         logger.error("Process execution failed for process " + process, e);
-        String errmsg = Messages.get("error.process.execution", new Object[] {process});
+        String errmsg = Messages.get("error.process.execution", process);
 
         result.setError(HttpServletResponse.SC_BAD_REQUEST, errmsg);
       }
@@ -135,7 +130,7 @@ public class TaskServlet extends ServiceBase {
       excecuteProcess("ClearanceGranted.xml", data);
     } else {
       logger.error("Unknown command: " + command);
-      String errmsg = Messages.get("error.unknown.operation", new Object[] {command});
+      String errmsg = Messages.get("error.unknown.operation", command);
 
       result.setError(HttpServletResponse.SC_BAD_REQUEST, errmsg);
     }
@@ -150,13 +145,13 @@ public class TaskServlet extends ServiceBase {
   }
 
   protected Map<String, String> createResultData(String content, ObjectMapper mapper)
-      throws IOException, JsonParseException, JsonMappingException {
+      throws IOException {
     return mapper.readValue(
         content, mapper.getTypeFactory().constructMapType(Map.class, String.class, String.class));
   }
 
   private void executeGet(
-      ServiceParams params, String userid, ServiceResult result, DataAccessService das)
+      ServiceParams params, String approverOrg, ServiceResult result, DataAccessService das)
       throws Exception {
     String command = params.getParameter("cmd");
     if ("tasklist".equals(command)) {
@@ -171,12 +166,13 @@ public class TaskServlet extends ServiceBase {
 
       List<Task> tasklist =
           das.getTaskList(
-              userid,
+              approverOrg,
               show_notifications,
               show_finished_tasks,
               show_open_tasks,
               show_granted_clearances,
               show_open_clearances);
+
       logger.debug("command: " + command + " #tasks: " + tasklist.size());
       JsonResult json = result.getJson();
       json.beginArray();
@@ -229,10 +225,10 @@ public class TaskServlet extends ServiceBase {
       boolean delete_granted_clearances =
           Boolean.parseBoolean(params.getParameter("delete_granted_clearances"));
       das.deleteApprovedTasks(
-          userid, delete_notifications, delete_finished_tasks, delete_granted_clearances);
+          approverOrg, delete_notifications, delete_finished_tasks, delete_granted_clearances);
     } else {
       logger.error("Unknown command: " + command);
-      String errmsg = Messages.get("error.unknown.operation", new Object[] {command});
+      String errmsg = Messages.get("error.unknown.operation", command);
 
       result.setError(HttpServletResponse.SC_BAD_REQUEST, errmsg);
     }
@@ -292,7 +288,7 @@ public class TaskServlet extends ServiceBase {
                 "reject action with orgid: " + task.orgid + " triggerId: " + task.triggerkey);
             String reason = task.comment;
             VOLocalizedText locReason = new VOLocalizedText("en", reason);
-            List<VOLocalizedText> reasonList = new ArrayList<VOLocalizedText>();
+            List<VOLocalizedText> reasonList = new ArrayList<>();
             reasonList.add(locReason);
             trigSvc.rejectAction(task.triggerkey, reasonList);
           }

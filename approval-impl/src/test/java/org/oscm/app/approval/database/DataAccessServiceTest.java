@@ -38,8 +38,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.oscm.app.approval.database.DataAccessService;
-import org.oscm.app.approval.database.Task;
 import org.oscm.vo.VOOrganization;
 import org.oscm.vo.VOTriggerDefinition;
 import org.oscm.vo.VOTriggerProcess;
@@ -73,36 +71,36 @@ public class DataAccessServiceTest {
   }
 
   @Test
-  public void testDoesUserExistInDB() throws Exception {
+  public void testDoesApproverExistInDB() throws Exception {
     // given
-    doReturn(1).when(rs).getInt("numUsers");
+    doReturn(1).when(rs).getInt("numApprovers");
 
     // when
-    boolean result = dataService.doesUserExistInDB("userId");
+    boolean result = dataService.doesApproverExistsInDB("orgId");
 
     // then
     assertTrue(result);
   }
 
   @Test
-  public void testDoesUserNotExistInDB() throws Exception {
+  public void testDoesApproverNotExistInDB() throws Exception {
     // given
-    doReturn(0).when(rs).getInt("numUsers");
+    doReturn(0).when(rs).getInt("numApprovers");
 
     // when
-    boolean result = dataService.doesUserExistInDB("userId");
+    boolean result = dataService.doesApproverExistsInDB("orgId");
 
     // then
     assertFalse(result);
   }
 
   @Test
-  public void testCreateUser() throws Exception {
+  public void testCreateApprover() throws Exception {
     // given
     doReturn(1).when(rs).getInt("tkey");
 
     // when
-    int result = dataService.createUser("userId");
+    int result = dataService.createApprover("orgId");
 
     // then
     assertEquals(1, result);
@@ -111,7 +109,7 @@ public class DataAccessServiceTest {
   @Test
   public void testCreateApprovalTask() throws Exception {
     // given
-    doReturn(Long.valueOf(1)).when(process).getKey();
+    doReturn(1L).when(process).getKey();
     doReturn("test").when(definition).getName();
     doReturn("test").when(org).getName();
     doReturn("test").when(org).getOrganizationId();
@@ -161,7 +159,7 @@ public class DataAccessServiceTest {
     Date date = dateFormat.parse("12/08/2020");
     long time = date.getTime();
     new Timestamp(time);
-    Map<String, String> data = new HashMap<String, String>();
+    Map<String, String> data = new HashMap<>();
     data.put("user.locale", "en");
 
     doReturn("trigger").when(rs).getString("triggername");
