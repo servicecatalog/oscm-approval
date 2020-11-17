@@ -11,4 +11,6 @@ public class PriceModel {
     public String pricePerUser;
     public String freePeriod;
     public String type;
+    public String currency;
+    public String period;
 }

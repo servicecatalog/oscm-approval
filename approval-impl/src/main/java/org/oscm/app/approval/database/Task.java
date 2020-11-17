@@ -12,6 +12,7 @@ import java.util.Map;
 
 import org.oscm.app.approval.json.JSONMapper;
 import org.oscm.app.approval.json.TriggerProcessData;
+import org.oscm.app.approval.util.PriceUtils;
 import org.oscm.app.dataaccess.AppDataService;
 import org.oscm.app.dataaccess.Credentials;
 import org.slf4j.Logger;
@@ -83,12 +84,15 @@ public class Task {
       props.put("service.seller.key", processData.ctmg_service.seller.key);
       props.put("service.seller.name", processData.ctmg_service.seller.name);
 
+      String loc = processData.ctmg_user.locale;
       props.put("service.price.freePeriod", processData.ctmg_service.price.freePeriod);
       props.put("service.price.oneTimeFee", processData.ctmg_service.price.oneTimeFee);
       props.put("service.price.pricePerPeriod", processData.ctmg_service.price.pricePerPeriod);
       props.put("service.price.pricePerUser", processData.ctmg_service.price.pricePerUser);
       props.put("service.price.type", processData.ctmg_service.price.type);
-
+      
+      props.put("service.price.text", PriceUtils.getPriceTag(processData.ctmg_service.price)[2]);
+      
       for (String key : processData.ctmg_service.params.keySet()) {
         props.put(
             "service.params." + key + ".value", processData.ctmg_service.params.get(key).value);
@@ -137,6 +141,7 @@ public class Task {
     return props;
   }
 
+ 
   protected TriggerProcessData mapDescriptionToTriggerProcessData() {
     return JSONMapper.toTriggerProcessData(description);
   }
