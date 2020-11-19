@@ -90,6 +90,8 @@ public class Task {
       props.put("service.price.pricePerPeriod", processData.ctmg_service.price.pricePerPeriod);
       props.put("service.price.pricePerUser", processData.ctmg_service.price.pricePerUser);
       props.put("service.price.type", processData.ctmg_service.price.type);
+      props.put("service.price.period", processData.ctmg_service.price.period);
+      props.put("service.price.currency", processData.ctmg_service.price.currency);
       
       props.put("service.price.text", PriceUtils.getPriceTag(processData.ctmg_service.price)[2]);
       
