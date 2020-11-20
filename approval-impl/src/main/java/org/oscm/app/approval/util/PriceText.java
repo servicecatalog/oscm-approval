@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 import org.oscm.app.approval.i18n.Messages;
 import org.oscm.app.approval.json.PriceModel;
 import org.oscm.internal.types.enumtypes.PriceModelType;
+
 /** @author goebel */
 public class PriceText {
   static final String LABEL_PRICE_MODEL_FREE = "priceModel.text.free";
@@ -29,30 +30,22 @@ public class PriceText {
     }
     String[] result = new String[] {"", "", ""};
     if (isSet(priceModel.pricePerPeriod)) {
-      result[0] =
-          getText(
-              LABEL_PRICE_MODEL_PRICE,
-              new Object[] {priceModel.currency, priceModel.pricePerPeriod});
-      result[1] =
-          getText(LABEL_PRICE_MODEL_PER_SUB, new Object[] {getPeriodText(priceModel.period)});
+      result[0] = getText(LABEL_PRICE_MODEL_PRICE, priceModel.currency, priceModel.pricePerPeriod);
+      result[1] = getText(LABEL_PRICE_MODEL_PER_SUB, getPeriodText(priceModel.period));
 
     } else if (isSet(priceModel.pricePerUser)) {
-      result[0] =
-          getText(
-              LABEL_PRICE_MODEL_PRICE, new Object[] {priceModel.currency, priceModel.pricePerUser});
-      result[1] =
-          getText(LABEL_PRICE_MODEL_PER_USER, new Object[] {getPeriodText(priceModel.period)});
+      result[0] = getText(LABEL_PRICE_MODEL_PRICE, priceModel.currency, priceModel.pricePerUser);
+      result[1] = getText(LABEL_PRICE_MODEL_PER_USER, getPeriodText(priceModel.period));
     } else if (isSet(priceModel.oneTimeFee)) {
-      return getText(
-          LABEL_PRICE_MODEL_PRICE, new Object[] {priceModel.currency, priceModel.oneTimeFee});
+      return getText(LABEL_PRICE_MODEL_PRICE, priceModel.currency, priceModel.oneTimeFee);
     } else {
-      return getText(LABEL_PRICE_MODEL_SEE_DETAILS, new Object[0]);
+      return getText(LABEL_PRICE_MODEL_SEE_DETAILS);
     }
-    return getText(LABEL_PRICE_MODEL_PRICE_AND_UNIT, new Object[] {result[0], result[1]});
+    return getText(LABEL_PRICE_MODEL_PRICE_AND_UNIT, result[0], result[1]);
   }
 
   static final String getPeriodText(String period) {
-    return getText("PricingPeriod." + period, new Object[0]);
+    return getText("PricingPeriod." + period);
   }
 
   static boolean isSet(String val) {
