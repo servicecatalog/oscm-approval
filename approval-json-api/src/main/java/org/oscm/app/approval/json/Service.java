@@ -37,6 +37,8 @@ public class Service {
         seller.key = Long.toString(service.getSellerKey());
         seller.name = service.getSellerName();
         price = new PriceModel();
+        price.currency = service.getPriceModel().getCurrency();
+        price.period = service.getPriceModel().getPeriod().name();
         price.freePeriod = Integer
                 .toString(service.getPriceModel().getFreePeriod());
         price.oneTimeFee = service.getPriceModel().getOneTimeFee()
@@ -46,6 +48,7 @@ public class Service {
         price.pricePerUser = service.getPriceModel().getPricePerUserAssignment()
                 .toPlainString();
         price.type = service.getPriceModel().getType().name();
+        
         addServiceParameter(service, configSettings);
     }
 

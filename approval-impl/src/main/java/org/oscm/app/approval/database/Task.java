@@ -9,6 +9,7 @@ package org.oscm.app.approval.database;
 
 import org.oscm.app.approval.json.JSONMapper;
 import org.oscm.app.approval.json.TriggerProcessData;
+import org.oscm.app.approval.util.PriceText;
 import org.oscm.app.dataaccess.AppDataService;
 import org.oscm.app.dataaccess.Credentials;
 import org.oscm.app.v2_0.exceptions.APPlatformException;
@@ -84,12 +85,17 @@ public class Task {
       props.put("service.seller.key", processData.ctmg_service.seller.key);
       props.put("service.seller.name", processData.ctmg_service.seller.name);
 
+      String loc = processData.ctmg_user.locale;
       props.put("service.price.freePeriod", processData.ctmg_service.price.freePeriod);
       props.put("service.price.oneTimeFee", processData.ctmg_service.price.oneTimeFee);
       props.put("service.price.pricePerPeriod", processData.ctmg_service.price.pricePerPeriod);
       props.put("service.price.pricePerUser", processData.ctmg_service.price.pricePerUser);
       props.put("service.price.type", processData.ctmg_service.price.type);
-
+      props.put("service.price.period", processData.ctmg_service.price.period);
+      props.put("service.price.currency", processData.ctmg_service.price.currency);
+      
+      props.put("service.price.text", PriceText.from(processData.ctmg_service.price));
+      
       for (String key : processData.ctmg_service.params.keySet()) {
         props.put(
             "service.params." + key + ".value", processData.ctmg_service.params.get(key).value);
@@ -144,6 +150,7 @@ public class Task {
     return props;
   }
 
+ 
   protected TriggerProcessData mapDescriptionToTriggerProcessData() {
     return JSONMapper.toTriggerProcessData(description);
   }

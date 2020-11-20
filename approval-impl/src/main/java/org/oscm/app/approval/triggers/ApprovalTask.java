@@ -294,6 +294,7 @@ public class ApprovalTask {
     json.add("pricePerPeriod", model.getPricePerPeriod());
     json.add("pricePerUser", model.getPricePerUserAssignment());
     json.add("freePeriod", model.getFreePeriod());
+    json.add("currency", model.getCurrencyISOCode());
     if (model.getPeriod() != null) {
       json.add("period", model.getPeriod().name());
     }

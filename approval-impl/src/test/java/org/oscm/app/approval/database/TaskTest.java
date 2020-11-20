@@ -21,7 +21,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.oscm.app.approval.database.Task;
 import org.oscm.app.approval.json.Organization;
 import org.oscm.app.approval.json.PriceModel;
 import org.oscm.app.approval.json.Seller;
@@ -74,7 +73,7 @@ public class TaskTest {
     task.description = "description";
     task.comment = "comment";
     task.tkey = "1";
-    task.triggerkey = Long.valueOf(1);
+    task.triggerkey = 1L;
     task.orgid = "orgId";
   }
 
@@ -104,10 +103,11 @@ public class TaskTest {
   private PriceModel initPriceModel() {
     PriceModel pr = new PriceModel();
     pr.freePeriod = "period";
-    pr.oneTimeFee = "freeTime";
-    pr.pricePerUser = "ppu";
-    pr.type = "type";
-
+    pr.oneTimeFee = "0.0";
+    pr.pricePerUser = "10";
+    pr.type = "FREE_OF_CHARGE";
+    pr.currency = "USD";
+    pr.period = "MONTH";
     return pr;
   }
 

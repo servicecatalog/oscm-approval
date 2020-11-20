@@ -65,7 +65,9 @@ public class ApprovalTaskTest {
   }
 
   private VOPriceModel initPriceModel() {
-    return new VOPriceModel();
+    VOPriceModel pm = new VOPriceModel();
+    pm.setCurrencyISOCode("USD");
+    return pm;
   }
 
   @Test
@@ -75,7 +77,7 @@ public class ApprovalTaskTest {
     String expected =
         "{\"ctmg_trigger_id\":\"testTrigger\",\"ctmg_trigger_name\":null,\"ctmg_trigger_key\":0,\"ctmg_trigger_orgid\":\"id\",\"ctmg_suspend_process\":true,\"ctmg_user\":"
             + "{\"userid\":null,\"orgId\":\"id\",\"key\":0},\"ctmg_service\":{\"id\":null,\"technicalId\":null,\"seller\":{\"key\":0,\"id\":null,\"name\":null},\"name\":null,\"params\":"
-            + "{},\"price\":{\"oneTimeFee\":0,\"pricePerPeriod\":0,\"pricePerUser\":0,\"freePeriod\":0,\"type\":\"FREE_OF_CHARGE\"}}}";
+            + "{},\"price\":{\"oneTimeFee\":0,\"pricePerPeriod\":0,\"pricePerUser\":0,\"freePeriod\":0,\"currency\":\"USD\",\"type\":\"FREE_OF_CHARGE\"}}}";
     String trigger = "testTrigger";
 
     // when
