@@ -15,7 +15,7 @@ import org.oscm.app.approval.i18n.Messages;
 import org.oscm.app.approval.json.PriceModel;
 import org.oscm.internal.types.enumtypes.PriceModelType;
 /** @author goebel */
-public class PriceUtils {
+public class PriceText {
   static final String LABEL_PRICE_MODEL_FREE = "priceModel.text.free";
   static final String LABEL_PRICE_MODEL_PRICE_AND_UNIT = "priceModel.text.combinePriceAndUnit";
   static final String LABEL_PRICE_MODEL_PRICE = "priceModel.text.price";
@@ -23,35 +23,32 @@ public class PriceUtils {
   static final String LABEL_PRICE_MODEL_PER_USER = "priceModel.text.perUser";
   static final String LABEL_PRICE_MODEL_SEE_DETAILS = "priceModel.text.seeDetails";
 
-  public static String[] getPriceTag(PriceModel priceModel) {
-    String[] result = new String[] {getText(LABEL_PRICE_MODEL_FREE, null), "", ""};
+  public static String from(PriceModel priceModel) {
     if (PriceModelType.FREE_OF_CHARGE.name().equalsIgnoreCase(priceModel.type)) {
-      result[2] = result[0];
-      return result;
+      return getText(LABEL_PRICE_MODEL_FREE, null);
     }
+    String[] result = new String[] {"", "", ""};
     if (isSet(priceModel.pricePerPeriod)) {
       result[0] =
-          getText(LABEL_PRICE_MODEL_PRICE, new Object[] {priceModel.currency, priceModel.pricePerPeriod});
+          getText(
+              LABEL_PRICE_MODEL_PRICE,
+              new Object[] {priceModel.currency, priceModel.pricePerPeriod});
       result[1] =
           getText(LABEL_PRICE_MODEL_PER_SUB, new Object[] {getPeriodText(priceModel.period)});
 
     } else if (isSet(priceModel.pricePerUser)) {
       result[0] =
-          getText(LABEL_PRICE_MODEL_PRICE, new Object[] {priceModel.currency, priceModel.pricePerUser});
+          getText(
+              LABEL_PRICE_MODEL_PRICE, new Object[] {priceModel.currency, priceModel.pricePerUser});
       result[1] =
           getText(LABEL_PRICE_MODEL_PER_USER, new Object[] {getPeriodText(priceModel.period)});
     } else if (isSet(priceModel.oneTimeFee)) {
-      result[0] = getText(LABEL_PRICE_MODEL_PRICE, new Object[] {priceModel.currency, priceModel.oneTimeFee});
+      return getText(
+          LABEL_PRICE_MODEL_PRICE, new Object[] {priceModel.currency, priceModel.oneTimeFee});
     } else {
-      result[0] = getText(LABEL_PRICE_MODEL_SEE_DETAILS, new Object[0]);
+      return getText(LABEL_PRICE_MODEL_SEE_DETAILS, new Object[0]);
     }
-    if (result[1].trim().length() > 0) {
-      // when both price and unit are set, provide combined string as well
-      result[2] = getText(LABEL_PRICE_MODEL_PRICE_AND_UNIT, new Object[] {result[0], result[1]});
-    } else {
-      result[2] = result[0];
-    }
-    return result;
+    return getText(LABEL_PRICE_MODEL_PRICE_AND_UNIT, new Object[] {result[0], result[1]});
   }
 
   static final String getPeriodText(String period) {

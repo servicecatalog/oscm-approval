@@ -12,7 +12,7 @@ import java.util.Map;
 
 import org.oscm.app.approval.json.JSONMapper;
 import org.oscm.app.approval.json.TriggerProcessData;
-import org.oscm.app.approval.util.PriceUtils;
+import org.oscm.app.approval.util.PriceText;
 import org.oscm.app.dataaccess.AppDataService;
 import org.oscm.app.dataaccess.Credentials;
 import org.slf4j.Logger;
@@ -93,7 +93,7 @@ public class Task {
       props.put("service.price.period", processData.ctmg_service.price.period);
       props.put("service.price.currency", processData.ctmg_service.price.currency);
       
-      props.put("service.price.text", PriceUtils.getPriceTag(processData.ctmg_service.price)[2]);
+      props.put("service.price.text", PriceText.from(processData.ctmg_service.price));
       
       for (String key : processData.ctmg_service.params.keySet()) {
         props.put(

@@ -9,7 +9,6 @@
  */
 package org.oscm.app.approval.util;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
@@ -22,7 +21,7 @@ import org.oscm.internal.types.enumtypes.PriceModelType;
 
 /** @author goebel */
 @RunWith(MockitoJUnitRunner.class)
-public class PriceUtilsTest {
+public class PriceTextTest {
 
   final int VALUE = 0;
   final int UNIT = 1;
@@ -40,11 +39,10 @@ public class PriceUtilsTest {
     pm.type = PriceModelType.FREE_OF_CHARGE.name();
 
     // when
-    String[] tag = PriceUtils.getPriceTag(pm);
+    String tag = PriceText.from(pm);
 
     // then
-    assertTrue(tag[VALUE].contains("Free"));
-    assertEquals("", tag[UNIT]);
+    assertTrue(tag.contains("Free"));
   }
 
   @Test
@@ -57,7 +55,7 @@ public class PriceUtilsTest {
     pm.period = "MONTH";
    
     // when
-    String[] tag = PriceUtils.getPriceTag(pm);
+    String tag = PriceText.from(pm);
     
     // then
     assertPriceTag(tag, "10.00", "per user / month");
@@ -74,16 +72,14 @@ public class PriceUtilsTest {
     pm.period = "WEEK";
 
     // when
-    String[] tag = PriceUtils.getPriceTag(pm);
+    String tag = PriceText.from(pm);
 
     // then
     assertPriceTag(tag, "5.30", "per week");
   }
 
-  private void assertPriceTag(String[] tag, String value, String unit) {
-    assertTrue(tag[VALUE], tag[VALUE].contains(value));
-    assertTrue(tag[UNIT], tag[UNIT].toLowerCase().contains(unit));
-    assertTrue(tag[COMBINED], tag[COMBINED].toLowerCase().contains(value));
-    assertTrue(tag[COMBINED], tag[COMBINED].toLowerCase().contains(unit));
+  private void assertPriceTag(String tag, String value, String unit) {
+    assertTrue(tag, tag.toLowerCase().contains(unit));
+    assertTrue(tag, tag.toLowerCase().contains(value));
   }
 }
