@@ -26,7 +26,7 @@ import org.oscm.app.connector.framework.Activity;
 import org.oscm.app.connector.framework.ProcessException;
 import org.oscm.app.connector.util.SpringBeanSupport;
 import org.oscm.app.dataaccess.AppDataService;
-import org.oscm.app.dataaccess.EmailSettings;
+import org.oscm.app.dataaccess.ApprovalRequest;
 import org.oscm.app.v2_0.exceptions.APPlatformException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,7 +96,7 @@ public class EmailWriter extends Activity {
     // Read email settings from service parameters
     AppDataService das = new AppDataService();
     try {
-      updateFromServiceParams(das.loadEmailSettings());
+      updateFromServiceParams(das.loadApprovalRequest());
     } catch (APPlatformException e) {
       throw new ProcessException(e.getLocalizedMessage(), ProcessException.CONFIG_ERROR, e);
     }
@@ -109,17 +109,17 @@ public class EmailWriter extends Activity {
     }
   }
 
-  private void updateFromServiceParams(EmailSettings es) throws ProcessException {
-    String body = es.getApprovalMsgBody();
+  private void updateFromServiceParams(ApprovalRequest es) throws ProcessException {
+    String body = es.getMsgBody();
     if (body != null) {
       setBody(body);
     }
-    String recipients = es.getApprovalRecipients();
+    String recipients = es.getRecipients();
     if (recipients != null) {
       setRecipients(recipients);
     }
 
-    String subject = es.getApprovalSubject();
+    String subject = es.getSubject();
     if (subject != null) {
       setSubject(subject);
     }
@@ -129,7 +129,7 @@ public class EmailWriter extends Activity {
       setFormat(format);
     }
 
-    String sender = es.getApprovalSender();
+    String sender = es.getSender();
     if (sender != null) {
       setSender(sender);
     }
