@@ -120,9 +120,8 @@ public class EmailWriterTest {
     BasicSettings basicSettings = spy(stub.getBasicSettings());
     doReturn(emailSettings).when(basicSettings).getParams();
     doReturn(mailTemplate).when(basicSettings).getMailTemplate();
-    ApprovalRequest es = new ApprovalRequest(basicSettings);
-   
-    PowerMockito.when(dataService.loadApprovalRequest()).thenReturn(es);
+    ApprovalRequest ar = new ApprovalRequest(basicSettings);
+    PowerMockito.when(dataService.loadApprovalRequest()).thenReturn(ar);
   }
 
   @Test

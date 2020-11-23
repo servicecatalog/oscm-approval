@@ -109,27 +109,27 @@ public class EmailWriter extends Activity {
     }
   }
 
-  private void updateFromServiceParams(ApprovalRequest es) throws ProcessException {
-    String body = es.getMsgBody();
+  private void updateFromServiceParams(ApprovalRequest ar) throws ProcessException {
+    String body = ar.getMsgBody();
     if (body != null) {
       setBody(body);
     }
-    String recipients = es.getRecipients();
+    String recipients = ar.getRecipients();
     if (recipients != null) {
       setRecipients(recipients);
     }
 
-    String subject = es.getSubject();
+    String subject = ar.getSubject();
     if (subject != null) {
       setSubject(subject);
     }
 
-    String format = es.getFormat();
+    String format = ar.getFormat();
     if (format != null) {
       setFormat(format);
     }
 
-    String sender = es.getSender();
+    String sender = ar.getSender();
     if (sender != null) {
       setSender(sender);
     }
