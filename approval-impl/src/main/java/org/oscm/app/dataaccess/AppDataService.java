@@ -74,8 +74,8 @@ public class AppDataService {
     return s;
   }
 
-  public EmailSettings loadEmailSettings() throws APPlatformException {
-    return new EmailSettings(getBasicSettings().getParams());
+  public ApprovalRequest loadApprovalRequest() throws APPlatformException {
+    return new ApprovalRequest(getBasicSettings());
   }
 
   public String getApproverOrgId(String orgId) throws APPlatformException {

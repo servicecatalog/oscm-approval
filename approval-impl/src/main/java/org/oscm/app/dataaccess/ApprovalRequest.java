@@ -11,38 +11,39 @@ package org.oscm.app.dataaccess;
 
 import java.util.Map;
 
+import org.oscm.app.approval.controller.ApprovalInstanceAccess.BasicSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /** @author goebel */
-public class EmailSettings {
+public class ApprovalRequest {
 
-  private static final Logger logger = LoggerFactory.getLogger(EmailSettings.class);
+  private static final Logger logger = LoggerFactory.getLogger(ApprovalRequest.class);
   private Map<String, String> settings;
+  private String messageBody;
 
-  public EmailSettings(Map<String, String> settings) {
-    this.settings = settings;
+  public ApprovalRequest(BasicSettings bs) {
+    this.settings = bs.getParams();
+    this.messageBody = bs.getMailTemplate();
   }
 
-  public String getApprovalRecipients() {
+  public String getRecipients() {
     final String r = settings.get("APPROVAL_RECIPIENTS");
     logger.debug("APPROVAL_RECIPIENTS:" + r);
     return r;
   }
 
-  public String getApprovalMsgBody() {
-    final String b = settings.get("APPROVAL_MSG_BODY");
-    logger.debug("APPROVAL_MSG_BODY:" + b);
-    return b;
+  public String getMsgBody() {
+    return messageBody;
   }
 
-  public String getApprovalSender() {
+  public String getSender() {
     final String sn = settings.get("APPROVAL_MSG_SENDER");
     logger.debug("APPROVAL_MSG_SENDER:" + sn);
     return sn;
   }
 
-  public String getApprovalSubject() {
+  public String getSubject() {
     final String sb = settings.get("APPROVAL_MSG_SUBJECT");
     logger.debug("APPROVAL_MSG_SUBJECT", sb);
     return sb;

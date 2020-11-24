@@ -13,11 +13,14 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -36,11 +39,16 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.oscm.app.approval.controller.ApprovalInstanceAccess;
+import org.oscm.app.approval.controller.ApprovalInstanceAccess.BasicSettings;
 import org.oscm.app.connector.framework.Activity;
 import org.oscm.app.connector.framework.ProcessException;
 import org.oscm.app.connector.util.SpringBeanSupport;
 import org.oscm.app.dataaccess.AppDataService;
-import org.oscm.app.dataaccess.EmailSettings;
+import org.oscm.app.dataaccess.ApprovalRequest;
+import org.oscm.app.v2_0.exceptions.APPlatformException;
+import org.oscm.app.v2_0.intf.APPTemplateService;
+import org.oscm.app.v2_0.intf.APPlatformService;
 import org.postgresql.core.ConnectionFactory;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
@@ -73,6 +81,7 @@ public class EmailWriterTest {
   private AppDataService dataService;
   private Map<String, String> transmitData;
   private Map<String, String> emailSettings;
+  private String mailTemplate = "<html>$(body)</html>";
 
   @BeforeClass
   public static void oneTimeSetup() {
@@ -94,8 +103,25 @@ public class EmailWriterTest {
 
     Whitebox.setInternalState(EmailWriter.class, "logger", logger);
     PowerMockito.whenNew(AppDataService.class).withNoArguments().thenReturn(dataService);
-
-    PowerMockito.when(dataService.loadEmailSettings()).thenReturn(new EmailSettings(emailSettings));
+    @SuppressWarnings("serial") ApprovalInstanceAccess stub =
+        new ApprovalInstanceAccess() {
+          
+        public void initialize() {
+            platformService = mock(APPlatformService.class);
+            try {
+              doReturn(Collections.EMPTY_LIST).when(platformService).listServiceInstances(anyString(), any());
+            } catch (APPlatformException e) {
+            }
+            templateService = mock(APPTemplateService.class);
+          }
+        };
+    stub.initialize();
+    
+    BasicSettings basicSettings = spy(stub.getBasicSettings());
+    doReturn(emailSettings).when(basicSettings).getParams();
+    doReturn(mailTemplate).when(basicSettings).getMailTemplate();
+    ApprovalRequest ar = new ApprovalRequest(basicSettings);
+    PowerMockito.when(dataService.loadApprovalRequest()).thenReturn(ar);
   }
 
   @Test
@@ -140,16 +166,20 @@ public class EmailWriterTest {
 
   @Test
   public void testTransmitReceiveDataTwice() throws Exception {
+    // given
     transmitData.put("subject", "subjectValue");
     emailWriter.setNextActivity(activity);
-
+    
     PowerMockito.doNothing()
         .when(emailWriter, PowerMockito.method(EmailWriter.class, "sendEmail"))
         .withArguments(eq(transmitData));
 
+    // when
     final Map<String, String> result = emailWriter.transmitReceiveData(transmitData);
 
+    // then
     PowerMockito.verifyPrivate(emailWriter, times(2)).invoke("getNextActivity");
+    verify(emailWriter, times(1)).setBody(eq(mailTemplate));
     assertNotEquals(transmitData, result);
   }
 
@@ -182,7 +212,7 @@ public class EmailWriterTest {
     transmitData.put("body", "://body.com");
     transmitData.put("sender", "senderValue");
     emailWriter.setSubject("_$(subject)");
-    emailWriter.setBody("html$(body)");
+    emailWriter.setBody(mailTemplate);
     emailWriter.setSender("_$(sender)");
 
     PowerMockito.doReturn(null).when(emailWriter, "getMailSession");
@@ -201,6 +231,9 @@ public class EmailWriterTest {
     verify(initialContext, times(1)).lookup(anyString());
   }
 
+ 
+
+  
   @Test(expected = Exception.class)
   public void testGetMailSessionException() throws Exception {
 
