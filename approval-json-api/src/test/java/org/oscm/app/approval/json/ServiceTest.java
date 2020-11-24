@@ -13,6 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.oscm.types.enumtypes.PriceModelType;
+import org.oscm.types.enumtypes.PricingPeriod;
 import org.oscm.vo.*;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -44,6 +45,7 @@ public class ServiceTest {
 
   @Test
   public void testConstructor() {
+    // given
     voTechnicalService = new VOTechnicalService();
     voParameterDefinition = new VOParameterDefinition();
     priceModel = new VOPriceModel();
@@ -71,6 +73,7 @@ public class ServiceTest {
     priceModel.setPricePerUserAssignment(BigDecimal.valueOf(100));
     priceModel.setFreePeriod(7);
     priceModel.setType(PriceModelType.PER_UNIT);
+    priceModel.setPeriod(PricingPeriod.DAY);
 
     voServiceDetails.setName("Simple Service from Smith org");
     voServiceDetails.setServiceId("SmithService");
@@ -81,14 +84,15 @@ public class ServiceTest {
     voServiceDetails.setPriceModel(priceModel);
     voServiceDetails.setTechnicalService(voTechnicalService);
     voServiceDetails.setParameters(parameters);
-
+    // when
     service = new Service(voServiceDetails, configSetting);
-
+    // then
     assertEquals("Simple Service from Smith org", service.name);
   }
 
   @Test
   public void testAddServiceParameter() throws Exception {
+    // given
     voServiceDetails = new VOServiceDetails();
     voTechnicalService = new VOTechnicalService();
     voParameterDefinition = new VOParameterDefinition();
@@ -112,15 +116,17 @@ public class ServiceTest {
 
     voServiceDetails.setTechnicalService(voTechnicalService);
     voServiceDetails.setParameters(parameters);
-
+    // when
     PowerMockito.when(service, "addServiceParameter", voServiceDetails, configSetting)
         .thenCallRealMethod();
+    // then
     assertEquals(2, service.params.size());
     assertEquals("Passed", service.params.get("ParameterId").value);
   }
 
   @Test
   public void testAddServiceParameterValueFromConfigSettings() throws Exception {
+    // given
     voServiceDetails = new VOServiceDetails();
     voTechnicalService = new VOTechnicalService();
     voParameterDefinition = new VOParameterDefinition();
@@ -147,9 +153,10 @@ public class ServiceTest {
 
     voServiceDetails.setTechnicalService(voTechnicalService);
     voServiceDetails.setParameters(parameters);
-
+    // when
     PowerMockito.when(service, "addServiceParameter", voServiceDetails, configSetting)
         .thenCallRealMethod();
+    // then
     assertEquals(2, service.params.size());
     assertEquals("Failed", service.params.get("ParameterId").value);
   }

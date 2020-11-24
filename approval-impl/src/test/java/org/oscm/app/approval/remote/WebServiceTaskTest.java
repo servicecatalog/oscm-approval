@@ -50,26 +50,29 @@ public class WebServiceTaskTest {
 
   @Test
   public void testSetWsdlUrl() {
+    // given
     String webServiceWsdl = "http://oscm-example:3000/{SERVICE}?wsdl";
-
+    // when
     webServiceTask.setWsdlUrl(webServiceWsdl);
-
+    // then
     String wsdlUrl = Whitebox.getInternalState(webServiceTask, "wsdlUrl");
     assertEquals(webServiceWsdl, wsdlUrl);
   }
 
   @Test
   public void testSetAuthentication() {
+    // given
     PasswordAuthentication pa = new PasswordAuthentication("username", "password");
-
+    // when
     webServiceTask.setAuthentication(pa);
-
+    // then
     PasswordAuthentication auth = Whitebox.getInternalState(webServiceTask, "pa");
     assertEquals("username", auth.getUserName());
   }
 
   @Test
   public void testRun() throws Exception {
+    // given
     TestClass testClass = new TestClass();
     String webServiceWsdl = "http://oscm-example:3000/{SERVICE}?wsdl";
     PasswordAuthentication pa = new PasswordAuthentication("username", "password");
@@ -78,16 +81,17 @@ public class WebServiceTaskTest {
     webServiceTask.setWsdlUrl(webServiceWsdl);
     PowerMockito.when(BesClient.getWebserviceIntern(anyString(), anyString(), anyString(), any()))
         .thenReturn(testClass);
-
+    // when
     webServiceTask.run();
-
+    // then
     assertEquals(result, webServiceTask.getResult());
   }
 
   @Test
   public void testRunThrowsException() {
+    // when
     webServiceTask.run();
-
+    // then
     assertNotEquals(result, webServiceTask.getResult());
   }
 

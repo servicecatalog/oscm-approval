@@ -71,9 +71,9 @@ public class CTMGTriggerNotificationTest {
 
   @Test
   public void testDoConfigure() throws ProcessException {
-
+    // given
     notification.doConfigure(props);
-
+    // when
     verify(logger, times(1)).debug(contains("beanName: "));
   }
 
@@ -110,7 +110,7 @@ public class CTMGTriggerNotificationTest {
 
   @Test
   public void testTransmitReceiveDataWithNextActivity() throws ProcessException {
-
+    // given
     Map<String, String> givenData =
         Stream.of(
                 new String[][] {
@@ -129,9 +129,9 @@ public class CTMGTriggerNotificationTest {
     doNothing()
         .when(notification)
         .notifyCTMGTrigger(anyString(), anyString(), anyString(), anyBoolean());
-
+    // when
     Map<String, String> resultData = notification.transmitReceiveData(givenData);
-
+    // then
     verify(notification, times(1)).transmitReceiveData(givenData);
     assertEquals(3, givenData.size());
     assertNull(resultData.get("triggerkey"));
@@ -139,42 +139,45 @@ public class CTMGTriggerNotificationTest {
 
   @Test
   public void testCreateTriggerTaskExecuteWithTrue() throws Exception {
-
+    // given
     triggerService = mock(TriggerService.class);
     String key = notification.triggerkey = "12300";
     notification.orgid = "10000";
+    // when
     String status =
         (String) notification.createTriggerTask(TriggerService.class, true).execute(triggerService);
-
+    // then
     verify(triggerService, times(1)).approveAction(Long.parseLong(key));
     assertEquals("OK", status);
   }
 
   @Test
   public void testCreateTriggerTaskExecuteWithFalse() throws Exception {
-
+    // given
     triggerService = mock(TriggerService.class);
     String key = notification.triggerkey = "12300";
     notification.orgid = "10000";
+    // when
     String status =
         (String)
             notification.createTriggerTask(TriggerService.class, false).execute(triggerService);
-
+    // then
     verify(triggerService, times(1)).rejectAction(eq(Long.parseLong(key)), anyList());
     assertEquals("OK", status);
   }
 
   @Test(expected = Exception.class)
   public void testCreateTriggerTaskThrowsException() throws Exception {
-
+    // given
     notification.createTriggerTask(any(), anyBoolean()).execute(triggerService);
   }
 
   @Test(expected = Exception.class)
   public void testNotifyCTMGTriggerThrowsException()
       throws ProcessException, MalformedURLException, ConfigurationException {
+    // given
     when(notification.createTriggerTask(any(), anyBoolean())).thenReturn(webServiceTask);
-
+    // when
     notification.notifyCTMGTrigger("1500", "1000", "Testing notify CTMG trigger", true);
   }
 }

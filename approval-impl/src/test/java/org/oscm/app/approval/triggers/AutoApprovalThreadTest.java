@@ -54,31 +54,33 @@ public class AutoApprovalThreadTest {
 
   @Test
   public void testRunWebServiceAsOrganizationAdmin() throws Exception {
+    // given
     PowerMockito.mockStatic(BesClient.class);
     PowerMockito.when(BesClient.runWebServiceAsOrganizationAdmin(anyString(), any()))
         .thenReturn(result);
-
+    // when
     autoApprovalThread.run();
-
+    // then
     verify(logger, times(1)).debug("AutoApprovalThread.run() left");
   }
 
   @Test
   public void testCreateApproveActionWSCall() throws Exception {
+    // given
     TriggerService triggerService = mock(TriggerService.class);
-
+    // when
     String result =
         (String)
             autoApprovalThread
                 .createApproveActionWSCall(TriggerService.class, 12000)
                 .execute(triggerService);
-
+    // then
     assertEquals("OK", result);
   }
 
   @Test(expected = Exception.class)
   public void testCreateApproveActionWSCallThrowException() throws Exception {
-
+    // when
     autoApprovalThread.createApproveActionWSCall(TriggerService.class, 12000).execute(null);
   }
 }

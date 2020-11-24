@@ -48,6 +48,7 @@ public class JSONMapperTest {
 
   @Test
   public void testToJSON() throws Exception {
+    // given
     triggerProcessData = new TriggerProcessData();
     user = new User();
     service = new Service();
@@ -102,15 +103,15 @@ public class JSONMapperTest {
     triggerProcessData.ctmg_service = service;
     triggerProcessData.ctmg_organization = organization;
     triggerProcessData.ctmg_subscription = subscription;
-
+    // when
     String json = Whitebox.invokeMethod(jsonMapper, "toJSON", triggerProcessData);
-
+    // then
     assertTrue(json.contains("\"ctmg_trigger_id\":\"TriggerID\""));
   }
 
   @Test
   public void testToTriggerProcessData() throws Exception {
-
+    // when
     TriggerProcessData data =
         Whitebox.invokeMethod(
             jsonMapper,
@@ -124,19 +125,19 @@ public class JSONMapperTest {
                 + "  \"instanceid\":\"InstanceID\",\n"
                 + "  \"instancename\":\"Subscribe to service\""
                 + "}");
-
+    // then
     assertEquals("TriggerID", data.ctmg_trigger_id);
   }
 
   @Test
   public void testToTriggerProcessDataReturnNull() throws Exception {
-
+    // when
     TriggerProcessData data =
         Whitebox.invokeMethod(
             jsonMapper,
             "toTriggerProcessData",
             "{\n" + "  \"ctmg_trigger_fake\":\"TriggerID\"\n," + "}");
-
+    // then
     assertNull(data);
   }
 }

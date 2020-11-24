@@ -13,8 +13,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.oscm.app.approval.auth.User;
 import org.oscm.app.approval.database.DataAccessService;
 import org.oscm.app.approval.database.Task;
@@ -76,7 +74,6 @@ public class TaskServletTest {
 
   @Test
   public void TestDoService_get_taskList() throws Exception {
-
     // given
     String expected =
         "[{\"tkey\":null,\"triggername\":null,\"orgid\":\"orgid\",\"orgname\":null,\"requestinguser\":\"requestinguser\",\"status\":\"status\",\"status_tkey\":\"status_tkey\"}]";
@@ -115,7 +112,6 @@ public class TaskServletTest {
 
   @Test
   public void TestDoService_get_details() throws Exception {
-
     // given
     String expected =
         "{\"comment\":\"commend\",\"created\":\"created\",\"orgid\":\"orgid\",\"orgname\":null,\"requestinguser\":\"requestinguser\",\"description\":\"description\",\"status\":\"status\"}";
@@ -132,7 +128,6 @@ public class TaskServletTest {
 
   @Test
   public void TestDoService_get_delete() throws Exception {
-
     // given
     Map<String, String[]> paramMap = new HashMap<String, String[]>();
     paramMap.put("cmd", new String[] {"delete"});
@@ -146,7 +141,6 @@ public class TaskServletTest {
 
   @Test
   public void TestDoService_setError() throws Exception {
-
     // given
     PowerMockito.whenNew(ServiceResult.class).withNoArguments().thenReturn(serviceResult);
     Map<String, String[]> paramMap = new HashMap<>();
@@ -160,13 +154,11 @@ public class TaskServletTest {
 
   @Test
   public void TestDoService_post_save() throws Exception {
-
     // given
     Map<String, String[]> paramMap = new HashMap<String, String[]>();
     paramMap.put("cmd", new String[] {"save"});
     ServiceParams params = new ServiceParams(ServiceParams.MODE.POST, PATHS, paramMap);
     doReturn(createResultData()).when(taskServlet).createResultData(anyString(), any());
-
     // when
     taskServlet.doService(params, getTestReader(), User.builder().orgId("orgId").build());
     // then
@@ -175,14 +167,12 @@ public class TaskServletTest {
 
   @Test
   public void TestDoService_post_approve() throws Exception {
-
     // given
     Map<String, String[]> paramMap = new HashMap<String, String[]>();
     paramMap.put("cmd", new String[] {"approve"});
     ServiceParams params = new ServiceParams(ServiceParams.MODE.POST, PATHS, paramMap);
     doReturn(createResultData()).when(taskServlet).createResultData(anyString(), any());
     doNothing().when(taskServlet).notifyCTMGTrigger(anyString(), anyBoolean());
-
     // when
     taskServlet.doService(params, getTestReader(), User.builder().orgId("orgId").build());
     // then
@@ -191,14 +181,12 @@ public class TaskServletTest {
 
   @Test
   public void TestDoService_post_reject() throws Exception {
-
     // given
     Map<String, String[]> paramMap = new HashMap<String, String[]>();
     paramMap.put("cmd", new String[] {"reject"});
     ServiceParams params = new ServiceParams(ServiceParams.MODE.POST, PATHS, paramMap);
     doReturn(createResultData()).when(taskServlet).createResultData(anyString(), any());
     doNothing().when(taskServlet).notifyCTMGTrigger(anyString(), anyBoolean());
-
     // when
     taskServlet.doService(params, getTestReader(), User.builder().orgId("orgId").build());
     // then
@@ -207,7 +195,6 @@ public class TaskServletTest {
 
   @Test
   public void TestDoService_post_start_process() throws Exception {
-
     // given
     Map<String, String[]> paramMap = new HashMap<String, String[]>();
     paramMap.put("cmd", new String[] {"start_process"});
@@ -215,7 +202,6 @@ public class TaskServletTest {
 
     doReturn(createControllerSettings()).when(task).getTriggerProcessData();
     doNothing().when(taskServlet).excecuteProcess(anyString(), any());
-
     // when
     taskServlet.doService(params, getTestReader(), User.builder().orgId("orgId").build());
     // then
@@ -224,7 +210,6 @@ public class TaskServletTest {
 
   @Test
   public void TestDoService_post_grant_clearance() throws Exception {
-
     // given
     Map<String, String[]> paramMap = new HashMap<String, String[]>();
     paramMap.put("cmd", new String[] {"grant_clearance"});
@@ -232,7 +217,6 @@ public class TaskServletTest {
     doReturn(createResultData()).when(taskServlet).createResultData(anyString(), any());
     doReturn(createControllerSettings()).when(task).getTriggerProcessData();
     doNothing().when(taskServlet).excecuteProcess(anyString(), any());
-
     // when
     taskServlet.doService(params, getTestReader(), User.builder().orgId("orgId").build());
     // then
@@ -241,62 +225,64 @@ public class TaskServletTest {
 
   @Test
   public void TestExecuteProcess() throws Exception {
-
+    // given
     PowerMockito.whenNew(XmlBeanFactory.class).withAnyArguments().thenReturn(factory);
     PowerMockito.whenNew(PropertyPlaceholderConfigurer.class).withNoArguments().thenReturn(cfg);
     when(factory.getBean("Process")).thenReturn(iProcess);
-
+    // when
     taskServlet.excecuteProcess(anyString(), anyMap());
-
+    // then
     verify(iProcess, times(1)).execute(anyMap());
   }
 
   @Test
   public void TestNotifyCTMGTrigger() throws Exception {
-
+    // given
     PowerMockito.whenNew(DataAccessService.class).withNoArguments().thenReturn(dataAccessService);
     when(dataAccessService.getTask(anyString())).thenReturn(task);
     PowerMockito.mockStatic(BesClient.class);
     PowerMockito.when(BesClient.runWebServiceAsOrganizationAdmin(anyString(), any()))
         .thenReturn(task);
-
+    // when
     taskServlet.notifyCTMGTrigger(anyString(), anyBoolean());
-
+    // then
     PowerMockito.verifyPrivate(taskServlet, times(1))
         .invoke("notifyCTMGTrigger", task, "", null, false);
   }
 
   @Test(expected = Exception.class)
   public void TestNotifyCTMGTrigger_ThrowsException() throws Exception {
-
+    // given
     PowerMockito.whenNew(DataAccessService.class).withNoArguments().thenReturn(dataAccessService);
     when(dataAccessService.getTask(anyString())).thenReturn(task);
-
+    // when
     taskServlet.notifyCTMGTrigger(anyString(), anyBoolean());
   }
 
   @Test
   public void TestCreateTriggerTask_True() throws Exception {
+    // given
     TriggerService testService = mock(TriggerService.class);
-
+    // when
     String result =
         (String)
             taskServlet.createTriggerTask(TriggerService.class, task, true).execute(testService);
-
+    // then
     assertEquals("OK", result);
     verify(testService, times(1)).approveAction(anyLong());
   }
 
   @Test
   public void TestCreateTriggerTask_False() throws Exception {
+    // given
     TriggerService testService = mock(TriggerService.class);
     VOLocalizedText localizedText = mock(VOLocalizedText.class);
     PowerMockito.whenNew(VOLocalizedText.class).withAnyArguments().thenReturn(localizedText);
-
+    // when
     String result =
         (String)
             taskServlet.createTriggerTask(TriggerService.class, task, false).execute(testService);
-
+    // then
     assertEquals("OK", result);
     verify(testService, times(1)).rejectAction(anyLong(), any());
   }

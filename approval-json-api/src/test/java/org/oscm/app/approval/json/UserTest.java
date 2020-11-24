@@ -27,6 +27,7 @@ public class UserTest {
 
   @Test
   public void testConstructor() {
+    // given
     voUserDetails = new VOUserDetails();
 
     voUserDetails.setUserId("JacobSmith");
@@ -41,9 +42,9 @@ public class UserTest {
     voUserDetails.setPhone("123456789");
     voUserDetails.setSalutation(Salutation.MR);
     voUserDetails.setRealmUserId("JacobS");
-
+    // when
     user = new User(voUserDetails);
-
+    // then
     assertEquals("Jacob", user.firstname);
   }
 }

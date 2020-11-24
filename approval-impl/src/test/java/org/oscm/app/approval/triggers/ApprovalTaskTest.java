@@ -200,21 +200,23 @@ public class ApprovalTaskTest {
 
   @Test
   public void testConstructor_ProcessAnUserImplemented() throws Exception {
+    // given
     VOTriggerProcess triggerProcess = new VOTriggerProcess();
     VOService voService = new VOService();
 
     initApprovalTaskData(triggerProcess, voService, false);
     String trigger = "testTrigger";
     String expected =
-        "{\"ctmg_trigger_id\":\"testTrigger\",\"ctmg_trigger_name\":\"Test Trigger Name\",\"ctmg_trigger_key\":0,\"ctmg_trigger_orgid\":\"Test organization\",\"ctmg_suspend_process\":false,\"ctmg_user\":{\"userid\":\"Test user\",\"orgId\":\"Test organization\",\"key\":0},\"ctmg_service\":{\"id\":\"SmithService\",\"technicalId\":\"SmithTech\",\"seller\":{\"key\":18000,\"id\":\"JanNowak\",\"name\":\"Jan Nowak\"},\"name\":\"Simple Service from Smith org\",\"params\":{\"AUTO_APPROVE_TRIGGER\":{\"id\":\"AUTO_APPROVE_TRIGGER\",\"label\":\"Parameter determining whether the test will pass or not\",\"value\":\"FALSE\"}},\"price\":{\"oneTimeFee\":10,\"pricePerPeriod\":10,\"pricePerUser\":100,\"freePeriod\":7,\"type\":\"PER_UNIT\"}}}";
-
+        "{\"ctmg_trigger_id\":\"testTrigger\",\"ctmg_trigger_name\":\"Test Trigger Name\",\"ctmg_trigger_key\":0,\"ctmg_trigger_orgid\":\"Test organization\",\"ctmg_suspend_process\":false,\"ctmg_user\":{\"userid\":\"Test user\",\"orgId\":\"Test organization\",\"key\":0},\"ctmg_service\":{\"id\":\"SmithService\",\"technicalId\":\"SmithTech\",\"seller\":{\"key\":18000,\"id\":\"JanNowak\",\"name\":\"Jan Nowak\"},\"name\":\"Simple Service from Smith org\",\"params\":{\"AUTO_APPROVE_TRIGGER\":{\"id\":\"AUTO_APPROVE_TRIGGER\",\"label\":\"Parameter determining whether the test will pass or not\",\"value\":\"FALSE\"}},\"price\":{\"oneTimeFee\":10,\"pricePerPeriod\":10,\"pricePerUser\":100,\"freePeriod\":7,\"currency\":null,\"type\":\"PER_UNIT\"}}}";
+    // when
     ApprovalTask task = new ApprovalTask(trigger, triggerProcess, voService);
-
+    // then
     assertEquals(expected, task.getJSON());
   }
 
   @Test
   public void testStartApprovalProcess_autoApprove() throws Exception {
+    // given
     String trigger = "testTrigger";
     VOTriggerProcess triggerProcess = new VOTriggerProcess();
     VOService voService = new VOService();
@@ -241,9 +243,9 @@ public class ApprovalTaskTest {
     ApprovalTask task = PowerMockito.spy(new ApprovalTask(trigger, triggerProcess, voService));
     task.addParams("node", parameters);
     task.isSuspendProcess = true;
-
+    // when
     task.startApprovalProcess();
-
+    // then
     verify(task, never()).excecuteProcess(eq("ClearanceRequest.xml"), anyString(), anyString());
     verify(task, never()).excecuteProcess(eq("ApprovalRequest.xml"), anyString(), anyString());
     verify(task, never()).excecuteProcess(eq("NotificationRequest.xml"), anyString(), anyString());
@@ -251,6 +253,7 @@ public class ApprovalTaskTest {
 
   @Test
   public void testStartApprovalProcess_onGrantClearance() throws Exception {
+    // given
     String trigger = "onGrantClearance";
     VOTriggerProcess triggerProcess = new VOTriggerProcess();
     VOService voService = new VOService();
@@ -266,14 +269,15 @@ public class ApprovalTaskTest {
     when(factory.getBean("Process")).thenReturn(iProcess);
 
     ApprovalTask task = PowerMockito.spy(new ApprovalTask(trigger, triggerProcess, voService));
-
+    // when
     task.startApprovalProcess();
-
+    // then
     verify(task, times(1)).excecuteProcess(eq("ClearanceRequest.xml"), anyString(), anyString());
   }
 
   @Test
   public void testStartApprovalProcess_isSuspendProcess() throws Exception {
+    // given
     VOTriggerProcess triggerProcess = new VOTriggerProcess();
     VOService voService = new VOService();
     initApprovalTaskData(triggerProcess, voService, false);
@@ -290,14 +294,15 @@ public class ApprovalTaskTest {
 
     ApprovalTask task = PowerMockito.spy(new ApprovalTask(trigger, triggerProcess, voService));
     task.isSuspendProcess = true;
-
+    // when
     task.startApprovalProcess();
-
+    // then
     verify(task, times(1)).excecuteProcess(eq("ApprovalRequest.xml"), anyString(), anyString());
   }
 
   @Test
   public void testStartApprovalProcess() throws Exception {
+    // given
     VOTriggerProcess triggerProcess = new VOTriggerProcess();
     VOService voService = new VOService();
     initApprovalTaskData(triggerProcess, voService, false);
@@ -313,14 +318,15 @@ public class ApprovalTaskTest {
     when(factory.getBean("Process")).thenReturn(iProcess);
 
     ApprovalTask task = PowerMockito.spy(new ApprovalTask(trigger, triggerProcess, voService));
-
+    // when
     task.startApprovalProcess();
-
+    // then
     verify(task, times(1)).excecuteProcess(eq("NotificationRequest.xml"), anyString(), anyString());
   }
 
   @Test(expected = ProcessException.class)
   public void testExecuteProcess() throws Exception {
+    // given
     VOTriggerProcess triggerProcess = new VOTriggerProcess();
     VOService voService = new VOService();
     initApprovalTaskData(triggerProcess, voService, false);
@@ -333,14 +339,14 @@ public class ApprovalTaskTest {
     when(task.getTriggerProcessData()).thenReturn(inputData);
     when(factory.getBean("Process")).thenReturn(iProcess);
     when(iProcess.execute(inputData)).thenThrow(new ProcessException("Test Exception", 123));
-
     ApprovalTask task = PowerMockito.spy(new ApprovalTask(trigger, triggerProcess, voService));
-
+    // when
     task.excecuteProcess(anyString(), anyString(), anyString());
   }
 
   @Test
   public void testAddUser() throws Exception {
+    // given
     process = mock(VOTriggerProcess.class);
     service = mock(VOService.class);
     initProcess();
@@ -363,15 +369,16 @@ public class ApprovalTaskTest {
     voUserDetails.setRealmUserId("JacobS");
 
     ApprovalTask task = PowerMockito.spy(new ApprovalTask(trigger, process, service));
-
     task.add("testNode", voUserDetails);
-
+    // when
     JsonResult jsonResult = Whitebox.getInternalState(task, "json");
+    // then
     assertTrue(jsonResult.getJson().contains("JacobSmith"));
   }
 
   @Test
   public void testAddOrganization() throws Exception {
+    // given
     process = mock(VOTriggerProcess.class);
     service = mock(VOService.class);
     initProcess();
@@ -387,13 +394,15 @@ public class ApprovalTaskTest {
     ApprovalTask task = PowerMockito.spy(new ApprovalTask(trigger, process, service));
 
     task.add("testNode", organization);
-
+    // when
     JsonResult jsonResult = Whitebox.getInternalState(task, "json");
+    // then
     assertTrue(jsonResult.getJson().contains("Smiths organization"));
   }
 
   @Test
   public void testAddSubscription() throws Exception {
+    // given
     process = mock(VOTriggerProcess.class);
     service = mock(VOService.class);
     initProcess();
@@ -406,15 +415,16 @@ public class ApprovalTaskTest {
     subscription.setSubscriptionId("SubscriptionId");
 
     ApprovalTask task = PowerMockito.spy(new ApprovalTask(trigger, process, service));
-
     task.add("testNode", subscription);
-
+    // when
     JsonResult jsonResult = Whitebox.getInternalState(task, "json");
+    // then
     assertTrue(jsonResult.getJson().contains("SubscriptionId"));
   }
 
   @Test
   public void testAddProperty() throws Exception {
+    // given
     process = mock(VOTriggerProcess.class);
     service = mock(VOService.class);
     initProcess();
@@ -425,19 +435,19 @@ public class ApprovalTaskTest {
     List<VOProperty> parameters = new ArrayList<>();
     voProperty.setName("TestProperty");
     voProperty.setValue("Test property value");
-
     parameters.add(voProperty);
 
     ApprovalTask task = PowerMockito.spy(new ApprovalTask(trigger, process, service));
-
     task.addProps("testNode", parameters);
-
+    // when
     JsonResult jsonResult = Whitebox.getInternalState(task, "json");
+    // then
     assertTrue(jsonResult.getJson().contains("Test property value"));
   }
 
   @Test
   public void testAddUsageLicense() throws Exception {
+    // given
     process = mock(VOTriggerProcess.class);
     service = mock(VOService.class);
     initProcess();
@@ -463,19 +473,18 @@ public class ApprovalTaskTest {
     VOUsageLicense usageLicense = new VOUsageLicense();
     List<VOUsageLicense> parameters = new ArrayList<>();
     usageLicense.setUser(user);
-
     parameters.add(usageLicense);
-
     ApprovalTask task = PowerMockito.spy(new ApprovalTask(trigger, process, service));
-
     task.addUsageLicense("testNode", parameters);
-
+    // when
     JsonResult jsonResult = Whitebox.getInternalState(task, "json");
+    // then
     assertTrue(jsonResult.getJson().contains("Test user"));
   }
 
   @Test
   public void testAddUsers() throws Exception {
+    // given
     process = mock(VOTriggerProcess.class);
     service = mock(VOService.class);
     initProcess();
@@ -513,23 +522,24 @@ public class ApprovalTaskTest {
     parameters.add(user);
 
     ApprovalTask task = PowerMockito.spy(new ApprovalTask(trigger, process, service));
-
     task.addUsers("testNode", parameters);
-
+    // when
     JsonResult jsonResult = Whitebox.getInternalState(task, "json");
+    // then
     assertTrue(jsonResult.getJson().contains("User Organization"));
   }
 
   @Test
   public void testGetServiceParameter() throws Exception {
+    // given
     process = mock(VOTriggerProcess.class);
     service = mock(VOService.class);
     initProcess();
     initService();
     String trigger = "testTrigger";
-
+    // when
     ApprovalTask task = PowerMockito.spy(new ApprovalTask(trigger, process, service));
-
+    // then
     assertNull(Whitebox.invokeMethod(task, "getServiceParameter", "ID"));
   }
 }

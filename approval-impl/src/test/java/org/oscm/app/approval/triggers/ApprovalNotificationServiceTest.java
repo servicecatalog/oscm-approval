@@ -313,6 +313,7 @@ public class ApprovalNotificationServiceTest {
 
   @Test
   public void testCreateSubscriptionDetailsWSCall() throws Exception {
+    // given
     List<VOSubscription> listSubscription = new ArrayList<>();
     SubscriptionService testService = mock(SubscriptionService.class);
 
@@ -324,31 +325,33 @@ public class ApprovalNotificationServiceTest {
     subscriptionDetails.setSubscriptionId("ServiceInstanceId");
     listSubscription.add(subscription);
     when(testService.getSubscriptionsForOrganization()).thenReturn(listSubscription);
-
+    // when
     service
         .createSubscriptionDetailsWSCall(SubscriptionService.class, 12000, "OrganizationId")
         .execute(testService);
-
+    // then
     verify(testService, times(1)).getSubscriptionDetails("SubscriptionId");
   }
 
   @Test
   public void testCreateSubscriptionDetailsByIdWSCall() throws Exception {
+    // given
     SubscriptionService testService = mock(SubscriptionService.class);
-
+    // when
     service
         .createSubscriptionDetailsByIdWSCall(SubscriptionService.class, "SubscriptionId")
         .execute(testService);
-
+    // then
     verify(testService, times(1)).getSubscriptionDetails("SubscriptionId");
   }
 
   @Test
   public void testGetOrganizationDataWSCall() throws Exception {
+    // given
     AccountService testService = mock(AccountService.class);
-
+    // when
     service.getOrganizationDataWSCall(AccountService.class, "OrganizationId").execute(testService);
-
+    // then
     verify(testService, times(1)).getOrganizationData();
   }
 }

@@ -40,61 +40,68 @@ public class ServiceResultTest {
 
   @Test
   public void testSetErrorWithThrowable() {
-
+    // given
     serviceResult.setError(404, new Throwable("Test exception"));
-
+    // when
     int httpCode = Whitebox.getInternalState(serviceResult, "httpStatus");
+    // then
     assertEquals(404, httpCode);
   }
 
   @Test
   public void testSetErrorWithMessage() {
-
+    // given
     serviceResult.setError(404, "Test exception");
-
+    // when
     JsonResult json = Whitebox.getInternalState(serviceResult, "jsonResult");
+    // then
     assertEquals("{\"status\":\"Test exception\"}", json.getJson());
   }
 
   @Test
   public void testSetStatus() {
-
+    // given
     serviceResult.setStatus(HttpServletResponse.SC_CONFLICT);
-
+    // when
     int status = Whitebox.getInternalState(serviceResult, "httpStatus");
+    // then
     assertEquals(HttpServletResponse.SC_CONFLICT, status);
   }
 
   @Test
   public void testSetHTMLOutput() {
+    // given
     serviceResult = spy(new ServiceResult());
     serviceResult.setHTMLOutput("Test http output");
-
+    // when
     String output = Whitebox.getInternalState(serviceResult, "htmlOutput");
+    // then
     assertEquals("Test http output", output);
   }
 
   @Test
   public void testSendResultJSON() throws Exception {
+    // given
     serviceResult = spy(new ServiceResult());
     serviceResult.setError(404, "Test exception");
     when(response.getWriter()).thenReturn(printWriter);
-
     serviceResult.sendResult(response);
-
+    // when
     JsonResult json = Whitebox.getInternalState(serviceResult, "jsonResult");
+    // then
     assertEquals("{\"status\":\"Test exception\"}", json.getJson());
     verify(response, times(2)).setHeader(anyString(), anyString());
   }
 
   @Test
   public void testSendResultHTML() throws Exception {
+    // given
     serviceResult.setHTMLOutput("Test http output");
     when(response.getWriter()).thenReturn(printWriter);
-
     serviceResult.sendResult(response);
-
+    // when
     String output = Whitebox.getInternalState(serviceResult, "htmlOutput");
+    // then
     assertEquals("Test http output", output);
     verify(response, times(1)).setContentType(anyString());
   }

@@ -47,19 +47,20 @@ public class AuthenticationFilterTest {
 
   @Test
   public void testDoFilter() throws IOException, ServletException {
-
+    // given
     when(httpRequest.getSession(anyBoolean())).thenReturn(session);
     when(session.getAttribute(anyString())).thenReturn("Jola");
+    // when
     authenticationFilter.doFilter(httpRequest, httpResponse, filterChain);
-
+    // then
     verify(filterChain, times(1)).doFilter(any(), any());
   }
 
   @Test
   public void testDoFilterRedirect() throws IOException, ServletException {
-
+    // when
     authenticationFilter.doFilter(httpRequest, httpResponse, filterChain);
-
+    // then
     verify(httpResponse, times(1)).sendRedirect(anyString());
   }
 }

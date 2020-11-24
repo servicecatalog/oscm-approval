@@ -54,30 +54,33 @@ public class BesClientTest {
 
   @Test
   public void testRunWebServiceAsOrganizationAdmin() throws Exception {
+    // given
     PowerMockito.whenNew(AppDataService.class).withNoArguments().thenReturn(appDataService);
     when(appDataService.loadOrgAdminCredentials(anyString())).thenReturn(credentials);
     when(webServiceTask.getResult()).thenReturn(null, null, "taskResult");
-
+    // when
     result[0] =
         Whitebox.invokeMethod(
             besClient, "runWebServiceAsOrganizationAdmin", "administrator", webServiceTask);
-
+    // then
     verify(webServiceTask, times(3)).getResult();
     assertEquals("taskResult", result[0]);
   }
 
   @Test(expected = Exception.class)
   public void testRunWebServiceAsOrganizationAdminThrowsException() throws Exception {
+    // given
     PowerMockito.whenNew(AppDataService.class).withNoArguments().thenReturn(appDataService);
     when(appDataService.loadOrgAdminCredentials(anyString())).thenReturn(credentials);
     when(webServiceTask.getResult()).thenReturn(new Exception());
-
+    // when
     Whitebox.invokeMethod(
         besClient, "runWebServiceAsOrganizationAdmin", "administrator", webServiceTask);
   }
 
   @Test
   public void testGetWebservice() throws Exception {
+    // given
     Service mockService = mock(Service.class);
     BindingProvider bindingProvider = mock(BindingProvider.class);
     Binding binding = mock(Binding.class);
@@ -90,15 +93,16 @@ public class BesClientTest {
     when(mockService.getPort(any())).thenReturn(bindingProvider);
     when(bindingProvider.getBinding()).thenReturn(binding);
     when(binding.getHandlerChain()).thenReturn(handlerList);
-
+    // when
     BindingProvider result =
         Whitebox.invokeMethod(besClient, "getWebservice", "user", "password", TestClass.class);
-
+    // then
     assertEquals(bindingProvider, result);
   }
 
   @Test
   public void testGetWebserviceWithCreateNewList() throws Exception {
+    // given
     Service mockService = mock(Service.class);
     BindingProvider bindingProvider = mock(BindingProvider.class);
     Binding binding = mock(Binding.class);
@@ -111,10 +115,10 @@ public class BesClientTest {
     when(mockService.getPort(any())).thenReturn(bindingProvider);
     when(bindingProvider.getBinding()).thenReturn(binding);
     when(binding.getHandlerChain()).thenReturn(null);
-
+    // when
     BindingProvider result =
         Whitebox.invokeMethod(besClient, "getWebservice", "user", "password", TestClass.class);
-
+    // then
     assertEquals(bindingProvider, result);
   }
 
