@@ -9,55 +9,40 @@
  */
 package org.oscm.app.approval.triggers;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Properties;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.oscm.app.approval.triggers.ApprovalNotificationService;
-import org.oscm.app.approval.triggers.ApprovalTask;
+import org.oscm.intf.AccountService;
+import org.oscm.intf.SubscriptionService;
 import org.oscm.notification.vo.VONotification;
 import org.oscm.types.enumtypes.UserRoleType;
-import org.oscm.vo.VOOrganization;
-import org.oscm.vo.VOOrganizationPaymentConfiguration;
-import org.oscm.vo.VOParameter;
-import org.oscm.vo.VOPaymentType;
-import org.oscm.vo.VOService;
-import org.oscm.vo.VOServiceDetails;
-import org.oscm.vo.VOServicePaymentConfiguration;
-import org.oscm.vo.VOSubscription;
-import org.oscm.vo.VOSubscriptionDetails;
-import org.oscm.vo.VOTriggerDefinition;
-import org.oscm.vo.VOTriggerProcess;
-import org.oscm.vo.VOUsageLicense;
-import org.oscm.vo.VOUser;
-import org.oscm.vo.VOUserDetails;
+import org.oscm.vo.*;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Properties;
+
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 /** @author worf */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ApprovalNotificationService.class})
 public class ApprovalNotificationServiceTest {
 
-  @Spy
-  ApprovalNotificationService service;
-  @Mock
-  ApprovalTask task;
+  @Mock ApprovalTask task;
   VOTriggerProcess process;
+
+  private ApprovalNotificationService service;
 
   @Before
   public void setUp() throws Exception {
-
+    service = PowerMockito.spy(new ApprovalNotificationService());
     VOUser user = new VOUser();
     user.setOrganizationId("id");
     process = new VOTriggerProcess();
@@ -324,5 +309,49 @@ public class ApprovalNotificationServiceTest {
 
     // then
     verify(task, times(1)).startApprovalProcess();
+  }
+
+  @Test
+  public void testCreateSubscriptionDetailsWSCall() throws Exception {
+    // given
+    List<VOSubscription> listSubscription = new ArrayList<>();
+    SubscriptionService testService = mock(SubscriptionService.class);
+
+    VOSubscriptionDetails subscriptionDetails = new VOSubscriptionDetails();
+    VOSubscription subscription = new VOSubscription();
+    subscription.setServiceInstanceId("ServiceInstanceId");
+    subscription.setSubscriptionId("SubscriptionId");
+    subscription.setKey(12000);
+    subscriptionDetails.setSubscriptionId("ServiceInstanceId");
+    listSubscription.add(subscription);
+    when(testService.getSubscriptionsForOrganization()).thenReturn(listSubscription);
+    // when
+    service
+        .createSubscriptionDetailsWSCall(SubscriptionService.class, 12000, "OrganizationId")
+        .execute(testService);
+    // then
+    verify(testService, times(1)).getSubscriptionDetails("SubscriptionId");
+  }
+
+  @Test
+  public void testCreateSubscriptionDetailsByIdWSCall() throws Exception {
+    // given
+    SubscriptionService testService = mock(SubscriptionService.class);
+    // when
+    service
+        .createSubscriptionDetailsByIdWSCall(SubscriptionService.class, "SubscriptionId")
+        .execute(testService);
+    // then
+    verify(testService, times(1)).getSubscriptionDetails("SubscriptionId");
+  }
+
+  @Test
+  public void testGetOrganizationDataWSCall() throws Exception {
+    // given
+    AccountService testService = mock(AccountService.class);
+    // when
+    service.getOrganizationDataWSCall(AccountService.class, "OrganizationId").execute(testService);
+    // then
+    verify(testService, times(1)).getOrganizationData();
   }
 }

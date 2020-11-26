@@ -169,31 +169,27 @@ public class ApprovalTask {
       executor.submit(thread);
     } else if ("onGrantClearance".equals(triggerId)) {
       String mailSubject = process.getTriggerDefinition().getName();
-      AppDataService das = createAppDataService();
+      AppDataService das = new AppDataService();
       String webuiLink = das.getApprovalUrl();
       String mailBody = Messages.get("mail_approval.text", webuiLink);
       excecuteProcess("ClearanceRequest.xml", mailSubject, mailBody);
     } else if (isSuspendProcess) {
       String mailSubject = process.getTriggerDefinition().getName();
-      AppDataService das = createAppDataService();
+      AppDataService das = new AppDataService();
       String webuiLink = das.getApprovalUrl();
       String mailBody = Messages.get("mail_approval.text", webuiLink);
       excecuteProcess("ApprovalRequest.xml", mailSubject, mailBody);
     } else {
       String mailSubject = process.getTriggerDefinition().getName();
-      AppDataService das = createAppDataService();
+      AppDataService das = new AppDataService();
       String webuiLink = das.getApprovalUrl();
       String mailBody = Messages.get("mail_approval.text", webuiLink);
       excecuteProcess("NotificationRequest.xml", mailSubject, mailBody);
     }
   }
 
-  protected AppDataService createAppDataService() {
-    return new AppDataService();
-  }
-
   protected void excecuteProcess(String processFilename, String mailSubject, String mailBody)
-      throws Exception {
+      throws ProcessException {
     Task task = new Task();
     task.description = json.getJson();
     Map<String, String> inputData = task.getTriggerProcessData();
