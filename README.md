@@ -19,7 +19,7 @@ See logs, e.g. ApprovalNotificationService is well deployed, e.g.
 ```
 
 ## Preparation
-- Login as supplier administrator with service manager and technology manager role 
+- Login to oscm-portal as supplier administrator with service manager and technology manager role 
 - Register a technical user in the customer organization with administrator role and not the credentials
 - As supplier administrator create following custom attributes 
   
