@@ -11,39 +11,6 @@ Run maven on the parent pom
 
 See result <projectroot>/target/approval-impl-0.0.2-SNAPSHOT.war 
 
-## Prepare ##
-Specify where OSCM installation folder /docker is contained 
-```
-export WORKSPACE=<YOUR OSCM HOME>
-```
-Proceed as follows to download the [binary package](https://github.com/servicecatalog/oscm-approval/files/5008996/ApprovalTool.zip) and extract it into $WORKSPACE/docker (where you have installed OSCM)
-```
-cd $WORKSPACE/docker
-wget https://github.com/servicecatalog/oscm-approval/files/5008996/ApprovalTool.zip
-unzip -o ApprovalTool.zip 
-```
-
-## Init DB
-Run following commands to create and init the approval db 
-The password for the user approvaluser is approvaluser
-```
-docker run -it --name seconddb --rm --network docker_default -v $WORKSPACE/docker/init:/initapproval servicecatalog/oscm-db bash
-export PGPASSWORD=secret
-psql -h oscm-db -p 5432 -U postgres -f /initapproval/approval_init.sql
-psql -h oscm-db -p 5432 -U approvaluser -W -d approvaldb -f /initapproval/upd_postgresql_01_01_01.sql
-```
-
-## Copy Artifacts 
-Copy the war file and following resources into the app container - use the second console
-```
-docker cp tomee.xml oscm-app:/opt/apache-tomee/conf/
-docker cp tomee_template.xml oscm-app:/opt/apache-tomee/conf/
-docker cp tomcat-users.xml oscm-app:/opt/apache-tomee/conf/
-
-docker cp approval-impl-0.0.2-SNAPSHOT.war  oscm-app:/opt/apache-tomee/webapps/approval.war
-docker logs -f oscm-app
-```
-
 ## Check Deployment
 See logs, e.g. ApprovalNotificationService is well deployed, e.g.
 ```
@@ -51,54 +18,64 @@ See logs, e.g. ApprovalNotificationService is well deployed, e.g.
 31-Jul-2020 15:18:55.218 INFO [localhost-startStop-1] sun.reflect.DelegatingMethodAccessorImpl.invoke Deployment of web application archive [/opt/apache-tomee/webapps/approval.war] has finished in [7,287] ms
 ```
 
-## Test it
-Login to `https://<yourhost>:8881/approval/`
-	user: approver
-	password: approver
-OK
+## How to use
+- Login as supplier administrator with service manager and technology manager role 
+- Register a technical user in the customer organization with administrator role and not the credentials
+- As supplier administrator create following custom attributes 
+  
+  1. Approver Organization
+``` 
+     Key: APPROVER_ORG_ID_<CUSTOMER ORG>
+     Value: <ORG ID>
+     User Option: false
 ```
-https://<yourhost>:8881/approval/ApprovalNotificationService?wsdl
-```
+  Where *CUSTOMER ORG* is the organization id of the customer, and *ORG ID* is the ID of the approver organization. 
 
-### APP Configuration Settings ### 
-In order to configure the Sample Supplier 'supplier' of '959c9bf7' as user supplier the service to be triggered
+  2. Trigger User Key
 ```
-psql -h oscm-db -p 5432 -U postgres -d bssapp -c "INSERT INTO bssappuser.configurationsetting (controllerid, settingkey, settingvalue) VALUES ('ess.vmware', 'USERID_959c9bf7', 'supplier');"
-psql -h oscm-db -p 5432 -U postgres -d bssapp -c "INSERT INTO bssappuser.configurationsetting (controllerid, settingkey, settingvalue) VALUES ('ess.vmware', 'USERKEY_959c9bf7', '10000');"
-psql -h oscm-db -p 5432 -U postgres -d bssapp -c "INSERT INTO bssappuser.configurationsetting (controllerid, settingkey, settingvalue) VALUES ('ess.vmware', 'USERPWD_959c9bf7', '_crypt:supplier');"
+     key: USERKEY_<CUSTOMER ORG>
+     Value: <USER KEY>
+     User Option: false, Encryped: false.
 ```
+   Where *CUSTOMER ORG* is the organization id of the customer, and *USER KEY* is the key of the technical user in the customer organization
 
-### Your APPROVAL_URL ### 
-(!!! edit at the end of following command !!!) 
+ 3. User ID
 ```
-psql -h oscm-db -p 5432 -U postgres -d bssapp -c "INSERT INTO bssappuser.configurationsetting (controllerid, settingkey, settingvalue) VALUES ('ess.vmware', 'APPROVAL_URL', 'https://<yourhost>:8881/approval/');"
+     key: USERID_<CUSTOMER ORG>
+     Value: <USER ID>
+     User Optis ion: false, Encryped: false
 ```
-And in the second console
+ Where *CUSTOMER ORG* is the organization id of the customer, and *USER ID* is the ID of the technical user in the customer organization
+
+4. User Password
+
 ```
-docker restart oscm-app
+     key: USERPWD_<CUSTOMER ORG>
+     Value:<PWD>
+     User Option: false, Encryped: true
 ```
+  Where *CUSTOMER ORG* is the organization id of the customer, and *PWD* is password the of the technical user in the customer organization. The value is stored encryped.
+  
 
-### Prepare Trigger
-1. Login to OSCM Marketplace as Supplier 
-2. Goto Account > Processes
-3. Create New Trigger Process
-Display as: Approval Trigger
+- Import the technical service template for the approval tool
+- Create a free marketable service for the approval tool and publish it on the supplier marketplace
+- Login as customer administrator to the marketplace
+- Define a trigger process in Account > Processes
 
-NOTE: Due to a current bug https://github.com/servicecatalog/oscm/issues/1041 trigger definitions can be changed, so take care (workaround is to change it directly in the database, eg. pgAdmin)
-
-	Type: Subscribe to Service
-	Target type: Web Service
-	Target URL: http://oscm-app:8880/approval/ApprovalNotificationService?wsdl
-	Suspend: Yes (check the checkbox!)
-
+```  
+  Type: Subscribe to Service
+  Target type: Web Service
+  Target URL: http://oscm-app:8880/approval/ApprovalNotificationService?wsdl
+  Suspend: Yes (check the checkbox!)
+```
 ### Subscribe a Service
 1. If not done, deploy the Sample Controller in the oscm-app container and create a respective service.
 2. Subscribe the service -> Subscription is suspended with trigger message 
-3. Login again as manager "approver" to `https://<yourhost>:8881/approval/`
+3. Login again as administor of the defined approver organization to `https://<FQDN>/approval/`
 4. Check task list appears and select the newly created
 5. Edit, give a comment and relejet or accept
 6. Go back to the subscription in the OSCM marketplace and see the result status
-7. Check the email inbox at `http://<yourhost>:8082/`
+7. Check the email inbox at `http://<FQDN>/mail`
 
 # Trouble Shooting Hints
 1. Use docker logs -f oscm-app
