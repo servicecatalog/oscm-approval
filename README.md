@@ -23,7 +23,7 @@ See logs, e.g. ApprovalNotificationService is well deployed, e.g.
 - Register a technical user in the customer organization with administrator role and not the credentials
 - As supplier administrator create following custom attributes 
   
-  1. Approver Organization
+1. Approver Organization
 ``` 
      Key: APPROVER_ORG_ID_<CUSTOMER ORG>
      Value: <ORG ID>
@@ -31,7 +31,7 @@ See logs, e.g. ApprovalNotificationService is well deployed, e.g.
 ```
   Where *CUSTOMER ORG* is the organization id of the customer, and *ORG ID* is the ID of the approver organization. 
 
-  2. Trigger User Key
+2. Trigger User Key
 ```
      key: USERKEY_<CUSTOMER ORG>
      Value: <USER KEY>
@@ -39,7 +39,7 @@ See logs, e.g. ApprovalNotificationService is well deployed, e.g.
 ```
    Where *CUSTOMER ORG* is the organization id of the customer, and *USER KEY* is the key of the technical user in the customer organization
 
- 3. User ID
+3. User ID
 ```
      key: USERID_<CUSTOMER ORG>
      Value: <USER ID>
