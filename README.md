@@ -57,7 +57,7 @@ User Option: false, Encryped: true
 Where *CUSTOMER ORG* is the organization id of the customer, and *PWD* is password the of the technical user in the customer organization. The value is stored encryped.
   
 
-- Import the technical service template for the approval tool
+- Import the [technical service template](https://github.com/servicecatalog/oscm-app/blob/master/oscm-app-approval/src/main/resources/TechnicalService.xml) for the approval tool
 - Create a free marketable service for the approval tool and publish it on the supplier marketplace
 - Login as customer administrator to the marketplace
 - Define a trigger process in Account > Processes
@@ -68,7 +68,7 @@ Target type: Web Service
 Target URL: http://oscm-app:8880/approval/ApprovalNotificationService?wsdl
 Suspend: Yes (check the checkbox!)
 ```
-### Subscribe a Service
+## How to use
 1. If not done, deploy the Sample Controller in the oscm-app container and create a respective service.
 2. Subscribe the service -> Subscription is suspended with trigger message 
 3. Login again as administor of the defined approver organization to `https://<FQDN>/approval/`
