@@ -18,43 +18,43 @@ See logs, e.g. ApprovalNotificationService is well deployed, e.g.
 31-Jul-2020 15:18:55.218 INFO [localhost-startStop-1] sun.reflect.DelegatingMethodAccessorImpl.invoke Deployment of web application archive [/opt/apache-tomee/webapps/approval.war] has finished in [7,287] ms
 ```
 
-## How to use
+## Preparation
 - Login as supplier administrator with service manager and technology manager role 
 - Register a technical user in the customer organization with administrator role and not the credentials
 - As supplier administrator create following custom attributes 
   
 1. Approver Organization
 ``` 
-     Key: APPROVER_ORG_ID_<CUSTOMER ORG>
-     Value: <ORG ID>
-     User Option: false
+Key: APPROVER_ORG_ID_<CUSTOMER ORG>
+Value: <ORG ID>
+User Option: false
 ```
-  Where *CUSTOMER ORG* is the organization id of the customer, and *ORG ID* is the ID of the approver organization. 
+Where *CUSTOMER ORG* is the organization id of the customer, and *ORG ID* is the ID of the approver organization. 
 
 2. Trigger User Key
 ```
-     key: USERKEY_<CUSTOMER ORG>
-     Value: <USER KEY>
-     User Option: false, Encryped: false.
+key: USERKEY_<CUSTOMER ORG>
+Value: <USER KEY>
+User Option: false, Encryped: false.
 ```
    Where *CUSTOMER ORG* is the organization id of the customer, and *USER KEY* is the key of the technical user in the customer organization
 
 3. User ID
 ```
-     key: USERID_<CUSTOMER ORG>
-     Value: <USER ID>
-     User Optis ion: false, Encryped: false
+key: USERID_<CUSTOMER ORG>
+Value: <USER ID>
+User Optis ion: false, Encryped: false
 ```
  Where *CUSTOMER ORG* is the organization id of the customer, and *USER ID* is the ID of the technical user in the customer organization
 
 4. User Password
 
 ```
-     key: USERPWD_<CUSTOMER ORG>
-     Value:<PWD>
-     User Option: false, Encryped: true
+key: USERPWD_<CUSTOMER ORG>
+Value:<PWD>
+User Option: false, Encryped: true
 ```
-  Where *CUSTOMER ORG* is the organization id of the customer, and *PWD* is password the of the technical user in the customer organization. The value is stored encryped.
+Where *CUSTOMER ORG* is the organization id of the customer, and *PWD* is password the of the technical user in the customer organization. The value is stored encryped.
   
 
 - Import the technical service template for the approval tool
@@ -63,10 +63,10 @@ See logs, e.g. ApprovalNotificationService is well deployed, e.g.
 - Define a trigger process in Account > Processes
 
 ```  
-  Type: Subscribe to Service
-  Target type: Web Service
-  Target URL: http://oscm-app:8880/approval/ApprovalNotificationService?wsdl
-  Suspend: Yes (check the checkbox!)
+Type: Subscribe to Service
+Target type: Web Service
+Target URL: http://oscm-app:8880/approval/ApprovalNotificationService?wsdl
+Suspend: Yes (check the checkbox!)
 ```
 ### Subscribe a Service
 1. If not done, deploy the Sample Controller in the oscm-app container and create a respective service.
