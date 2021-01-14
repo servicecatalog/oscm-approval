@@ -77,7 +77,7 @@ Suspend: Yes (check the checkbox!)
 6. Go back to the subscription in the OSCM marketplace and see the result status
 7. Check the email inbox at `http://<FQDN>/mail`
 
-# Trouble Shooting Hints
+## Trouble Shooting Hints
 1. Use docker logs -f oscm-app
 2. Connect approval DB with PGAdmin and check the created data, esp. User Ids.
 
