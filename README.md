@@ -23,15 +23,15 @@ See logs, e.g. ApprovalNotificationService is well deployed, e.g.
 - Register a new customer and a technical user with administrator role in this organization. Note down the credentials of this user and customer organization id.
 - As supplier administrator create following custom attributes 
   
-1. Approver Organization
+**Approver Organization**
 ``` 
 Key: APPROVER_ORG_ID_<CUSTOMER ORG>
 Value: <ORG ID>
 User Option: false
 ```
-Where *CUSTOMER ORG* is the organization id of the customer, and *ORG ID* is the ID of the approver organization. 
-
-2. Trigger User Key
+Where *CUSTOMER ORG* is the organization id of the customer, and *ORG ID* is the ID of the approver organization.
+ 
+**Trigger User Key**
 ```
 key: USERKEY_<CUSTOMER ORG>
 Value: <USER KEY>
@@ -39,7 +39,7 @@ User Option: false, Encryped: false.
 ```
    Where *CUSTOMER ORG* is the organization id of the customer, and *USER KEY* is the key of the technical user in the customer organization
 
-3. Trigger User ID
+**Trigger User ID**
 ```
 key: USERID_<CUSTOMER ORG>
 Value: <USER ID>
@@ -47,7 +47,7 @@ User Optis ion: false, Encryped: false
 ```
  Where *CUSTOMER ORG* is the organization id of the customer, and *USER ID* is the ID of the technical user in the customer organization
 
-4. Trigger User Password
+**Trigger User Password**
 
 ```
 key: USERPWD_<CUSTOMER ORG>
