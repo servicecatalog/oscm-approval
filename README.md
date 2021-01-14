@@ -39,7 +39,7 @@ User Option: false, Encryped: false.
 ```
    Where *CUSTOMER ORG* is the organization id of the customer, and *USER KEY* is the key of the technical user in the customer organization
 
-3. User ID
+3. Trigger User ID
 ```
 key: USERID_<CUSTOMER ORG>
 Value: <USER ID>
@@ -47,7 +47,7 @@ User Optis ion: false, Encryped: false
 ```
  Where *CUSTOMER ORG* is the organization id of the customer, and *USER ID* is the ID of the technical user in the customer organization
 
-4. User Password
+4. Trigger User Password
 
 ```
 key: USERPWD_<CUSTOMER ORG>
