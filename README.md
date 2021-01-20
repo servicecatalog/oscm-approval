@@ -1,10 +1,10 @@
 [![Build Status](https://travis-ci.org/servicecatalog/oscm-approval.svg?branch=master)](https://travis-ci.org/servicecatalog/oscm-approval) [![codecov](https://codecov.io/gh/servicecatalog/oscm-approval/branch/master/graph/badge.svg)](https://codecov.io/gh/servicecatalog/oscm-approval)
 
 # oscm-approval 
-OSCM Approval Tool (WIP) 
+OSCM Approval Tool 
 
 
-## Build ##
+## Build from Source ##
 Run maven on the parent pom
 
 ```mvn clean package```
