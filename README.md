@@ -19,7 +19,9 @@ See logs, e.g. ApprovalNotificationService is well deployed, e.g.
 ```
 
 ## Preparation
-- Login to oscm-portal as supplier administrator with service manager and technology manager role 
+- Login to oscm-portal as supplier administrator with service manager and technology manager role
+- Import the [technical service template](https://github.com/servicecatalog/oscm-app/blob/master/oscm-app-approval/src/main/resources/TechnicalService.xml) for the approval tool
+- Create a free marketable service for the approval tool and publish it on the supplier marketplace. For details about publishing services in OSCM, refer to the [Supplier's Guide](https://github.com/servicecatalog/documentation/blob/master/Development/oscm-doc-user/resources/manuals/integration/en/Supplier.pdf).
 - Register a new customer and a technical user with administrator role in this organization. Note down the credentials of this user and customer organization id.
 - As supplier administrator create following custom attributes 
   
@@ -55,10 +57,8 @@ Value:<PWD>
 User Option: false, Encryped: true
 ```
 Where *CUSTOMER ORG* is the organization id of the customer, and *PWD* is password the of the technical user in the customer organization. The value is stored encryped.
-  
 
-- Import the [technical service template](https://github.com/servicecatalog/oscm-app/blob/master/oscm-app-approval/src/main/resources/TechnicalService.xml) for the approval tool
-- Create a free marketable service for the approval tool and publish it on the supplier marketplace
+## Define the Trigger
 - Login as customer administrator to the marketplace
 - Define a trigger process in Account > Processes
 
