@@ -1,48 +1,15 @@
 [![Build Status](https://travis-ci.org/servicecatalog/oscm-approval.svg?branch=master)](https://travis-ci.org/servicecatalog/oscm-approval) [![codecov](https://codecov.io/gh/servicecatalog/oscm-approval/branch/master/graph/badge.svg)](https://codecov.io/gh/servicecatalog/oscm-approval)
 
 # oscm-approval 
-OSCM Approval Tool (WIP) 
+OSCM Approval Tool 
 
 
-## Build ##
+## Build from Source ##
 Run maven on the parent pom
 
 ```mvn clean package```
 
 See result <projectroot>/target/approval-impl-0.0.2-SNAPSHOT.war 
-
-## Prepare ##
-Specify where OSCM installation folder /docker is contained 
-```
-export WORKSPACE=<YOUR OSCM HOME>
-```
-Proceed as follows to download the [binary package](https://github.com/servicecatalog/oscm-approval/files/5008996/ApprovalTool.zip) and extract it into $WORKSPACE/docker (where you have installed OSCM)
-```
-cd $WORKSPACE/docker
-wget https://github.com/servicecatalog/oscm-approval/files/5008996/ApprovalTool.zip
-unzip -o ApprovalTool.zip 
-```
-
-## Init DB
-Run following commands to create and init the approval db 
-The password for the user approvaluser is approvaluser
-```
-docker run -it --name seconddb --rm --network docker_default -v $WORKSPACE/docker/init:/initapproval servicecatalog/oscm-db bash
-export PGPASSWORD=secret
-psql -h oscm-db -p 5432 -U postgres -f /initapproval/approval_init.sql
-psql -h oscm-db -p 5432 -U approvaluser -W -d approvaldb -f /initapproval/upd_postgresql_01_01_01.sql
-```
-
-## Copy Artifacts 
-Copy the war file and following resources into the app container - use the second console
-```
-docker cp tomee.xml oscm-app:/opt/apache-tomee/conf/
-docker cp tomee_template.xml oscm-app:/opt/apache-tomee/conf/
-docker cp tomcat-users.xml oscm-app:/opt/apache-tomee/conf/
-
-docker cp approval-impl-0.0.2-SNAPSHOT.war  oscm-app:/opt/apache-tomee/webapps/approval.war
-docker logs -f oscm-app
-```
 
 ## Check Deployment
 See logs, e.g. ApprovalNotificationService is well deployed, e.g.
@@ -51,56 +18,79 @@ See logs, e.g. ApprovalNotificationService is well deployed, e.g.
 31-Jul-2020 15:18:55.218 INFO [localhost-startStop-1] sun.reflect.DelegatingMethodAccessorImpl.invoke Deployment of web application archive [/opt/apache-tomee/webapps/approval.war] has finished in [7,287] ms
 ```
 
-## Test it
-Login to `https://<yourhost>:8881/approval/`
-	user: approver
-	password: approver
-OK
+## Preparation
+- Login to oscm-portal as supplier administrator with service manager and technology manager role
+- Import the [technical service template](https://github.com/servicecatalog/oscm-app/blob/master/oscm-app-approval/src/main/resources/TechnicalService.xml) for the approval tool
+- Create a free marketable service for the approval tool and publish it on the supplier marketplace. For details about publishing services in OSCM, refer to the [Supplier's Guide](https://github.com/servicecatalog/documentation/blob/master/Development/oscm-doc-user/resources/manuals/integration/en/Supplier.pdf).
+- Register a new customer and a technical user with administrator role in this organization. Note down the credentials of this user and customer organization id.
+- As supplier administrator create following custom attributes 
+  
+**Approver Organization**
+``` 
+Key: APPROVER_ORG_ID_<CUSTOMER ORG>
+Value: <ORG ID>
+User Option: false
 ```
-https://<yourhost>:8881/approval/ApprovalNotificationService?wsdl
+Where *CUSTOMER ORG* is the organization id of the customer, and *ORG ID* is the ID of the approver organization.
+ 
+**Trigger User Key**
 ```
+key: USERKEY_<CUSTOMER ORG>
+Value: <USER KEY>
+User Option: false, Encryped: false.
+```
+   Where *CUSTOMER ORG* is the organization id of the customer, and *USER KEY* is the key of the technical user in the customer organization
 
-### APP Configuration Settings ### 
-In order to configure the Sample Supplier 'supplier' of '959c9bf7' as user supplier the service to be triggered
+**Trigger User ID**
 ```
-psql -h oscm-db -p 5432 -U postgres -d bssapp -c "INSERT INTO bssappuser.configurationsetting (controllerid, settingkey, settingvalue) VALUES ('ess.vmware', 'USERID_959c9bf7', 'supplier');"
-psql -h oscm-db -p 5432 -U postgres -d bssapp -c "INSERT INTO bssappuser.configurationsetting (controllerid, settingkey, settingvalue) VALUES ('ess.vmware', 'USERKEY_959c9bf7', '10000');"
-psql -h oscm-db -p 5432 -U postgres -d bssapp -c "INSERT INTO bssappuser.configurationsetting (controllerid, settingkey, settingvalue) VALUES ('ess.vmware', 'USERPWD_959c9bf7', '_crypt:supplier');"
+key: USERID_<CUSTOMER ORG>
+Value: <USER ID>
+User Optis ion: false, Encryped: false
 ```
+ Where *CUSTOMER ORG* is the organization id of the customer, and *USER ID* is the ID of the technical user in the customer organization
 
-### Your APPROVAL_URL ### 
-(!!! edit at the end of following command !!!) 
-```
-psql -h oscm-db -p 5432 -U postgres -d bssapp -c "INSERT INTO bssappuser.configurationsetting (controllerid, settingkey, settingvalue) VALUES ('ess.vmware', 'APPROVAL_URL', 'https://<yourhost>:8881/approval/');"
-```
-And in the second console
-```
-docker restart oscm-app
-```
+**Trigger User Password**
 
-### Prepare Trigger
-1. Login to OSCM Marketplace as Supplier 
-2. Goto Account > Processes
-3. Create New Trigger Process
-Display as: Approval Trigger
+```
+key: USERPWD_<CUSTOMER ORG>
+Value:<PWD>
+User Option: false, Encryped: true
+```
+Where *CUSTOMER ORG* is the organization id of the customer, and *PWD* is password the of the technical user in the customer organization. The value is stored encryped.
 
-NOTE: Due to a current bug https://github.com/servicecatalog/oscm/issues/1041 trigger definitions can be changed, so take care (workaround is to change it directly in the database, eg. pgAdmin)
+## Define the Trigger
+- Login as customer administrator to the marketplace
+- Define a trigger process in Account > Processes
 
-	Type: Subscribe to Service
-	Target type: Web Service
-	Target URL: http://oscm-app:8880/approval/ApprovalNotificationService?wsdl
-	Suspend: Yes (check the checkbox!)
-
-### Subscribe a Service
+```  
+Type: Subscribe to Service
+Target type: Web Service
+Target URL: http://oscm-app:8880/approval/ApprovalNotificationService?wsdl
+Suspend: Yes (check the checkbox!)
+```
+## How to use
 1. If not done, deploy the Sample Controller in the oscm-app container and create a respective service.
 2. Subscribe the service -> Subscription is suspended with trigger message 
-3. Login again as manager "approver" to `https://<yourhost>:8881/approval/`
+3. Login again as administor of the defined approver organization to `https://<FQDN>/approval/`
 4. Check task list appears and select the newly created
 5. Edit, give a comment and relejet or accept
 6. Go back to the subscription in the OSCM marketplace and see the result status
-7. Check the email inbox at `http://<yourhost>:8082/`
+7. Check the email inbox at `http://<FQDN>/mail`
 
-# Trouble Shooting Hints
+## Email Templates
+You can customize the appearence and content of the approval request emails which are issued to the approver.
+
+Therefore
+1. Download the [email template](https://github.com/servicecatalog/oscm-app/blob/master/oscm-app-approval/src/main/resources/approvalEmail.html) from the GitHub repo.
+2. Edit the HTML content as desired. Use inline CSS as desired.
+4. Following placeholder variables are available: ```$(mail.body), $(service.name), $(service.technicalId), $(service.price.text), $(service.price.type), $(service.price.freePeriod), $(service.price.oneTimeFee), $(service.price.currency), $(user.orgId), $(user.email), $(user.firstname), $(user.lastname), $(user.key)```.<br>The notification service will fill in the placeholders with the respective data retrieved from the subscription trigger. 
+5. Open `https://<FQDN>/oscm-app-approval`
+6. Login as supplier
+7. Use the `import` button in the section `Service templates` in order to upload your HTML email template
+8. All subsequent approval requests will use this email template. Just test it as described above  
+ 
+
+## Trouble Shooting Hints
 1. Use docker logs -f oscm-app
 2. Connect approval DB with PGAdmin and check the created data, esp. User Ids.
 
