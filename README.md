@@ -83,9 +83,7 @@ You can customize the appearence and content of the approval request emails whic
 Therefore
 1. Download the email template from the GitHub repo.
 2. Edit the HTML content as desired. Use inline CSS as desired.
-4. Following placeholder variables are available: ```$(mail.body), $(service.name), $(service.technicalId), $(service.price.text), $(service.price.type), $(service.price.freePeriod), $(service.price.oneTimeFee), $(service.price.currency), $(user.orgId), $(user.email), $(user.firstname), $(user.lastname), $(user.key)```.
-
-The notification service will fill in the placeholders with the respective data retrieved from the subscription trigger. 
+4. Following placeholder variables are available: ```$(mail.body), $(service.name), $(service.technicalId), $(service.price.text), $(service.price.type), $(service.price.freePeriod), $(service.price.oneTimeFee), $(service.price.currency), $(user.orgId), $(user.email), $(user.firstname), $(user.lastname), $(user.key)```.<br>The notification service will fill in the placeholders with the respective data retrieved from the subscription trigger. 
 5. Open `https://<FQDN>/oscm-app-approval`
 6. Login as supplier
 7. Use the `import` button in the section `Serive templates` in order to upload your HTML email template
