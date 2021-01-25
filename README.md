@@ -77,6 +77,18 @@ Suspend: Yes (check the checkbox!)
 6. Go back to the subscription in the OSCM marketplace and see the result status
 7. Check the email inbox at `http://<FQDN>/mail`
 
+## Email Templates
+You can customize the appearence and content of the approval request emails which are issued to the approver.
+Therefore
+1. Download the email template from the GitHub repo.
+2. Edit the HTML content as desired. Use inline CSS as desired.
+4. Following placeholder variables are available: ```$(mail.body), $(service.name), $(service.technicalId), $(service.price.text), $(service.price.type), $(service.price.freePeriod), $(service.price.oneTimeFee), $(service.price.currency), $(user.orgId), $(user.email), $(user.firstname), $(user.lastname), $(user.key)```
+5. Open `https://<FQDN>/oscm-app-approval`
+6. Login as supplier
+7. Use the `import` button in the section `Serive templates` in order to upload your HTML email template
+8. All subsequent approval requests will use this email template. Just test it as described above.  
+ 
+
 ## Trouble Shooting Hints
 1. Use docker logs -f oscm-app
 2. Connect approval DB with PGAdmin and check the created data, esp. User Ids.
