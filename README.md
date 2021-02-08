@@ -11,7 +11,7 @@ Run maven on the parent pom
 
 Check the result, `<projectroot>/target/approval-impl-0.0.2-SNAPSHOT.war` 
 
-## Check Deployment
+## Check the Deployment
 Check the logs, e.g. the ApprovalNotificationService is well deployed:
 ```
 31-Jul-2020 15:18:55.211 INFO [localhost-startStop-1] org.apache.openejb.server.webservices.WsService.afterApplicationCreated Webservice(wsdl=http://localhost:8880/approval/ApprovalNotificationService, qname={http://oscm.org/xsd}ApprovalNotificationService) --> Pojo(id=localhost.approval.org.oscm.app.approval.triggers.ApprovalNotificationService)
@@ -58,7 +58,7 @@ User Option: false, Encryped: true
 ```
 Where `<CUSTOMER ORG>` is the organization ID of the customer, and `<PWD>` is the password of the technical user in the customer organization. The value stored is encrypted.
 
-## Define the Trigger for the Approval Tool
+## Define a Trigger for the Approval Tool
 1. Log in as a customer administrator to the marketplace.
 2. In **Account > Processes**, define the following trigger:
 
