@@ -1,4 +1,4 @@
-[![Maven](https://github.com/servicecatalog/oscm-approval/actions/workflows/maven.yml/badge.svg)](https://github.com/servicecatalog/oscm-approval/actions) [![codecov](https://codecov.io/gh/servicecatalog/oscm-approval/branch/master/graph/badge.svg)](https://codecov.io/gh/servicecatalog/oscm-approval)
+[![Maven](https://github.com/servicecatalog/oscm-approval/actions/workflows/maven_master.yml/badge.svg)](https://github.com/servicecatalog/oscm-approval/actions/workflows/maven_master.yml) [![codecov](https://codecov.io/gh/servicecatalog/oscm-approval/branch/master/graph/badge.svg)](https://codecov.io/gh/servicecatalog/oscm-approval)
 
 # oscm-approval 
 OSCM Approval Tool 
