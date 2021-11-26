@@ -1,5 +1,20 @@
+/**
+ * *****************************************************************************
+ *
+ * <p>Copyright FUJITSU LIMITED 2021
+ *
+ * <p>Creation Date: 26-11-2021
+ *
+ * <p>*****************************************************************************
+ */
 package org.oscm.app.approval.remote;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+
+import javax.jws.WebService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,27 +24,21 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
-import javax.jws.WebService;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({BesClient.class, WebServiceTask.class})
 public class WebServiceTaskTest {
 
-     private WebServiceTask webServiceTask;
-         private Object result;
-         @Before
-       public void setUp()         {
-                    result = new Object();
-      webServiceTask =
+  private WebServiceTask webServiceTask;
+  private Object result;
+
+  @Before
+  public void setUp() {
+    result = new Object();
+    webServiceTask =
         PowerMockito.spy(
             new WebServiceTask(TestClass.class) {
               @Override
-              public Object execute(Object service) throws Exception  {
+              public Object execute(Object service) throws Exception {
                 return result;
               }
             });
