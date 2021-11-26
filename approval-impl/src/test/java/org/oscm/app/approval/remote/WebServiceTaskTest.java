@@ -22,8 +22,7 @@ public class WebServiceTaskTest {
 
      private WebServiceTask webServiceTask;
          private Object result;
-
-       @Before
+         @Before
        public void setUp()         {
                     result = new Object();
       webServiceTask =
