@@ -1,12 +1,3 @@
-/**
- * *****************************************************************************
- *
- * <p>Copyright FUJITSU LIMITED 2020
- *
- * <p>Creation Date: 3 Nov 2020
- *
- * <p>*****************************************************************************
- */
 package org.oscm.app.approval.remote;
 
 import org.junit.Before;
@@ -29,17 +20,17 @@ import static org.mockito.ArgumentMatchers.anyString;
 @PrepareForTest({BesClient.class, WebServiceTask.class})
 public class WebServiceTaskTest {
 
-  private WebServiceTask webServiceTask;
-  private Object result;
+     private WebServiceTask webServiceTask;
+         private Object result;
 
-  @Before
-  public void setUp() {
-    result = new Object();
-    webServiceTask =
+       @Before
+       public void setUp()         {
+                    result = new Object();
+      webServiceTask =
         PowerMockito.spy(
             new WebServiceTask(TestClass.class) {
               @Override
-              public Object execute(Object service) throws Exception {
+              public Object execute(Object service) throws Exception  {
                 return result;
               }
             });
