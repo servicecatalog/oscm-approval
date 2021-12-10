@@ -11,7 +11,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <ctmg.version>master-SNAPSHOT</ctmg.version>
     <mockito.version>3.5.0</mockito.version>
-    <log4j.version>2.13.3</log4j.version>
+    <log4j.version>2.15.0</log4j.version>
   </properties>
 
   <modules>
