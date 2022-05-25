@@ -11,6 +11,7 @@ package org.oscm.app.approval.servlet;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.oscm.app.approval.auth.User;
@@ -40,6 +41,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 /** @author worf */
+@Ignore
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({TaskServlet.class, BesClient.class})
 public class TaskServletTest {
