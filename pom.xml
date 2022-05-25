@@ -112,7 +112,7 @@
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-databind</artifactId>
-        <version>2.11.3</version>
+        <version>2.12.6.1</version>
       </dependency>
       <dependency>
         <groupId>commons-codec</groupId>
@@ -179,7 +179,7 @@
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-core</artifactId>
-        <version>4.3.21.RELEASE</version>
+        <version>5.3.19</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
