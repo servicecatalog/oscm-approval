@@ -8,8 +8,14 @@
  * <p>*****************************************************************************
  */
 package org.oscm.app.approval.triggers;
-import org.junit.Ignore;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
+import java.math.BigDecimal;
+import java.util.*;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.oscm.app.approval.database.Task;
@@ -28,12 +34,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
-
-import java.math.BigDecimal;
-import java.util.*;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 /** @author worf */
 @Ignore
