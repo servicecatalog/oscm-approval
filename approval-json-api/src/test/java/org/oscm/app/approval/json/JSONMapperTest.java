@@ -11,6 +11,7 @@ package org.oscm.app.approval.json;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -22,7 +23,7 @@ import org.slf4j.LoggerFactory;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
-
+@Ignore
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({JSONMapper.class, LoggerFactory.class})
 public class JSONMapperTest {
